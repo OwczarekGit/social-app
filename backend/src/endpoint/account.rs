@@ -25,7 +25,7 @@ pub async fn activate_account(
     Query(params): Query<AccountActivationParams>,
 ) -> Result<impl IntoResponse, StatusCode> {
     account_service.activate_account(&params.email, &params.key).await?;
-    Ok(())
+    Ok(StatusCode::CREATED)
 }
 
 #[derive(Serialize, Deserialize)]
