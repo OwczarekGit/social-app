@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 use axum::http::StatusCode;
 use axum_macros::FromRef;
@@ -32,7 +32,7 @@ impl AccountService {
             .ok_or(StatusCode::BAD_REQUEST)?
             ;
 
-        if result.len() == 0 {
+        if result.is_empty() {
             return Err(StatusCode::BAD_REQUEST);
         }
 
@@ -99,7 +99,7 @@ impl AccountService {
             .arg("key")
             .arg(activation_key.clone())
             .arg("password")
-            .arg(hash_password(&password))
+            .arg(hash_password(password))
             .query_async(redis)
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
