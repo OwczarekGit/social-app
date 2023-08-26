@@ -4,7 +4,7 @@ use tower_cookies::{Cookies, Cookie};
 
 use crate::{AppState, service::{account::AccountService, email::EmailService}};
 
-static SESSION_COOKIE_NAME: &str = "JSESSIONID";
+pub static SESSION_COOKIE_NAME: &str = "JSESSIONID";
 
 pub fn routes() -> Router<AppState> {
     Router::new()

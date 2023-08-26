@@ -1,11 +1,13 @@
 use std::env;
 
-use axum::Router;
+use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request, StatusCode}, extract::State};
 use axum_macros::FromRef;
+use endpoint::account;
 use redis::aio::ConnectionManager;
 use sea_orm::{Database, DatabaseConnection};
 use service::{account::AccountService, email::EmailService};
-use tower_cookies::CookieManagerLayer;
+use tower_cookies::{CookieManagerLayer, Cookies};
+use serde::{Serialize, Deserialize};
 
 mod entities;
 mod endpoint;
@@ -20,11 +22,13 @@ async fn main() {
 
     let state = AppState::new(redis_connection, postgres_connection);
 
-
     let app = Router::<AppState>::new()
         .nest(
             "/api", Router::<AppState>::new()
-                .nest("/account", endpoint::account::routes())
+                .nest("/post", endpoint::post::routes())
+                // All routes that require authentication go above this route_layer.
+                .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
+                .nest("/account", account::routes())
         )
         .layer(CookieManagerLayer::new())
         .with_state(state);
@@ -33,6 +37,23 @@ async fn main() {
     .serve(app.into_make_service())
     .await
     .unwrap();
+}
+
+async fn authorize_by_cookie<B>(
+    State(mut acs): State<AccountService>,
+    cookies: Cookies,
+    request: Request<B>,
+    next: Next<B>
+) -> Result<impl IntoResponse, StatusCode> {
+    let cookie = cookies.get(endpoint::account::SESSION_COOKIE_NAME)
+        .ok_or(StatusCode::UNAUTHORIZED)?;
+
+    let user_id = acs.verify_session(cookie.value()).await?;
+
+    let mut response = request;
+    response.extensions_mut().insert(ActiveUserId(user_id));
+
+    Ok(next.run(response).await)
 }
 
 async fn redis_connection() -> Result<ConnectionManager, ()> {
@@ -62,3 +83,6 @@ impl AppState {
         }
     }
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ActiveUserId(pub i64);

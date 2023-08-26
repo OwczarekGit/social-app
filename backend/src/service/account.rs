@@ -22,6 +22,20 @@ impl AccountService {
         Self { redis, postgres, expire_time_secs: 60*60*24 }
     }
 
+    pub async fn verify_session(&mut self, session_key: &str) -> Result<i64, StatusCode> {
+        let redis = &mut self.redis;
+        
+        let id = cmd("hget")
+            .arg(build_prefix(SESSION_PREFIX, session_key))
+            .arg("user_id")
+            .query_async::<_, String>(redis)
+            .await
+            .map_err(|_|StatusCode::UNAUTHORIZED)?
+        ;
+
+        id.parse().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+    }
+
     pub async fn login(&mut self, email: &str, password: &str) -> Result<String, StatusCode> {
         let redis = &mut self.redis;
 
