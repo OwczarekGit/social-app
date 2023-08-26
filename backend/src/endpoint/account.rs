@@ -1,12 +1,16 @@
 use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode};
 use serde::{Serialize, Deserialize};
+use tower_cookies::{Cookies, Cookie};
 
 use crate::{AppState, service::{account::AccountService, email::EmailService}};
+
+static SESSION_COOKIE_NAME: &str = "JSESSIONID";
 
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/", post(register_account))
         .route("/activate", post(activate_account))
+        .route("/login", post(login))
 }
 
 pub async fn register_account(
@@ -26,6 +30,29 @@ pub async fn activate_account(
 ) -> Result<impl IntoResponse, StatusCode> {
     account_service.activate_account(&params.email, &params.key).await?;
     Ok(StatusCode::CREATED)
+}
+
+pub async fn login(
+    State(mut account_service): State<AccountService>,
+    cookies: Cookies,
+    Json(request): Json<LoginRequest>,
+) -> Result<impl IntoResponse, StatusCode> {
+    let key = account_service.login(&request.email, &request.password).await?;
+
+    let cookie = Cookie::build(SESSION_COOKIE_NAME, key)
+        .http_only(true)
+        .path("/")
+        .finish();
+
+    cookies.add(cookie);
+
+    Ok(StatusCode::OK)
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct LoginRequest {
+    pub email: String,
+    pub password: String,
 }
 
 #[derive(Serialize, Deserialize)]

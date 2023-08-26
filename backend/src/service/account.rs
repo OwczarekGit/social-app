@@ -8,6 +8,7 @@ use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
 use crate::entities::{*, prelude::*};
 
 static ACCOUNT_PREFIX: &str = "account";
+static SESSION_PREFIX: &str = "session";
 
 #[derive(Clone, FromRef)]
 pub struct AccountService {
@@ -21,11 +22,41 @@ impl AccountService {
         Self { redis, postgres, expire_time_secs: 60*60*24 }
     }
 
+    pub async fn login(&mut self, email: &str, password: &str) -> Result<String, StatusCode> {
+        let redis = &mut self.redis;
+
+        let account = Account::find()
+            .filter(account::Column::Email.eq(email))
+            .one(&self.postgres)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+            .ok_or(StatusCode::NOT_FOUND)?
+        ;
+
+        if !verify_password(password, &account.password) {
+            return Err(StatusCode::FORBIDDEN);
+        }
+
+        let session_key = generate_session_key();
+
+        // TODO: Set expires on cookies so that they have to be renewed periodacally.
+        cmd("hset")
+            .arg(build_prefix(SESSION_PREFIX, &session_key))
+            .arg("user_id")
+            .arg(account.id)
+            .query_async(redis)
+            .await
+            .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
+            ;
+
+        Ok(session_key)
+    }
+
     pub async fn activate_account(&mut self, email: &str, key: &str) -> Result<(), StatusCode> {
         let redis = &mut self.redis;
 
         let result = cmd("hgetall")
-            .arg(build_prefix(email))
+            .arg(build_prefix(ACCOUNT_PREFIX, email))
             .query_async::<_, Option<HashMap<String, String>>>(redis)
             .await
             .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
@@ -57,7 +88,7 @@ impl AccountService {
             ;
 
         cmd("del")
-            .arg(build_prefix(email))
+            .arg(build_prefix(ACCOUNT_PREFIX, email))
             .query_async(redis)
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
@@ -82,7 +113,7 @@ impl AccountService {
         }
 
         let is_taken: i32 = cmd("exists")
-            .arg(build_prefix(email))
+            .arg(build_prefix(ACCOUNT_PREFIX, email))
             .query_async::<redis::aio::ConnectionManager, i32>(redis)
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
@@ -95,7 +126,7 @@ impl AccountService {
         let activation_key = generate_activation_key();
 
         cmd("hset")
-            .arg(build_prefix(email))
+            .arg(build_prefix(ACCOUNT_PREFIX, email))
             .arg("key")
             .arg(activation_key.clone())
             .arg("password")
@@ -106,7 +137,7 @@ impl AccountService {
         ;
 
         cmd("expire")
-            .arg(build_prefix(email))
+            .arg(build_prefix(ACCOUNT_PREFIX, email))
             .arg(self.expire_time_secs)
             .query_async(redis)
             .await
@@ -129,6 +160,10 @@ pub fn verify_password(password: &str, hash: &str) -> bool {
     bcrypt::verify(password, hash).unwrap_or(false)
 }
 
-pub fn build_prefix(email: &str) -> String {
-    format!("{ACCOUNT_PREFIX}:{email}")
+pub fn build_prefix(prefix: &str, email: &str) -> String {
+    format!("{prefix}:{email}")
+}
+
+pub fn generate_session_key() -> String {
+    uuid::Uuid::new_v4().to_string()
 }

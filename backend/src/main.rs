@@ -5,6 +5,7 @@ use axum_macros::FromRef;
 use redis::aio::ConnectionManager;
 use sea_orm::{Database, DatabaseConnection};
 use service::{account::AccountService, email::EmailService};
+use tower_cookies::CookieManagerLayer;
 
 mod entities;
 mod endpoint;
@@ -25,6 +26,7 @@ async fn main() {
             "/api", Router::<AppState>::new()
                 .nest("/account", endpoint::account::routes())
         )
+        .layer(CookieManagerLayer::new())
         .with_state(state);
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
