@@ -1,0 +1,16 @@
+<div class="w2k-window-inner">
+  <div class="title-bar">
+    <div class="info">
+      <img *ngIf="windowIconUrl != null" [src]="windowIconUrl" alt="title-bar-icon" />
+      <div class="font-tahoma-bold">{{windowTitle}}</div>
+    </div>
+    <div class="buttons">
+      <app-title-button *ngIf="minimize" (click)="minimizeClicked.emit()" type="minimize"></app-title-button>
+      <app-title-button *ngIf="maximize" (click)="maximizeClicked.emit()" type="maximize"></app-title-button>
+      <app-title-button *ngIf="close"    (click)="closeClicked.emit()"    type="close"></app-title-button>
+    </div>
+  </div>
+  <div class="window-content">
+    <ng-content></ng-content>
+  </div>
+</div>

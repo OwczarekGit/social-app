@@ -1,0 +1,20 @@
+.box {
+  display: grid;
+  grid-template-rows: 1fr 40px;
+  gap: 20px;
+  padding: 10px;
+}
+
+.message {
+  display: grid;
+  grid-template-columns: 32px 200px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

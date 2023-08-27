@@ -1,1 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: 'Tahoma';
+  src: url('/assets/tahoma.ttf');
+}
+
+@font-face {
+  font-family: 'Tahoma Bold';
+  src: url('/assets/tahomabd.ttf');
+}
+
+:root {
+  --color-default-bg: #437fbe;
+  --color-window-bg: #f5f0e7;
+}
+
+*, *::before, *::after {
+  position: relative;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  image-rendering: pixelated;
+}
+
+.font-tahoma {
+  font-family: Tahoma;
+}
+
+.font-tahoma-bold {
+  font-family: "Tahoma Bold";
+}
+
+.w2k-border {
+  border-top: 1px solid #949494;
+  border-left: 1px solid #949494;
+  border-bottom: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+}
+
+.w2k-window-border {
+  border-top: 1px solid #f5f0e7;
+  border-left: 1px solid #f5f0e7;
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+}
+
+.w2k-window-inner {
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-bottom: 1px solid #949494;
+  border-right: 1px solid #949494;
+}

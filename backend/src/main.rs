@@ -8,6 +8,7 @@ use sea_orm::{Database, DatabaseConnection};
 use service::{account::AccountService, email::EmailService};
 use tower_cookies::{CookieManagerLayer, Cookies};
 use serde::{Serialize, Deserialize};
+use tower_http::cors::{Any, CorsLayer};
 
 mod entities;
 mod endpoint;
@@ -16,6 +17,10 @@ mod service;
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
+
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(Any);
 
     let redis_connection = redis_connection().await.expect("To connect.");
     let postgres_connection = postgres_connection().await.expect("To connect.");
@@ -31,6 +36,7 @@ async fn main() {
                 .nest("/account", account::routes())
         )
         .layer(CookieManagerLayer::new())
+        .layer(cors)
         .with_state(state);
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())

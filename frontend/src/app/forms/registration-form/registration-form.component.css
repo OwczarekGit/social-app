@@ -1,0 +1,14 @@
+form {
+  background-color: var(--color-window-bg);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}

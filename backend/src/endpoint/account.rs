@@ -39,14 +39,17 @@ pub async fn login(
 ) -> Result<impl IntoResponse, StatusCode> {
     let key = account_service.login(&request.email, &request.password).await?;
 
-    let cookie = Cookie::build(SESSION_COOKIE_NAME, key)
-        .http_only(true)
-        .path("/")
-        .finish();
-
-    cookies.add(cookie);
+    cookies.add(make_cookie(SESSION_COOKIE_NAME.to_string(), key, true));
+    cookies.add(make_cookie("AUTH".to_owned(), "".to_string(), false));
 
     Ok(StatusCode::OK)
+}
+
+pub fn make_cookie(name: String, value: String, http: bool) -> Cookie<'static> {
+    Cookie::build(name, value)
+        .http_only(http)
+        .path("/")
+        .finish()
 }
 
 #[derive(Serialize, Deserialize)]

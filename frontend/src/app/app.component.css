@@ -1,0 +1,6 @@
+:host {
+  display: block;
+  background-color: var(--color-default-bg);
+  position: fixed;
+  inset: 0;
+}
