@@ -1,4 +1,6 @@
 use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode};
+use axum::routing::delete;
+use clap::builder::Str;
 use serde::{Serialize, Deserialize};
 use tower_cookies::{Cookies, Cookie};
 
@@ -11,6 +13,7 @@ pub fn routes() -> Router<AppState> {
         .route("/", post(register_account))
         .route("/activate", post(activate_account))
         .route("/login", post(login))
+        .route("/logout", delete(logout))
 }
 
 pub async fn register_account(
@@ -45,9 +48,29 @@ pub async fn login(
     Ok(StatusCode::OK)
 }
 
+pub async fn logout(
+    State(mut account_service): State<AccountService>,
+    cookies: Cookies,
+) -> impl IntoResponse {
+    if let Some(key) = cookies.get(SESSION_COOKIE_NAME) {
+        account_service.logout(key.value()).await;
+    }
+
+    cookies.remove(remove_cookie(SESSION_COOKIE_NAME.to_string()));
+    cookies.remove(remove_cookie("AUTH".to_string()));
+
+    StatusCode::OK
+}
+
 pub fn make_cookie(name: String, value: String, http: bool) -> Cookie<'static> {
     Cookie::build(name, value)
         .http_only(http)
+        .path("/")
+        .finish()
+}
+
+pub fn remove_cookie(name: String) -> Cookie<'static> {
+    Cookie::build(name, "")
         .path("/")
         .finish()
 }

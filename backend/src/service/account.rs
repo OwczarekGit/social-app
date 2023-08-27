@@ -53,7 +53,7 @@ impl AccountService {
 
         let session_key = generate_session_key();
 
-        // TODO: Set expires on cookies so that they have to be renewed periodacally.
+        // TODO: Set expires on cookies so that they have to be renewed periodically.
         cmd("hset")
             .arg(build_prefix(SESSION_PREFIX, &session_key))
             .arg("user_id")
@@ -64,6 +64,15 @@ impl AccountService {
             ;
 
         Ok(session_key)
+    }
+
+    pub async fn logout(&mut self, key: &str) {
+        let redis = &mut self.redis;
+        let _ = cmd("del")
+            .arg(build_prefix(SESSION_PREFIX, key))
+            .query_async::<_, i32>(redis)
+            .await
+            ;
     }
 
     pub async fn activate_account(&mut self, email: &str, key: &str) -> Result<(), StatusCode> {
@@ -174,8 +183,8 @@ pub fn verify_password(password: &str, hash: &str) -> bool {
     bcrypt::verify(password, hash).unwrap_or(false)
 }
 
-pub fn build_prefix(prefix: &str, email: &str) -> String {
-    format!("{prefix}:{email}")
+pub fn build_prefix(prefix: &str, key: &str) -> String {
+    format!("{prefix}:{key}")
 }
 
 pub fn generate_session_key() -> String {

@@ -1,0 +1,21 @@
+<app-window
+  windowTitle="Log On to System"
+  [close]="false"
+  [maximize]="false"
+  [minimize]="false"
+>
+  <form [formGroup]="form" class="box">
+    <img src="/assets/login-banner.png" alt="login-banner" />
+    <div class="inner">
+      <div class="fields">
+        <app-input formControlName="email" type="email" [row]="true" caption="E-Mail"></app-input>
+        <app-input formControlName="password" type="password" [row]="true" caption="Password"></app-input>
+      </div>
+      <div class="controls">
+        <app-button [disabled]="!form.valid" caption="OK" (click)="login()"></app-button>
+        <app-button [disabled]="true" caption="Cancel"></app-button>
+        <app-button caption="Register >>" (click)="register()"></app-button>
+      </div>
+    </div>
+  </form>
+</app-window>

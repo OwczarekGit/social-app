@@ -47,17 +47,6 @@ export class RegistrationFormComponent {
           }
         }
       )
-    //   .subscribe(value => {
-    //   console.log(value)
-    //   let status = value['status']
-    //
-    //   switch (status) {
-    //     case 200: {
-    //       this.closeWindow()
-    //     } break;
-    //
-    //   }
-    // })
   }
 
   public closeWindow() {

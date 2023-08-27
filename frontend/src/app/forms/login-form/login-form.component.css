@@ -1,0 +1,26 @@
+.box {
+  display: grid;
+  grid-template-rows: 93px 106px;
+  width: 411px;
+}
+
+.inner {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  padding: 6px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 350px;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}

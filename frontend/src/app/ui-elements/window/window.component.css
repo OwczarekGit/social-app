@@ -1,7 +1,5 @@
 :host {
   position: absolute;
-  top: 0;
-  left: 0;
   background-color: var(--color-window-bg);
 }
 
@@ -32,6 +30,7 @@ div.w2k-window-inner {
   gap: 2px;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 }
 
 .title-bar img {
