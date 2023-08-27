@@ -1,6 +1,6 @@
 services:
   social_app_postgres:
-    image: postgres
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_USER: user
@@ -13,7 +13,7 @@ services:
       - db:/data/postgres
 
   social_app_redis:
-    image: redis
+    image: redis:latest
     restart: always
     command: redis-server --save 20 1 --loglevel warning --requirepass 1234
     ports:
@@ -21,7 +21,19 @@ services:
     volumes:
       - redis:/data
 
+  social_app_neo4j:
+    image: neo4j:latest
+    restart: always
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    volumes:
+      - neo4j:/data
+
 volumes:
   db:
   redis:
+  neo4j:
 

@@ -12,6 +12,7 @@ bcrypt = "0.15.0"
 chrono = { version = "0.4.26", features = ["serde"] }
 clap = { version = "4.4.0", features = ["derive"] }
 dotenvy = "0.15.7"
+neo4rs = "0.6.2"
 redis = { version = "0.23.2", features = ["tokio-comp", "tokio-native-tls-comp", "aio", "connection-manager"] }
 sea-orm = { version = "0.12.2", features = ["sqlx-postgres", "runtime-tokio-native-tls"] }
 serde = { version = "1.0.186", features = ["derive"] }

@@ -1,7 +1,9 @@
 use std::env;
+use std::sync::Arc;
 
 use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request, StatusCode}, extract::State};
 use axum_macros::FromRef;
+use neo4rs::{ConfigBuilder, Graph};
 use endpoint::account;
 use redis::aio::ConnectionManager;
 use sea_orm::{Database, DatabaseConnection};
@@ -22,10 +24,11 @@ async fn main() {
         .allow_origin(Any)
         .allow_methods(Any);
 
-    let redis_connection = redis_connection().await.expect("To connect.");
-    let postgres_connection = postgres_connection().await.expect("To connect.");
+    let redis_connection = redis_connection().await.expect("To connect pg.");
+    let postgres_connection = postgres_connection().await.expect("To connect redis.");
+    let neo4j_connection = Arc::new(neo4j_connection().await.expect("To connect n4j."));
 
-    let state = AppState::new(redis_connection, postgres_connection);
+    let state = AppState::new(redis_connection, postgres_connection, neo4j_connection.clone());
 
     let app = Router::<AppState>::new()
         .nest(
@@ -65,7 +68,7 @@ async fn authorize_by_cookie<B>(
 async fn redis_connection() -> Result<ConnectionManager, ()> {
     let redis_connection_string = env::var("REDIS_URL").expect("REDIS_URL to be set.");
     let client = redis::Client::open(redis_connection_string).map_err(|_| ())?;
-    let manager = redis::aio::ConnectionManager:: new(client).await.map_err(|_| ())?;
+    let manager = ConnectionManager:: new(client).await.map_err(|_| ())?;
     Ok(manager)
 }
 
@@ -75,6 +78,24 @@ async fn postgres_connection() -> Result<DatabaseConnection, ()> {
     Ok(db)
 }
 
+async fn neo4j_connection() -> Result<Graph, ()> {
+    let neo4j_connection_uri = env::var("NEO4J_URI").expect("NEO4J_URI to be set.");
+    let neo4j_connection_user = env::var("NEO4J_USER").expect("NEO4J_USER to be set.");
+    let neo4j_connection_password = env::var("NEO4J_PASS").expect("NEO4J_PASS to be set.");
+    let neo4j_connection_db = env::var("NEO4J_DB").expect("NEO4J_DB to be set.");
+    let graph = ConfigBuilder::new()
+        .uri(neo4j_connection_uri)
+        .user(neo4j_connection_user)
+        .password(neo4j_connection_password)
+        .db(neo4j_connection_db)
+        .build()
+        .expect("To create config.");
+
+    Graph::connect(graph)
+        .await
+        .map_err(|_| ())
+}
+
 #[derive(Clone, FromRef)]
 pub struct AppState {
     pub account_service: AccountService,
@@ -82,9 +103,9 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn new(redis_connection: redis::aio::ConnectionManager, postgres_connection: DatabaseConnection) -> Self {
+    pub fn new(redis_connection:ConnectionManager, postgres_connection: DatabaseConnection, arc: Arc<Graph>) -> Self {
         Self {
-            account_service: AccountService::new(redis_connection, postgres_connection.clone()),
+            account_service: AccountService::new(redis_connection, postgres_connection.clone(), arc),
             email_service: EmailService::new(),
         }
     }

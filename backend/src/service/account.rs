@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use std::sync::Arc;
 
 use axum::http::StatusCode;
 use axum_macros::FromRef;
+use neo4rs::query;
 use redis::cmd;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
 
@@ -14,12 +16,17 @@ static SESSION_PREFIX: &str = "session";
 pub struct AccountService {
     redis: redis::aio::ConnectionManager,
     postgres: sea_orm::DatabaseConnection,
+    neo4j: Arc<neo4rs::Graph>,
     expire_time_secs: u32,
 }
 
 impl AccountService {
-    pub fn new(redis: redis::aio::ConnectionManager, postgres: sea_orm::DatabaseConnection) -> Self {
-        Self { redis, postgres, expire_time_secs: 60*60*24 }
+    pub fn new(
+        redis: redis::aio::ConnectionManager,
+        postgres: sea_orm::DatabaseConnection,
+        neo4j: Arc<neo4rs::Graph>,
+    ) -> Self {
+        Self { redis, postgres, neo4j, expire_time_secs: 60*60*24 }
     }
 
     pub async fn verify_session(&mut self, session_key: &str) -> Result<i64, StatusCode> {
@@ -104,8 +111,8 @@ impl AccountService {
             ..Default::default()
         };
         
-        Account::insert(model)
-            .exec_without_returning(&self.postgres)
+        let account = Account::insert(model)
+            .exec(&self.postgres)
             .await
             .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
             ;
@@ -116,6 +123,13 @@ impl AccountService {
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
             ;
+
+        self.neo4j.run(
+            query("merge (p:Profile{ id: $id, username: $username })")
+                .param("id", account.last_insert_id)
+                .param("username", "New User")
+        ).await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         println!("Activating '{email}' using the code '{key}'");
         Ok(())   
