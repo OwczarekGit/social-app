@@ -180,7 +180,10 @@ impl AccountService {
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         ;
-        
+
+        #[cfg(debug_assertions)]
+        let _ = self.activate_account(&email, &activation_key).await;
+
         Ok((email.to_string(), activation_key))
     }
 }
@@ -190,7 +193,7 @@ pub fn generate_activation_key() -> String {
 }
 
 pub fn hash_password(password: &str) -> String {
-    bcrypt::hash(password, 8).expect("To be hashsed").to_string()
+    bcrypt::hash(password, 8).expect("To be hashed").to_string()
 }
 
 pub fn verify_password(password: &str, hash: &str) -> bool {

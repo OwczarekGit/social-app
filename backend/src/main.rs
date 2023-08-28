@@ -11,6 +11,8 @@ use service::{account::AccountService, email::EmailService};
 use tower_cookies::{CookieManagerLayer, Cookies};
 use serde::{Serialize, Deserialize};
 use tower_http::cors::{Any, CorsLayer};
+use crate::service::friend::FriendService;
+use crate::service::notification::NotificationService;
 use crate::service::post::PostService;
 
 mod entities;
@@ -35,6 +37,8 @@ async fn main() {
         .nest(
             "/api", Router::<AppState>::new()
                 .nest("/post", endpoint::post::routes())
+                .nest("/notification", endpoint::notification::routes())
+                .nest("/friend", endpoint::friend::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
                 .nest("/account", account::routes())
@@ -102,14 +106,22 @@ pub struct AppState {
     pub account_service: AccountService,
     pub email_service: EmailService,
     pub post_service: PostService,
+    pub notification_service: NotificationService,
+    pub friend_service: FriendService,
 }
 
 impl AppState {
-    pub fn new(redis_connection:ConnectionManager, postgres_connection: DatabaseConnection, neo4j_connection: Arc<Graph>) -> Self {
+    pub fn new(
+        redis_connection:ConnectionManager,
+        postgres_connection: DatabaseConnection,
+        neo4j_connection: Arc<Graph>
+    ) -> Self {
         Self {
             account_service: AccountService::new(redis_connection, postgres_connection.clone(), neo4j_connection.clone()),
             email_service: EmailService::new(),
-            post_service: PostService::new(neo4j_connection.clone())
+            post_service: PostService::new(neo4j_connection.clone()),
+            notification_service: NotificationService::new(neo4j_connection.clone()),
+            friend_service: FriendService::new(neo4j_connection.clone()),
         }
     }
 }

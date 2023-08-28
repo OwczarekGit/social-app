@@ -1,12 +1,20 @@
 <div class="list-box">
-  <div *ngIf="labels.length > 0" class="labels">
-    <div *ngFor="let l of labels" class="label-wrapper"><div class="label-inner font-tahoma">{{l}}</div></div>
+  <div *ngIf="label != ''" class="labels">
+    <div class="label-wrapper">
+      <div class="label-inner font-tahoma">
+        {{label}}
+      </div>
+    </div>
   </div>
   <ul>
-    <li class="font-tahoma" *ngFor="let n of items">
+    <li
+      class="font-tahoma"
+      *ngFor="let n of items; index as i"
+      (click)="selectionSwitched(n,i)"
+      [ngClass]="{'selected': selected == i}">
       <img src="/assets/user-icon-s.png" alt="list-item-icon">
       <button>
-        Janusz Korwin-Mikke
+        {{n.display()}}
       </button>
     </li>
   </ul>

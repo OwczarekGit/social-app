@@ -1,11 +1,11 @@
 <app-window
+  wm_draggable
   windowIconUrl="/assets/user-icon-s.png"
   windowTitle="Manage friends"
   [close]="true"
   [minimize]="false"
   [maximize]="false"
   (closeClicked)="close()"
-  wm_draggable
 >
   <div class="panel">
     <div class="switchers">
@@ -15,19 +15,21 @@
     <div class="tab">
       <app-list-small
         *ngIf="friendsTabOpened"
-        [labels]="Array.of('Friends')">
+        label="Friends">
       </app-list-small>
       <app-list-small
+        (userClicked)="setSelectedFriendRequest($event)"
         *ngIf="!friendsTabOpened"
-        [labels]="Array.of('Requests')">
+        [items]="friendRequests"
+        label="Requests">
       </app-list-small>
     </div>
   </div>
   <div *ngIf="friendsTabOpened" class="controls">
-    <app-button caption="Remove friend"></app-button>
+    <app-button (click)="removeFriend()" [disabled]="this.selectedFriendRequest == null" caption="Remove friend"></app-button>
   </div>
   <div *ngIf="!friendsTabOpened" class="controls">
-    <app-button caption="Accept"></app-button>
-    <app-button caption="Deny"></app-button>
+    <app-button (click)="acceptFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Accept"></app-button>
+    <app-button (click)="denyFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Deny"></app-button>
   </div>
 </app-window>

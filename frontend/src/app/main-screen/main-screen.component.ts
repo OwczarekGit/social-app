@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, ElementRef, inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {WindowService} from "../service/window.service";
+import {NotificationService} from "../service/notification.service";
 
 @Component({
   selector: 'app-main-screen',
@@ -12,6 +13,7 @@ export class MainScreenComponent implements AfterViewInit {
   surface!: ViewContainerRef
 
   private windowService = inject(WindowService)
+  private notificationService = inject(NotificationService)
 
   ngAfterViewInit(): void {
     this.windowService.setSurface(this.surface)

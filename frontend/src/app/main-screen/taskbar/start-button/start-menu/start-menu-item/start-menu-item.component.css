@@ -16,6 +16,7 @@
 }
 
 img {
+  image-rendering: pixelated;
   width: 24px;
   height: 24px;
 }

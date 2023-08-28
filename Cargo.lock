@@ -405,12 +405,14 @@ dependencies = [
  "chrono",
  "clap",
  "dotenvy",
+ "futures",
  "neo4rs",
  "redis",
  "sea-orm",
  "serde",
  "serde_json",
  "tokio",
+ "tokio-stream",
  "tower",
  "tower-cookies",
  "tower-http",
@@ -3181,6 +3183,7 @@ dependencies = [
  "futures-core",
  "pin-project-lite",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

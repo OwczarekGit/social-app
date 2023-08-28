@@ -1,4 +1,5 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {ListDisplay} from "../../data/list-display";
 
 @Component({
   selector: 'app-list-small',
@@ -6,9 +7,21 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./list-small.component.css']
 })
 export class ListSmallComponent {
-  @Input('labels')
-  labels: string[] = []
+
+  @Output()
+  userClicked: EventEmitter<ListDisplay> = new EventEmitter<ListDisplay>()
+
+
+  @Input('label')
+  label: string = ''
 
   @Input('items')
-  items: any[] = []
+  items: ListDisplay[] = []
+
+  selected!: number | null
+
+  selectionSwitched(item: ListDisplay, index: number) {
+    this.selected = index
+    this.userClicked.emit(item)
+  }
 }
