@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ComponentRef, inject, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {WindowComponent} from "../../ui-elements/window/window.component";
-import {NotificationService} from "../../service/notification.service";
+import {PopupService} from "../../service/popup.service";
 import {RegistrationService} from "../../service/registration.service";
 
 @Component({
@@ -16,7 +16,7 @@ export class RegistrationFormComponent {
     confirmPassword: new FormControl<string>('', Validators.required),
   })
 
-  private notificationService = inject(NotificationService)
+  private notificationService = inject(PopupService)
   private registrationService = inject(RegistrationService)
 
   @ViewChild(WindowComponent)

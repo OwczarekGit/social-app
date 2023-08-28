@@ -2,11 +2,11 @@ import {Component, ElementRef, inject, ViewChild} from '@angular/core';
 import {WindowComponent} from "../../ui-elements/window/window.component";
 
 @Component({
-  selector: 'app-notification',
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css']
+  selector: 'app-popup',
+  templateUrl: './popup.component.html',
+  styleUrls: ['./popup.component.css']
 })
-export class NotificationComponent {
+export class PopupComponent {
 
   @ViewChild(WindowComponent)
   window!: WindowComponent

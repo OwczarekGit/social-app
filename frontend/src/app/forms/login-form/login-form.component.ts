@@ -4,7 +4,7 @@ import {WindowService} from "../../service/window.service";
 import {RegistrationFormComponent} from "../registration-form/registration-form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {LoginService} from "../../service/login.service";
-import {NotificationService} from "../../service/notification.service";
+import {PopupService} from "../../service/popup.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -24,7 +24,7 @@ export class LoginFormComponent implements AfterViewInit {
 
   private windowService = inject(WindowService)
   private loginService = inject(LoginService)
-  private notificationService = inject(NotificationService)
+  private notificationService = inject(PopupService)
   private router = inject(Router)
 
   ngAfterViewInit(): void {

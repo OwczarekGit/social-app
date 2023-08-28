@@ -1,6 +1,8 @@
 import {Component, inject} from '@angular/core';
 import {LoginService} from "../../../../service/login.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {WindowService} from "../../../../service/window.service";
+import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -10,6 +12,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
+  public windowService = inject(WindowService)
 
 
   logout() {
@@ -17,4 +20,7 @@ export class StartMenuComponent {
 
   }
 
+  openCreatePost() {
+    this.windowService.openApplication(PostWriterComponent)
+  }
 }

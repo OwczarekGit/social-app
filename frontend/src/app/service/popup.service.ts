@@ -1,12 +1,12 @@
 import {ComponentRef, inject, Injectable} from '@angular/core';
 import {WindowService} from "./window.service";
-import {NotificationComponent} from "../apps/notification/notification.component";
+import {PopupComponent} from "../apps/popup/popup.component";
 import {SoundService} from "./sound.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationService {
+export class PopupService {
 
   private windowService = inject(WindowService)
   private soundService = inject(SoundService)
@@ -14,7 +14,7 @@ export class NotificationService {
   constructor() { }
 
   public error(title: string, text: string) {
-    let win = this.windowService.openApplication(NotificationComponent) as ComponentRef<NotificationComponent>
+    let win = this.windowService.openApplication(PopupComponent) as ComponentRef<PopupComponent>
     win.instance.title = title
     win.instance.text = text
     win.instance.icon = "/assets/error.png"
@@ -24,7 +24,7 @@ export class NotificationService {
   }
 
   info(title: string, text: string) {
-    let win = this.windowService.openApplication(NotificationComponent) as ComponentRef<NotificationComponent>
+    let win = this.windowService.openApplication(PopupComponent) as ComponentRef<PopupComponent>
     win.instance.title = title
     win.instance.text = text
     win.instance.icon = "/assets/info.png"

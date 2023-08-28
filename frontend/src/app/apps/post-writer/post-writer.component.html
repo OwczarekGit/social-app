@@ -1,0 +1,16 @@
+<app-window
+  wm_draggable
+  windowTitle="Write post"
+  windowIconUrl="/assets/write-post-s.png"
+  (closeClicked)="close()"
+>
+  <form [formGroup]="form" class="box">
+    <div class="text-box">
+      <p class="font-tahoma">What is on your mind?</p>
+      <app-textarea formControlName="content"></app-textarea>
+    </div>
+    <div class="controls">
+      <app-button [disabled]="!form.valid" caption="Publish" (click)="publishPost()"></app-button>
+    </div>
+  </form>
+</app-window>

@@ -6,15 +6,11 @@ import {AfterViewInit, Component} from '@angular/core';
   styleUrls: ['./clock.component.css']
 })
 export class ClockComponent implements AfterViewInit {
-  time: string = ""
+  time: Date = new Date()
 
   ngAfterViewInit(): void {
     setInterval(() => {
-      let now = new Date()
-      let hour = now.getHours()
-      let min = now.getMinutes()
-
-      this.time = `${hour}:${min}`
+      this.time = new Date()
     },1000)
   }
 }

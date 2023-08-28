@@ -11,7 +11,7 @@ import { WindowComponent } from './ui-elements/window/window.component';
 import { TitleButtonComponent } from './ui-elements/window/title-button/title-button.component';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
 import {HttpClientModule} from "@angular/common/http";
-import { NotificationComponent } from './apps/notification/notification.component';
+import { PopupComponent } from './apps/popup/popup.component';
 import { LoginFormComponent } from './forms/login-form/login-form.component';
 import { MainScreenComponent } from './main-screen/main-screen.component';
 import { TaskbarComponent } from './main-screen/taskbar/taskbar.component';
@@ -21,6 +21,8 @@ import { ClockComponent } from './main-screen/taskbar/system-tray/clock/clock.co
 import { DraggableDirective } from './directives/draggable.directive';
 import { StartMenuComponent } from './main-screen/taskbar/start-button/start-menu/start-menu.component';
 import { StartMenuItemComponent } from './main-screen/taskbar/start-button/start-menu/start-menu-item/start-menu-item.component';
+import { PostWriterComponent } from './apps/post-writer/post-writer.component';
+import { TextareaComponent } from './ui-elements/textarea/textarea.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,7 @@ import { StartMenuItemComponent } from './main-screen/taskbar/start-button/start
     WindowComponent,
     TitleButtonComponent,
     LoginScreenComponent,
-    NotificationComponent,
+    PopupComponent,
     LoginFormComponent,
     MainScreenComponent,
     TaskbarComponent,
@@ -41,6 +43,8 @@ import { StartMenuItemComponent } from './main-screen/taskbar/start-button/start
     DraggableDirective,
     StartMenuComponent,
     StartMenuItemComponent,
+    PostWriterComponent,
+    TextareaComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,21 @@
+.box {
+  padding: 6px;
+  width: 320px;
+  display: grid;
+  grid-template-rows: 200px auto;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.text-box {
+  height: 100%;
+  display: grid;
+  gap: 6px;
+  grid-template-rows: auto 1fr;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {WindowService} from "../service/window.service";
 
 @Component({
@@ -8,11 +8,13 @@ import {WindowService} from "../service/window.service";
 })
 export class MainScreenComponent implements AfterViewInit {
 
+  @ViewChild('surface', {read: ViewContainerRef})
+  surface!: ViewContainerRef
+
   private windowService = inject(WindowService)
-  private vcr = inject(ViewContainerRef)
 
   ngAfterViewInit(): void {
-    this.windowService.setSurface(this.vcr)
+    this.windowService.setSurface(this.surface)
   }
 
 }

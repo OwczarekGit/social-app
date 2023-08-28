@@ -1,12 +1,12 @@
 .box {
   display: grid;
-  grid-template-rows: 93px 106px;
+  grid-template-rows: 93px 120px;
   width: 411px;
 }
 
 .inner {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1px 1fr;
   gap: 16px;
   padding: 6px;
 }

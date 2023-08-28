@@ -11,6 +11,7 @@ use service::{account::AccountService, email::EmailService};
 use tower_cookies::{CookieManagerLayer, Cookies};
 use serde::{Serialize, Deserialize};
 use tower_http::cors::{Any, CorsLayer};
+use crate::service::post::PostService;
 
 mod entities;
 mod endpoint;
@@ -54,7 +55,7 @@ async fn authorize_by_cookie<B>(
     request: Request<B>,
     next: Next<B>
 ) -> Result<impl IntoResponse, StatusCode> {
-    let cookie = cookies.get(endpoint::account::SESSION_COOKIE_NAME)
+    let cookie = cookies.get(account::SESSION_COOKIE_NAME)
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
     let user_id = acs.verify_session(cookie.value()).await?;
@@ -100,13 +101,15 @@ async fn neo4j_connection() -> Result<Graph, ()> {
 pub struct AppState {
     pub account_service: AccountService,
     pub email_service: EmailService,
+    pub post_service: PostService,
 }
 
 impl AppState {
-    pub fn new(redis_connection:ConnectionManager, postgres_connection: DatabaseConnection, arc: Arc<Graph>) -> Self {
+    pub fn new(redis_connection:ConnectionManager, postgres_connection: DatabaseConnection, neo4j_connection: Arc<Graph>) -> Self {
         Self {
-            account_service: AccountService::new(redis_connection, postgres_connection.clone(), arc),
+            account_service: AccountService::new(redis_connection, postgres_connection.clone(), neo4j_connection.clone()),
             email_service: EmailService::new(),
+            post_service: PostService::new(neo4j_connection.clone())
         }
     }
 }
