@@ -3,6 +3,7 @@ import {LoginService} from "../../../../service/login.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {WindowService} from "../../../../service/window.service";
 import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
+import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -22,5 +23,9 @@ export class StartMenuComponent {
 
   openCreatePost() {
     this.windowService.openApplication(PostWriterComponent)
+  }
+
+  openFriendManager() {
+    this.windowService.openApplication(FriendManagerComponent)
   }
 }

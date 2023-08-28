@@ -1,0 +1,13 @@
+<div class="list-box">
+  <div *ngIf="labels.length > 0" class="labels">
+    <div *ngFor="let l of labels" class="label-wrapper"><div class="label-inner font-tahoma">{{l}}</div></div>
+  </div>
+  <ul>
+    <li class="font-tahoma" *ngFor="let n of items">
+      <img src="/assets/user-icon-s.png" alt="list-item-icon">
+      <button>
+        Janusz Korwin-Mikke
+      </button>
+    </li>
+  </ul>
+</div>

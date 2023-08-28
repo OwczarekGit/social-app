@@ -1,6 +1,7 @@
 <div class="box w2k-window-inner font-tahoma">
   <div class="banner"></div>
   <div class="items">
+    <app-start-menu-item (click)="openFriendManager()" caption="Friends" imageUrl="/assets/friends.png"></app-start-menu-item>
     <app-start-menu-item (click)="openCreatePost()" caption="Create Post" imageUrl="/assets/write-post.png"></app-start-menu-item>
     <app-start-menu-item (click)="logout()" caption="Log Out..." imageUrl="/assets/logout.png"></app-start-menu-item>
   </div>

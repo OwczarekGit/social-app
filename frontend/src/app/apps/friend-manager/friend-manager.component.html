@@ -1,0 +1,33 @@
+<app-window
+  windowIconUrl="/assets/user-icon-s.png"
+  windowTitle="Manage friends"
+  [close]="true"
+  [minimize]="false"
+  [maximize]="false"
+  (closeClicked)="close()"
+  wm_draggable
+>
+  <div class="panel">
+    <div class="switchers">
+      <app-button (click)="openFriendsTab()" caption="Friends"></app-button>
+      <app-button (click)="openRequestTab()" caption="Requests"></app-button>
+    </div>
+    <div class="tab">
+      <app-list-small
+        *ngIf="friendsTabOpened"
+        [labels]="Array.of('Friends')">
+      </app-list-small>
+      <app-list-small
+        *ngIf="!friendsTabOpened"
+        [labels]="Array.of('Requests')">
+      </app-list-small>
+    </div>
+  </div>
+  <div *ngIf="friendsTabOpened" class="controls">
+    <app-button caption="Remove friend"></app-button>
+  </div>
+  <div *ngIf="!friendsTabOpened" class="controls">
+    <app-button caption="Accept"></app-button>
+    <app-button caption="Deny"></app-button>
+  </div>
+</app-window>

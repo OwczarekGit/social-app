@@ -23,6 +23,8 @@ import { StartMenuComponent } from './main-screen/taskbar/start-button/start-men
 import { StartMenuItemComponent } from './main-screen/taskbar/start-button/start-menu/start-menu-item/start-menu-item.component';
 import { PostWriterComponent } from './apps/post-writer/post-writer.component';
 import { TextareaComponent } from './ui-elements/textarea/textarea.component';
+import { FriendManagerComponent } from './apps/friend-manager/friend-manager.component';
+import { ListSmallComponent } from './ui-elements/list-small/list-small.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { TextareaComponent } from './ui-elements/textarea/textarea.component';
     StartMenuItemComponent,
     PostWriterComponent,
     TextareaComponent,
+    FriendManagerComponent,
+    ListSmallComponent,
   ],
   imports: [
     BrowserModule,
