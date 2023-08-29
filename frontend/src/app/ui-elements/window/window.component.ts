@@ -14,7 +14,7 @@ import {WindowService} from "../../service/window.service";
   selector: 'app-window',
   templateUrl: './window.component.html',
   styleUrls: ['./window.component.css'],
-  host: {'class': 'w2k-window-border'}
+  host: {'class': 'w2k-window-border', '(mousedown)': 'this.bringToFront()'}
 })
 export class WindowComponent implements AfterViewInit {
 
@@ -60,5 +60,9 @@ export class WindowComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.windowService.register(this)
+  }
+
+  bringToFront() {
+    this.windowService.bringForwards(this.id)
   }
 }

@@ -1,5 +1,4 @@
 import {ComponentRef, Injectable, Type, ViewContainerRef} from '@angular/core';
-import {RegistrationFormComponent} from "../forms/registration-form/registration-form.component";
 import {WindowComponent} from "../ui-elements/window/window.component";
 
 @Injectable({
@@ -9,6 +8,7 @@ export class WindowService {
 
   public surface!: ViewContainerRef
 
+  private currentZIndex = 0
   public currentId: number = 0
   public openedWindows: Map<number, WindowComponent> = new Map()
   private refs: ComponentRef<any>[] = []
@@ -20,6 +20,13 @@ export class WindowService {
     this.surface.element.nativeElement.style.position = 'relative'
   }
 
+  public bringForwards(id: number) {
+    let win = this.openedWindows.get(id)
+    if (win == null) return;
+
+    win.host.element.nativeElement.style.zIndex = `${++this.currentZIndex}`
+  }
+
   register(win: WindowComponent) {
     this.openedWindows.set(this.currentId, win)
     win.id = this.currentId
@@ -29,7 +36,9 @@ export class WindowService {
 
   public openApplication(component: Type<any>): ComponentRef<any> {
     let element = this.surface.createComponent(component)
-    this.refs.push(element)
+    this.refs.push(element);
+    // @ts-ignore
+    (element.location.nativeElement as HTMLDivElement).children[0].style.zIndex = `${++this.currentZIndex}`
     this.surface.element.nativeElement.appendChild(element.location.nativeElement)
 
     return element
