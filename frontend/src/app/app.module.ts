@@ -25,6 +25,7 @@ import { PostWriterComponent } from './apps/post-writer/post-writer.component';
 import { TextareaComponent } from './ui-elements/textarea/textarea.component';
 import { FriendManagerComponent } from './apps/friend-manager/friend-manager.component';
 import { ListSmallComponent } from './ui-elements/list-small/list-small.component';
+import { PeopleSearcherComponent } from './apps/people-searcher/people-searcher.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { ListSmallComponent } from './ui-elements/list-small/list-small.componen
     TextareaComponent,
     FriendManagerComponent,
     ListSmallComponent,
+    PeopleSearcherComponent,
   ],
   imports: [
     BrowserModule,

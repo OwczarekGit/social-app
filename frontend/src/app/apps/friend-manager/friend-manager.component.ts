@@ -57,7 +57,9 @@ export class FriendManagerComponent {
 
   denyFriendRequest() {
     if (this.selectedFriendRequest != null)
-      this.friendService.denyFriendRequest(this.selectedFriendRequest.user_id).subscribe()
+      this.friendService.denyFriendRequest(this.selectedFriendRequest.user_id).subscribe({
+        complete: () => this.openRequestTab()
+      })
   }
 
   removeFriend() {

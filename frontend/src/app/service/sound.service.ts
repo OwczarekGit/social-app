@@ -18,4 +18,10 @@ export class SoundService {
     a.src = "/assets/message.mp3"
     a.play()
   }
+
+  public notification() {
+    let a = document.createElement('audio')
+    a.src = "/assets/notification.mp3"
+    a.play()
+  }
 }

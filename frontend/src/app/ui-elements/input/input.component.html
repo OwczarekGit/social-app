@@ -1,5 +1,5 @@
 <label [ngClass]="{'row': row}">
-  <p class="font-tahoma">{{caption}}</p>
+  <p class="font-tahoma" *ngIf="caption != null">{{caption}}</p>
   <div>
     <input
       [type]="type"

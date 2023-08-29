@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {WindowService} from "../../../../service/window.service";
 import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
 import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
+import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -27,5 +28,13 @@ export class StartMenuComponent {
 
   openFriendManager() {
     this.windowService.openApplication(FriendManagerComponent)
+  }
+
+  openEditProfile() {
+
+  }
+
+  openSearchFriends() {
+    this.windowService.openApplication(PeopleSearcherComponent)
   }
 }

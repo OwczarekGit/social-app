@@ -6,7 +6,7 @@ use axum::response::sse::{Event, KeepAlive};
 use axum::{Extension, Router};
 use axum::routing::get;
 use futures::Stream;
-use serde::Serialize;
+use serde::{Serialize};
 use crate::{ActiveUserId, AppState};
 use crate::service::notification::NotificationService;
 
@@ -40,19 +40,25 @@ pub async fn send_notification(
         data: user.0
     };
 
-    let was_sent = notification_service.send_notification(user.0, n).await;
+    let _ = notification_service.send_notification(user.0, n).await;
 }
 
 
-#[derive(Serialize, Copy, Clone)]
+#[derive(Serialize, Copy, Clone, Debug)]
 pub struct Notification<T: Serialize> {
     pub notification_type: NotificationType,
     pub data: T
 }
 
-#[derive(Serialize, Copy, Clone)]
-#[allow(non_snake_case)]
+#[derive(Serialize, Clone, Debug)]
+pub struct FriendNotificationData {
+    pub user_id: i64,
+    pub message: String,
+}
+
+#[derive(Serialize, Copy, Clone, Debug)]
+#[allow(non_camel_case_types)]
 pub enum NotificationType {
     MESSAGE,
-    REQUEST,
+    FRIEND_REQUEST,
 }

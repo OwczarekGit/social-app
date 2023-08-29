@@ -16,7 +16,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 export class InputComponent implements ControlValueAccessor {
 
   @Input('caption')
-  caption: string = "Default caption"
+  caption!: string
 
   @Input('row')
   row: boolean = false

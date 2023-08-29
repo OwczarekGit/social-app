@@ -1,0 +1,29 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 300px;
+  padding: 6px;
+}
+
+.search-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.search-row > *:first-child {
+  flex-grow: 2;
+}
+
+.results {
+  height: 360px;
+}
+
+.controls {
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
