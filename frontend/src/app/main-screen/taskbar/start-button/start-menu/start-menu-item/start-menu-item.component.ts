@@ -11,4 +11,7 @@ export class StartMenuItemComponent {
 
   @Input()
   imageUrl!: string
+
+  @Input()
+  hasChildren: boolean = false
 }

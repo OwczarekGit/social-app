@@ -1,2 +1,9 @@
-<img [src]="imageUrl" alt="menu-image">
-<p>{{caption}}</p>
+<div class="item" [ngClass]="{'has-children': hasChildren}">
+  <img [src]="imageUrl" alt="menu-image">
+  <p>{{caption}}</p>
+</div>
+<div *ngIf="hasChildren" class="children">
+  <div class="children-wrapper">
+    <ng-content></ng-content>
+  </div>
+</div>

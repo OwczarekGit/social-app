@@ -5,6 +5,7 @@ import {WindowService} from "../../../../service/window.service";
 import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
 import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
 import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
+import {NotificationCenterComponent} from "../../../../apps/notification-center/notification-center.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -30,8 +31,8 @@ export class StartMenuComponent {
     this.windowService.openApplication(FriendManagerComponent)
   }
 
-  openEditProfile() {
-
+  openChangeUsername() {
+    this.windowService.openApplication(NotificationCenterComponent)
   }
 
   openSearchFriends() {

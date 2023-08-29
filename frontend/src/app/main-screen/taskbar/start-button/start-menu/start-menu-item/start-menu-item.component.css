@@ -1,16 +1,4 @@
-:host {
-  padding: 4px 6px;
-  width: 100%;
-  height: 32px;
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  justify-content: center;
-  align-items: center;
-  gap: 13px;
-  font-size: 12px;
-}
-
-:host:hover {
+:host:hover .item {
   background-color: #0b2a7a;
   color: #fff;
 }
@@ -19,4 +7,95 @@ img {
   image-rendering: pixelated;
   width: 24px;
   height: 24px;
+}
+
+.item {
+  padding: 4px 6px;
+  height: 32px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  justify-content: center;
+  align-items: center;
+  gap: 13px;
+  font-size: 12px;
+}
+
+.has-children.item::after {
+  width: 1px;
+  height: 1px;
+  background-color: currentColor;
+  content: '';
+  position: absolute;
+  right: 6px;
+  box-shadow:
+      /*LINE*/
+    -1px 0px currentColor,
+    -2px 0px currentColor,
+    -3px 0px currentColor,
+      /*TOP PART*/
+    -1px -1px currentColor,
+    -2px -1px currentColor,
+    -3px -1px currentColor,
+    -2px -2px currentColor,
+    -3px -2px currentColor,
+    -3px -3px currentColor,
+      /*BOTTOM PART*/
+    -3px 0px currentColor,
+    -1px 1px currentColor,
+    -2px 1px currentColor,
+    -3px 1px currentColor,
+    -2px 2px currentColor,
+    -3px 2px currentColor,
+    -3px 3px currentColor
+;
+}
+
+:host:hover .children {
+  display: flex;
+}
+
+:host:hover .children .item {
+  background-color: transparent;
+}
+
+.children .item:hover {
+  background-color: #0b2a7a !important;
+  color: #fff;
+}
+
+.children {
+  display: none;
+  background-color: var(--color-window-bg);
+  position: absolute;
+  width: 158px;
+  right: -158px;
+  bottom: 0;
+
+  border-bottom: 1px solid #4a4a4a;
+  border-right: 1px solid #4a4a4a;
+  border-top: 1px solid var(--color-window-bg);
+  border-left: 1px solid var(--color-window-bg);
+}
+
+.children-wrapper {
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-bottom: 1px solid #949494;
+  border-right: 1px solid #949494;
+  width: 100%;
+  height: 100%;
+}
+
+.children img {
+  width: 16px;
+  height: 16px;
+}
+
+.children .item {
+  height: 20px;
+  padding: 2px;
+  gap: 10px;
+  grid-template-columns: 16px 1fr;
+  color: #000;
 }
