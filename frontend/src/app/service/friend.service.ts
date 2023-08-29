@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {FriendRequest} from "../data/friend-request";
 import {SearchNonFriendResult} from "../data/search-non-friend-result";
+import {Profile} from "../data/profile";
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,9 @@ export class FriendService {
 
   public sendFriendRequest(id: number): Observable<any> {
     return this.http.post("/api/friend/invite/" + id, {})
+  }
+
+  public getFriendList(): Observable<Profile[]> {
+    return this.http.get<Profile[]>("/api/friend/list")
   }
 }

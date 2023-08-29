@@ -14,7 +14,9 @@
     </div>
     <div class="tab">
       <app-list-small
+        (userClicked)="setSelectedFriendProfile($event)"
         *ngIf="friendsTabOpened"
+        [items]="friendProfiles"
         label="Friends">
       </app-list-small>
       <app-list-small
@@ -26,7 +28,7 @@
     </div>
   </div>
   <div *ngIf="friendsTabOpened" class="controls">
-    <app-button (click)="removeFriend()" [disabled]="this.selectedFriendRequest == null" caption="Remove friend"></app-button>
+    <app-button (click)="removeFriend()" [disabled]="this.selectedFriendProfile == null" caption="Remove friend"></app-button>
   </div>
   <div *ngIf="!friendsTabOpened" class="controls">
     <app-button (click)="acceptFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Accept"></app-button>

@@ -4,6 +4,8 @@ import {WindowService} from "../../service/window.service";
 import {FriendRequest} from "../../data/friend-request";
 import {ListDisplay} from "../../data/list-display";
 import {FriendService} from "../../service/friend.service";
+import {Profile} from "../../data/profile";
+import {verifyHostBindings} from "@angular/compiler";
 
 @Component({
   selector: 'app-friend-manager',
@@ -20,16 +22,29 @@ export class FriendManagerComponent {
   window!: WindowComponent
 
   selectedFriendRequest: FriendRequest | null = null
+  selectedFriendProfile: Profile | null = null
 
   friendRequests: FriendRequest[] = []
+  friendProfiles: Profile[] = []
+
+  constructor() {
+    this.openFriendsTab()
+  }
 
   openFriendsTab() {
+    this.selectedFriendProfile = null
     this.selectedFriendRequest = null
     this.friendsTabOpened = true
 
+    this.friendService.getFriendList().subscribe({
+      next: value => {
+        this.friendProfiles = value.map(p => new Profile(p.id, p.username))
+      }
+    })
   }
 
   openRequestTab() {
+    this.selectedFriendProfile = null
     this.selectedFriendRequest = null
     this.friendsTabOpened = false
 
@@ -48,6 +63,10 @@ export class FriendManagerComponent {
     this.selectedFriendRequest = e as FriendRequest
   }
 
+  setSelectedFriendProfile(e: ListDisplay) {
+    this.selectedFriendProfile = e as Profile
+  }
+
   acceptFriendRequest() {
     if (this.selectedFriendRequest != null)
       this.friendService.acceptFriendRequest(this.selectedFriendRequest.user_id).subscribe({complete: () => {
@@ -63,8 +82,8 @@ export class FriendManagerComponent {
   }
 
   removeFriend() {
-    let i = this.friendRequests.findIndex(u => u.user_id == this.selectedFriendRequest?.user_id)
-    this.friendRequests.splice(i,1)
-    this.friendRequests = [...this.friendRequests]
+    let i = this.friendProfiles.findIndex(u => u.id == this.selectedFriendProfile?.id)
+    this.friendProfiles.splice(i,1)
+    this.friendProfiles = [...this.friendProfiles]
   }
 }

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use axum::http::StatusCode;
 use axum_macros::FromRef;
-use neo4rs::{query, Graph, Node};
+use neo4rs::{query, Graph, Node, Row};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, FromRef)]
@@ -11,6 +11,24 @@ pub struct FriendService {
 
 
 impl FriendService {
+    pub async fn get_friend_list(&self, user_id: i64) -> Result<Vec<Profile>, StatusCode> {
+        let q = query("match (m:Profile{id: $id})-[:FRIEND]-(p:Profile) return p")
+            .param("id", user_id);
+
+        let mut results = self.neo4j.execute(q)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let mut res = vec![];
+        while let Ok(Some(row)) = results.next().await {
+            if let Ok(profile) = Profile::try_from(row) {
+                res.push(profile)
+            }
+        }
+
+        Ok(res)
+    }
+
     pub async fn search_for_non_friends(&self, user_id: i64, phrase: &str) -> Result<Vec<SearchNonFriendsResult>, StatusCode> {
         let search_query = query(r#"
             match (p:Profile{id: $id}), (p2:Profile)
@@ -122,4 +140,23 @@ pub struct FriendRequest {
 pub struct SearchNonFriendsResult {
     user_id: i64,
     username: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Profile {
+    user_id: i64,
+    username: String,
+}
+
+impl TryFrom<Row> for Profile {
+    type Error = StatusCode;
+
+    fn try_from(row: Row) -> Result<Self, Self::Error> {
+        let n: Node = row.get("p").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        Ok(Self {
+            user_id: n.get("id").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
+            username: n.get("username").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
+        })
+    }
 }

@@ -14,6 +14,7 @@ pub fn routes() -> Router<AppState> {
         .route("/request/pending", get(get_pending_friend_requests))
         .route("/request/accept/:requester_id", post(accept_friend_request))
         .route("/invite/:target_id", post(send_friend_request))
+        .route("/list", get(get_friend_list))
         .route("/", get(search_users))
 }
 
@@ -61,6 +62,13 @@ pub async fn send_friend_request(
 
     let _ = notification_service.send_notification(target_id, notification).await;
     Ok(())
+}
+
+pub async fn get_friend_list(
+    Extension(user): Extension<ActiveUserId>,
+    State(friend_service): State<FriendService>,
+) -> Result<impl IntoResponse, StatusCode> {
+    Ok(Json(friend_service.get_friend_list(user.0).await?))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
