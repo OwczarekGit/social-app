@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  border-bottom: 1px solid #949494;
+  padding: 6px 0;
+}
+
+.first-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.controls {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.text {
+  padding: 6px 0;
+}

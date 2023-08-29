@@ -1,0 +1,8 @@
+<div class="first-row">
+  <img [src]="getIcon()" alt="notification-icon" />
+  <p class="font-tahoma-bold">{{notification.date | date: 'HH:mm | dd.MM.yyyy'}}</p>
+</div>
+<p class="text font-tahoma">{{getContent()}}</p>
+<div class="controls">
+  <app-button (click)="dismissClicked.emit(notification)" caption="Dismiss"></app-button>
+</div>

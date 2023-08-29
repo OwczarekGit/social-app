@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
+import {NotificationService} from "../../service/notification.service";
 
 @Component({
   selector: 'app-taskbar',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./taskbar.component.css']
 })
 export class TaskbarComponent {
-
+  public notificationService = inject(NotificationService)
 }

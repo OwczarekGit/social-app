@@ -16,8 +16,9 @@ export class MainScreenComponent implements AfterViewInit {
   private notificationService = inject(NotificationService)
 
   ngAfterViewInit(): void {
-    this.notificationService.subscribeToNotifications()
     this.windowService.setSurface(this.surface)
+    this.notificationService.subscribeToNotifications()
+    this.notificationService.loadRemainingNotifications()
   }
 
 }

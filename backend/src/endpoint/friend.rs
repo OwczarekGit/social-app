@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use axum::routing::{get, post};
 use serde::{Deserialize, Serialize};
 use crate::{ActiveUserId, AppState};
-use crate::endpoint::notification::{FriendNotificationData, Notification, NotificationType};
+use crate::endpoint::notification::{NotificationData, NotificationType};
 use crate::service::friend::FriendService;
 use crate::service::notification::NotificationService;
 
@@ -52,11 +52,10 @@ pub async fn send_friend_request(
 
     friend_service.send_friend_request(user.0, target_id).await?;
 
-    let notification = Notification {
+    let notification = NotificationData {
         notification_type: NotificationType::FRIEND_REQUEST,
         data: FriendNotificationData {
             user_id: user.0,
-            message: "".to_string()
         }
     };
 
@@ -67,4 +66,9 @@ pub async fn send_friend_request(
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SearchFriendRequest {
     pub phrase: String
+}
+
+#[derive(Serialize, Clone, Debug)]
+pub struct FriendNotificationData {
+    pub user_id: i64,
 }

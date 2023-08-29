@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+div {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #f00;
+  color: #fff;
+  width: 10px;
+  height: 10px;
+  font-size: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 8px;
+  left: 8px;
+  animation: blink ease-in-out 1s infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}

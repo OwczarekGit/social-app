@@ -120,7 +120,7 @@ impl AppState {
             account_service: AccountService::new(redis_connection, postgres_connection.clone(), neo4j_connection.clone()),
             email_service: EmailService::new(),
             post_service: PostService::new(neo4j_connection.clone()),
-            notification_service: NotificationService::new(neo4j_connection.clone()),
+            notification_service: NotificationService::new(neo4j_connection.clone(), postgres_connection.clone()),
             friend_service: FriendService::new(neo4j_connection.clone()),
         }
     }

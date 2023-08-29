@@ -1,5 +1,10 @@
 <div class="box">
   <app-start-button></app-start-button>
   <div></div>
-  <app-system-tray></app-system-tray>
+  <app-system-tray>
+    <app-notification-indicator
+      *ngIf="notificationService.notifications.length > 0"
+      [notificationCount]="notificationService.notifications.length">
+    </app-notification-indicator>
+  </app-system-tray>
 </div>

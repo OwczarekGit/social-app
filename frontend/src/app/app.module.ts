@@ -26,6 +26,9 @@ import { TextareaComponent } from './ui-elements/textarea/textarea.component';
 import { FriendManagerComponent } from './apps/friend-manager/friend-manager.component';
 import { ListSmallComponent } from './ui-elements/list-small/list-small.component';
 import { PeopleSearcherComponent } from './apps/people-searcher/people-searcher.component';
+import { NotificationIndicatorComponent } from './main-screen/taskbar/system-tray/notification-indicator/notification-indicator.component';
+import { NotificationCenterComponent } from './apps/notification-center/notification-center.component';
+import { NotificationEntryComponent } from './apps/notification-center/notification-entry/notification-entry.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +54,9 @@ import { PeopleSearcherComponent } from './apps/people-searcher/people-searcher.
     FriendManagerComponent,
     ListSmallComponent,
     PeopleSearcherComponent,
+    NotificationIndicatorComponent,
+    NotificationCenterComponent,
+    NotificationEntryComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,19 @@
+<app-window
+  wm_draggable
+  [windowTitle]="'Notifications (' + notificationService.notifications.length +')'"
+  windowIconUrl="/assets/notification-icon.png"
+  [close]="true"
+  [minimize]="false"
+  [maximize]="false"
+  (closeClicked)="close()"
+>
+  <div class="box">
+    <div class="list">
+      <app-notification-entry
+        *ngFor="let n of notificationService.notifications"
+        [notification]="n"
+        (dismissClicked)="dismiss($event)"
+      ></app-notification-entry>
+    </div>
+  </div>
+</app-window>

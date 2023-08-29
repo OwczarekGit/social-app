@@ -1,4 +1,6 @@
 use sea_orm_migration::prelude::*;
+use crate::extension::postgres::Type;
+use crate::sea_orm::{EnumIter, Iterable};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -6,6 +8,14 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+
+        let _ = manager.create_type(
+            Type::create()
+                .as_enum(AccountType::Table)
+                .values([AccountType::User, AccountType::Admin])
+                .to_owned()
+        ).await;
+
         manager
             .create_table(
                 Table::create()
@@ -21,6 +31,11 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Account::Email).string().not_null())
                     .col(ColumnDef::new(Account::Password).string().not_null())
                     .col(ColumnDef::new(Account::Joined).timestamp().not_null())
+                    .col(
+                        ColumnDef::new(Account::Type)
+                            .enumeration(AccountType::Table, [AccountType::User, AccountType::Admin])
+                            .not_null()
+                    )
                     .to_owned(),
             )
             .await
@@ -37,7 +52,17 @@ impl MigrationTrait for Migration {
 pub enum Account {
     Table,
     Id,
+    Type,
     Email,
     Password,
     Joined
+}
+
+#[derive(Iden, EnumIter)]
+pub enum AccountType {
+    Table,
+    #[iden = "User"]
+    User,
+    #[iden = "Admin"]
+    Admin,
 }

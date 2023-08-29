@@ -1,19 +1,23 @@
 use std::convert::Infallible;
 use std::time::Duration;
-use axum::extract::State;
+use axum::extract::{Path, State};
 use axum::response::{IntoResponse, Sse};
 use axum::response::sse::{Event, KeepAlive};
-use axum::{Extension, Router};
-use axum::routing::get;
+use axum::{Extension, Json, Router};
+use axum::http::StatusCode;
+use axum::routing::{delete, get};
+use chrono::NaiveDateTime;
 use futures::Stream;
 use serde::{Serialize};
+use serde_json::Value;
 use crate::{ActiveUserId, AppState};
 use crate::service::notification::NotificationService;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/subscribe", get(subscribe_to_notifications))
-        .route("/test", get(send_notification))
+        .route("/", get(get_remaining_notifications))
+        .route("/:id", delete(dismiss_notification))
 }
 
 
@@ -31,30 +35,35 @@ pub async fn subscribe_to_notifications(
         )
 }
 
-pub async fn send_notification(
+pub async fn get_remaining_notifications(
     Extension(user): Extension<ActiveUserId>,
     State(notification_service): State<NotificationService>,
-) -> impl IntoResponse {
-    let n = Notification {
-        notification_type: NotificationType::MESSAGE,
-        data: user.0
-    };
+) -> Result<impl IntoResponse, StatusCode> {
+    Ok(Json(notification_service.get_remaining_notifications(user.0).await?))
+}
 
-    let _ = notification_service.send_notification(user.0, n).await;
+pub async fn dismiss_notification(
+    Extension(user): Extension<ActiveUserId>,
+    State(notification_service): State<NotificationService>,
+    Path(id): Path<i64>,
+) -> Result<impl IntoResponse, StatusCode> {
+    notification_service.dismiss_notification(user.0, id).await
 }
 
 
 #[derive(Serialize, Copy, Clone, Debug)]
-pub struct Notification<T: Serialize> {
+pub struct NotificationData<T: Serialize> {
     pub notification_type: NotificationType,
     pub data: T
 }
 
 #[derive(Serialize, Clone, Debug)]
-pub struct FriendNotificationData {
-    pub user_id: i64,
-    pub message: String,
+pub struct CompleteNotification {
+    pub id: i64,
+    pub date: NaiveDateTime,
+    pub notification_data: Value
 }
+
 
 #[derive(Serialize, Copy, Clone, Debug)]
 #[allow(non_camel_case_types)]

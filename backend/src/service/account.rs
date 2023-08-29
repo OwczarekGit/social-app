@@ -5,9 +5,10 @@ use axum::http::StatusCode;
 use axum_macros::FromRef;
 use neo4rs::query;
 use redis::cmd;
-use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
+use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue};
 
 use crate::entities::{*, prelude::*};
+use crate::entities::sea_orm_active_enums::AccountType;
 
 static ACCOUNT_PREFIX: &str = "account";
 static SESSION_PREFIX: &str = "session";
@@ -105,9 +106,10 @@ impl AccountService {
         }
 
         let model = account::ActiveModel {
-            email: sea_orm::ActiveValue::Set(email.to_string()),
-            password: sea_orm::ActiveValue::Set(password.to_string()),
-            joined: sea_orm::ActiveValue::set(chrono::Utc::now().naive_utc()),
+            email:    ActiveValue::Set(email.to_string()),
+            password: ActiveValue::Set(password.to_string()),
+            joined:   ActiveValue::Set(chrono::Utc::now().naive_utc()),
+            r#type:   ActiveValue::Set(AccountType::User),
             ..Default::default()
         };
         
@@ -182,7 +184,7 @@ impl AccountService {
         ;
 
         #[cfg(debug_assertions)]
-        let _ = self.activate_account(&email, &activation_key).await;
+        let _ = self.activate_account(email, &activation_key).await;
 
         Ok((email.to_string(), activation_key))
     }
