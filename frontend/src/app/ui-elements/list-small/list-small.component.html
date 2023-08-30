@@ -10,7 +10,7 @@
     <li
       class="font-tahoma"
       *ngFor="let n of items; index as i"
-      (click)="selectionSwitched(n,i)"
+      (mousedown)="selectionSwitched(n,i)"
       [ngClass]="{'selected': selected == i}">
       <img src="/assets/user-icon-s.png" alt="list-item-icon">
       <button>

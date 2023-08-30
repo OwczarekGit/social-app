@@ -1,6 +1,6 @@
 use std::io::{Cursor, Read};
 use axum::response::IntoResponse;
-use axum::{Extension, Router};
+use axum::{Extension, Json, Router};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::routing::post;
@@ -13,7 +13,7 @@ use crate::service::image::ImageService;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
-        .route("/", post(share_image))
+        .route("/", post(share_image).get(get_all_tags))
 }
 
 pub async fn share_image(
@@ -34,6 +34,12 @@ pub async fn share_image(
     image_service.upload_image(user.id, &request.title, request.tags, image).await?;
 
     Ok(())
+}
+
+pub async fn get_all_tags(
+    State(image_service): State<ImageService>,
+) -> Result<impl IntoResponse, StatusCode> {
+    Ok(Json(image_service.get_all_tags().await?))
 }
 
 #[derive(TryFromMultipart, Debug)]

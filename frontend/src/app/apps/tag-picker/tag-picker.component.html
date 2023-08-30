@@ -6,7 +6,7 @@
   windowTitle="Select tags">
   <div class="box">
     <div class="add-new-tag">
-      <app-input [(text)]="newTagName" type="text"></app-input>
+      <app-input (keyup.enter)="addTag()" [(text)]="newTagName" type="text"></app-input>
       <app-button
         (click)="addTag()"
         caption="Add new"
@@ -15,15 +15,21 @@
     <div class="pickers">
       <div>
         <app-list-small
+          (userClicked)="changeAllTagsSelection($event)"
           [items]="allTags"
           label="Available tags"></app-list-small>
       </div>
       <div class="move">
-        <app-button-icon src="/assets/go-next.png"></app-button-icon>
-        <app-button-icon src="/assets/go-previous.png"></app-button-icon>
+        <app-button-icon
+          (click)="moveSelectedAllTag()"
+          src="/assets/go-next.png"></app-button-icon>
+        <app-button-icon
+          (click)="moveSelectedSelectedTag()"
+          src="/assets/go-previous.png"></app-button-icon>
       </div>
       <div>
         <app-list-small
+          (userClicked)="changeSelectedTagsSelection($event)"
           [items]="selectedTags"
           label="Selected tags"></app-list-small>
       </div>

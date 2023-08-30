@@ -1,6 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {Tag} from "../data/tag";
 
 @Injectable({
   providedIn: 'root'
@@ -18,5 +19,9 @@ export class ImageService {
     fd.append("image", image)
 
     return this.http.post("/api/image", fd)
+  }
+
+  public getAllTags(): Observable<Tag[]> {
+    return this.http.get<Tag[]>("/api/image")
   }
 }

@@ -5,7 +5,8 @@ use axum_macros::FromRef;
 use image::{DynamicImage, ImageOutputFormat};
 use minio_rsc::Minio;
 use minio_rsc::types::args::ObjectArgs;
-use neo4rs::{Graph, Node, query};
+use neo4rs::{Graph, Node, query, Row};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, FromRef)]
 pub struct ImageService {
@@ -18,7 +19,22 @@ impl ImageService {
         Self { neo4j, minio }
     }
 
-    pub async fn upload_image(&self, user_id: i64, title: &str, tags: Vec<String>, image: DynamicImage) -> Result<(), StatusCode> {
+    pub async fn get_all_tags(&self) -> Result<Vec<Tag>, StatusCode> {
+        let mut tags = self.neo4j.execute(query("match (t:Tag) return t order by t.name"))
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let mut res = vec![];
+        while let Ok(Some(tag)) = tags.next().await {
+            if let Ok(t) = Tag::try_from(tag) {
+                res.push(t)
+            }
+        }
+
+        Ok(res)
+    }
+
+    pub async fn upload_image(&self, user_id: i64, title: &str, mut tags: Vec<String>, image: DynamicImage) -> Result<(), StatusCode> {
         let object_name = uuid::Uuid::new_v4().to_string() + ".png";
 
         let mut bytes = Vec::new();
@@ -59,6 +75,9 @@ impl ImageService {
 
         self.neo4j.run(add_author_query).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
+        tags.dedup_by(|a,b| {
+            a.to_lowercase().trim() == b.to_lowercase().trim()
+        });
         self.connect_image_to_tags(image_node_id, tags).await?;
 
         Ok(())
@@ -108,10 +127,27 @@ impl ImageService {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         if res.is_some() {
-            return Ok(true);
+            Ok(true)
         } else {
-            return Ok(false);
+            Ok(false)
         }
     }
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tag {
+    name: String,
+}
+
+impl TryFrom<Row> for Tag {
+    type Error = StatusCode;
+
+    fn try_from(value: Row) -> Result<Self, Self::Error> {
+        let t = value.get::<Node>("t")
+            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        Ok(Self {
+            name: t.get("name").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
+        })
+    }
+}
