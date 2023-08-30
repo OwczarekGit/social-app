@@ -16,7 +16,7 @@ impl PostService {
     }
 
     pub async fn create_post(&self, author_id: i64, content: &str) -> Result<(), StatusCode> {
-        let query = query("match (u:Profile{id:$id}) create (u)-[w:Posted{at: $time}]->(p:Post{content: $content}) return p,w,u")
+        let query = query("match (u:Profile{id:$id}) create (u)-[w:Posted{date: $time}]->(p:Post{content: $content}) return p,w,u")
             .param("id", author_id)
             .param("content", content)
             .param("time", chrono::Utc::now().naive_local());

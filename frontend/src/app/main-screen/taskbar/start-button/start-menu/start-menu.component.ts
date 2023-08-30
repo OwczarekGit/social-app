@@ -1,12 +1,12 @@
 import {Component, inject} from '@angular/core';
 import {LoginService} from "../../../../service/login.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {WindowService} from "../../../../service/window.service";
 import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
 import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
 import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
-import {NotificationCenterComponent} from "../../../../apps/notification-center/notification-center.component";
 import {ChangeUsernameComponent} from "../../../../apps/change-username/change-username.component";
+import {ShareImageComponent} from "../../../../apps/share-image/share-image.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -38,5 +38,9 @@ export class StartMenuComponent {
 
   openSearchFriends() {
     this.windowService.openApplication(PeopleSearcherComponent)
+  }
+
+  openShareImage() {
+    this.windowService.openApplication(ShareImageComponent)
   }
 }

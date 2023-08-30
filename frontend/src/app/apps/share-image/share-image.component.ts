@@ -2,6 +2,7 @@ import {Component, inject, signal, ViewChild} from '@angular/core';
 import {WindowComponent} from "../../ui-elements/window/window.component";
 import {Tag} from "../../data/tag";
 import {ImageService} from "../../service/image.service";
+import {PopupService} from "../../service/popup.service";
 
 @Component({
   selector: 'app-share-image',
@@ -13,21 +14,23 @@ export class ShareImageComponent {
   window!: WindowComponent
 
   imageService = inject(ImageService)
+  popupService = inject(PopupService)
 
   tagPickerOpened: boolean = false
 
-  tags: Tag[] = [
-    new Tag("Cute"),
-    new Tag("Cat"),
-  ]
+  tags: Tag[] = []
+  title: string = ""
 
   preview: string = ''
 
   file = signal<File | null>(null)
 
   public share() {
-    this.imageService.uploadImage("My cute image", this.tags.map(t => t.name), this.file() as File).subscribe({
-      complete: () => console.log("uploaded")
+    this.imageService.uploadImage(this.title, this.tags.map(t => t.name), this.file() as File).subscribe({
+      complete: () => {
+        this.popupService.info("Image shared", "Your image has been shared.")
+        this.close()
+      }
     })
   }
 

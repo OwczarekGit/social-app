@@ -13,7 +13,7 @@
 
 .tag-list-controls {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .picker {
@@ -24,9 +24,10 @@
 }
 
 .picker-top {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 48px;
 }
 
 .preview {

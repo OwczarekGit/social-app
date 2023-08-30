@@ -17,7 +17,13 @@
     </div>
     <div class="picker">
       <div class="picker-top">
-        <app-input type="text" [row]="true" caption="Image title"></app-input>
+        <div>
+          <app-input
+            type="text"
+            [(text)]="title"
+            [row]="true"
+            caption="Image title"></app-input>
+        </div>
         <div class="preview">
           <img alt="preview-image" class="preview-image" [src]="preview"/>
           <label>
@@ -26,8 +32,11 @@
         </div>
       </div>
       <div class="picker-controls">
-        <app-button (click)="share()" caption="Share"></app-button>
-        <app-button caption="Cancel"></app-button>
+        <app-button
+          [disabled]="title.length == 0 || tags.length == 0 || preview == ''"
+          (click)="share()"
+          caption="Share"></app-button>
+        <app-button (click)="close()" caption="Cancel"></app-button>
       </div>
     </div>
   </div>
