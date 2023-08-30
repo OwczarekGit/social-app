@@ -1,0 +1,36 @@
+.box {
+  padding: 6px;
+  display: grid;
+  gap: 6px;
+  grid-template-rows: auto 1fr auto;
+}
+
+.add-new-tag {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.add-new-tag > *:first-child {
+  flex-grow: 1;
+}
+
+.pickers {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 200px auto 200px;
+  height: 300px;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.move {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+}

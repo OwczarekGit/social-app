@@ -12,4 +12,8 @@ export class Profile implements ListDisplay {
   display(): string {
     return this.username
   }
+
+  iconUrl(): string {
+    return ""
+  }
 }

@@ -25,8 +25,11 @@ export class InputComponent implements ControlValueAccessor {
   type: string = 'text'
 
   @Input() text!: string
+  @Output() textChange = new EventEmitter<string>()
 
-  onChange: any = () => {}
+  onChange: any = () => {
+    this.textChange.emit(this.text)
+  }
   onTouch: any = () => {}
   registerOnChange(fn: any): void {
     this.onChange = fn;

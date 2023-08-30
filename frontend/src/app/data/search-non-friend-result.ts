@@ -13,4 +13,8 @@ export class SearchNonFriendResult implements ListDisplay {
     return this.username
   }
 
+  iconUrl(): string {
+    return ""
+  }
+
 }

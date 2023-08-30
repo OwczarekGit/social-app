@@ -2,7 +2,10 @@ use std::env;
 use std::sync::Arc;
 
 use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request, StatusCode}, extract::State};
+use axum::extract::DefaultBodyLimit;
 use axum_macros::FromRef;
+use minio_rsc::Minio;
+use minio_rsc::provider::StaticProvider;
 use neo4rs::{ConfigBuilder, Graph};
 use endpoint::account;
 use redis::aio::ConnectionManager;
@@ -33,6 +36,7 @@ async fn main() {
     let redis_connection = redis_connection().await.expect("To connect pg.");
     let postgres_connection = postgres_connection().await.expect("To connect redis.");
     let neo4j_connection = Arc::new(neo4j_connection().await.expect("To connect n4j."));
+    let minio_connection = minio_connection().await;
 
     let state = AppState::new(redis_connection, postgres_connection, neo4j_connection.clone());
 
@@ -43,12 +47,14 @@ async fn main() {
                 .nest("/notification", endpoint::notification::routes())
                 .nest("/friend", endpoint::friend::routes())
                 .nest("/profile", endpoint::profile::routes())
+                .nest("/image", endpoint::image::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
                 .nest("/account", account::routes())
         )
         .layer(CookieManagerLayer::new())
         .layer(cors)
+        .layer(DefaultBodyLimit::max(1024*1024*1024))
         .with_state(state);
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
@@ -103,6 +109,24 @@ async fn neo4j_connection() -> Result<Graph, ()> {
     Graph::connect(graph)
         .await
         .map_err(|_| ())
+}
+
+async fn minio_connection() -> Minio {
+    let minio_user = env::var("MINIO_ROOT_USER").expect("MINIO_ROOT_USER to be set.");
+    let minio_password = env::var("MINIO_ROOT_PASSWORD").expect("MINIO_ROOT_PASSWORD to be set.");
+    let minio_endpoint = env::var("MINIO_ENDPOINT").expect("MINIO_ENDPOINT to be set.");
+    let provider = StaticProvider::new(minio_user, minio_password, None);
+    let minio = Minio::builder()
+        .endpoint(minio_endpoint)
+        .provider(provider)
+        .secure(false)
+        .build()
+        .unwrap();
+
+    let e = minio.bucket_exists("images").await.unwrap();
+    dbg!(e);
+
+    minio
 }
 
 #[derive(Clone, FromRef)]

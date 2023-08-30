@@ -30,6 +30,9 @@ import { NotificationIndicatorComponent } from './main-screen/taskbar/system-tra
 import { NotificationCenterComponent } from './apps/notification-center/notification-center.component';
 import { NotificationEntryComponent } from './apps/notification-center/notification-entry/notification-entry.component';
 import { ChangeUsernameComponent } from './apps/change-username/change-username.component';
+import { ShareImageComponent } from './apps/share-image/share-image.component';
+import { TagPickerComponent } from './apps/tag-picker/tag-picker.component';
+import { ButtonIconComponent } from './ui-elements/button-icon/button-icon.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +62,9 @@ import { ChangeUsernameComponent } from './apps/change-username/change-username.
     NotificationCenterComponent,
     NotificationEntryComponent,
     ChangeUsernameComponent,
+    ShareImageComponent,
+    TagPickerComponent,
+    ButtonIconComponent,
   ],
   imports: [
     BrowserModule,
