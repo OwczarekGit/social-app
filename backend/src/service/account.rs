@@ -6,6 +6,7 @@ use axum_macros::FromRef;
 use neo4rs::query;
 use redis::cmd;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue};
+use crate::ActiveUser;
 
 use crate::entities::{*, prelude::*};
 use crate::entities::sea_orm_active_enums::AccountType;
@@ -30,7 +31,7 @@ impl AccountService {
         Self { redis, postgres, neo4j, expire_time_secs: 60*60*24 }
     }
 
-    pub async fn verify_session(&mut self, session_key: &str) -> Result<i64, StatusCode> {
+    pub async fn verify_session(&mut self, session_key: &str) -> Result<ActiveUser, StatusCode> {
         let redis = &mut self.redis;
         
         let id = cmd("hget")
@@ -41,7 +42,16 @@ impl AccountService {
             .map_err(|_|StatusCode::UNAUTHORIZED)?
         ;
 
-        id.parse().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+
+        let id: i64 = id.parse().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        let user = Account::find_by_id(id)
+            .one(&self.postgres)
+            .await
+            .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
+            .ok_or(StatusCode::UNAUTHORIZED)?;
+
+        Ok(ActiveUser::from(user))
     }
 
     pub async fn login(&mut self, email: &str, password: &str) -> Result<String, StatusCode> {

@@ -11,9 +11,12 @@ use service::{account::AccountService, email::EmailService};
 use tower_cookies::{CookieManagerLayer, Cookies};
 use serde::{Serialize, Deserialize};
 use tower_http::cors::{Any, CorsLayer};
+use crate::entities::account::Model;
+use crate::entities::sea_orm_active_enums::AccountType;
 use crate::service::friend::FriendService;
 use crate::service::notification::NotificationService;
 use crate::service::post::PostService;
+use crate::service::profile::ProfileService;
 
 mod entities;
 mod endpoint;
@@ -39,6 +42,7 @@ async fn main() {
                 .nest("/post", endpoint::post::routes())
                 .nest("/notification", endpoint::notification::routes())
                 .nest("/friend", endpoint::friend::routes())
+                .nest("/profile", endpoint::profile::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
                 .nest("/account", account::routes())
@@ -62,10 +66,10 @@ async fn authorize_by_cookie<B>(
     let cookie = cookies.get(account::SESSION_COOKIE_NAME)
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    let user_id = acs.verify_session(cookie.value()).await?;
+    let user = acs.verify_session(cookie.value()).await?;
 
     let mut response = request;
-    response.extensions_mut().insert(ActiveUserId(user_id));
+    response.extensions_mut().insert(user);
 
     Ok(next.run(response).await)
 }
@@ -108,6 +112,7 @@ pub struct AppState {
     pub post_service: PostService,
     pub notification_service: NotificationService,
     pub friend_service: FriendService,
+    pub profile_service: ProfileService,
 }
 
 impl AppState {
@@ -122,9 +127,31 @@ impl AppState {
             post_service: PostService::new(neo4j_connection.clone()),
             notification_service: NotificationService::new(neo4j_connection.clone(), postgres_connection.clone()),
             friend_service: FriendService::new(neo4j_connection.clone()),
+            profile_service: ProfileService::new(neo4j_connection.clone()),
         }
     }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ActiveUserId(pub i64);
+pub struct ActiveUser {
+    pub id: i64,
+    pub role: ActiveUserRole
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum ActiveUserRole {
+    User,
+    Admin
+}
+
+impl From<crate::entities::account::Model> for ActiveUser {
+    fn from(value: Model) -> Self {
+        Self {
+            id: value.id,
+            role: match value.r#type {
+                AccountType::Admin => ActiveUserRole::Admin,
+                AccountType::User => ActiveUserRole::User
+            }
+        }
+    }
+}

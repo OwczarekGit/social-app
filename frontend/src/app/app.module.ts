@@ -29,6 +29,7 @@ import { PeopleSearcherComponent } from './apps/people-searcher/people-searcher.
 import { NotificationIndicatorComponent } from './main-screen/taskbar/system-tray/notification-indicator/notification-indicator.component';
 import { NotificationCenterComponent } from './apps/notification-center/notification-center.component';
 import { NotificationEntryComponent } from './apps/notification-center/notification-entry/notification-entry.component';
+import { ChangeUsernameComponent } from './apps/change-username/change-username.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { NotificationEntryComponent } from './apps/notification-center/notificat
     NotificationIndicatorComponent,
     NotificationCenterComponent,
     NotificationEntryComponent,
+    ChangeUsernameComponent,
   ],
   imports: [
     BrowserModule,

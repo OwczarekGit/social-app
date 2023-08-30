@@ -4,7 +4,7 @@ use axum::{Extension, Json, Router};
 use axum::http::StatusCode;
 use axum::routing::{get, post};
 use serde::{Deserialize, Serialize};
-use crate::{ActiveUserId, AppState};
+use crate::{ActiveUser, AppState};
 use crate::endpoint::notification::{NotificationData, NotificationType};
 use crate::service::friend::FriendService;
 use crate::service::notification::NotificationService;
@@ -19,44 +19,44 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn search_users(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
     Query(search_request): Query<SearchFriendRequest>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    Ok(Json(friend_service.search_for_non_friends(user.0, &search_request.phrase).await?))
+    Ok(Json(friend_service.search_for_non_friends(user.id, &search_request.phrase).await?))
 }
 
 pub async fn get_pending_friend_requests(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    Ok(Json(friend_service.get_pending_friend_requests(user.0).await?))
+    Ok(Json(friend_service.get_pending_friend_requests(user.id).await?))
 }
 
 pub async fn accept_friend_request(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
     Path(requester_id): Path<i64>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    friend_service.accept_friend_request(user.0, requester_id).await
+    friend_service.accept_friend_request(user.id, requester_id).await
 }
 
 pub async fn send_friend_request(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
     State(notification_service): State<NotificationService>,
     Path(target_id): Path<i64>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    if user.0 == target_id {
+    if user.id == target_id {
         return Err(StatusCode::BAD_REQUEST);
     }
 
-    friend_service.send_friend_request(user.0, target_id).await?;
+    friend_service.send_friend_request(user.id, target_id).await?;
 
     let notification = NotificationData {
         notification_type: NotificationType::FRIEND_REQUEST,
         data: FriendNotificationData {
-            user_id: user.0,
+            user_id: user.id,
         }
     };
 
@@ -65,10 +65,10 @@ pub async fn send_friend_request(
 }
 
 pub async fn get_friend_list(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    Ok(Json(friend_service.get_friend_list(user.0).await?))
+    Ok(Json(friend_service.get_friend_list(user.id).await?))
 }
 
 #[derive(Serialize, Deserialize, Debug)]

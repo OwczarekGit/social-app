@@ -10,7 +10,7 @@ use chrono::NaiveDateTime;
 use futures::Stream;
 use serde::{Serialize};
 use serde_json::Value;
-use crate::{ActiveUserId, AppState};
+use crate::{ActiveUser, AppState};
 use crate::service::notification::NotificationService;
 
 pub fn routes() -> Router<AppState> {
@@ -22,10 +22,10 @@ pub fn routes() -> Router<AppState> {
 
 
 pub async fn subscribe_to_notifications(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(mut notification_service): State<NotificationService>,
 ) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
-    let rx = notification_service.subscribe_to_notifications(user.0).await;
+    let rx = notification_service.subscribe_to_notifications(user.id).await;
 
     Sse::new(rx)
         .keep_alive(
@@ -36,18 +36,18 @@ pub async fn subscribe_to_notifications(
 }
 
 pub async fn get_remaining_notifications(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(notification_service): State<NotificationService>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    Ok(Json(notification_service.get_remaining_notifications(user.0).await?))
+    Ok(Json(notification_service.get_remaining_notifications(user.id).await?))
 }
 
 pub async fn dismiss_notification(
-    Extension(user): Extension<ActiveUserId>,
+    Extension(user): Extension<ActiveUser>,
     State(notification_service): State<NotificationService>,
     Path(id): Path<i64>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    notification_service.dismiss_notification(user.0, id).await
+    notification_service.dismiss_notification(user.id, id).await
 }
 
 

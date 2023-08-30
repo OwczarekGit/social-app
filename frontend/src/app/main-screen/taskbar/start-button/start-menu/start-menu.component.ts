@@ -6,6 +6,7 @@ import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.comp
 import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
 import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
 import {NotificationCenterComponent} from "../../../../apps/notification-center/notification-center.component";
+import {ChangeUsernameComponent} from "../../../../apps/change-username/change-username.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -32,7 +33,7 @@ export class StartMenuComponent {
   }
 
   openChangeUsername() {
-    this.windowService.openApplication(NotificationCenterComponent)
+    this.windowService.openApplication(ChangeUsernameComponent)
   }
 
   openSearchFriends() {
