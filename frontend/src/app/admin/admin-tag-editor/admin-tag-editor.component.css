@@ -38,3 +38,7 @@
   flex-direction: column;
   gap: 6px;
 }
+
+.editor-field {
+  min-height: 200px;
+}
