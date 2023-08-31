@@ -14,6 +14,6 @@ export class Profile implements ListDisplay {
   }
 
   iconUrl(): string {
-    return ""
+    return "/assets/user-icon-s.png"
   }
 }

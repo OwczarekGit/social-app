@@ -6,7 +6,7 @@ use axum_macros::FromRef;
 use neo4rs::query;
 use redis::cmd;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue};
-use crate::ActiveUser;
+use crate::{ActiveUser, ActiveUserRole};
 
 use crate::entities::{*, prelude::*};
 use crate::entities::sea_orm_active_enums::AccountType;
@@ -54,7 +54,7 @@ impl AccountService {
         Ok(ActiveUser::from(user))
     }
 
-    pub async fn login(&mut self, email: &str, password: &str) -> Result<String, StatusCode> {
+    pub async fn login(&mut self, email: &str, password: &str) -> Result<(String, ActiveUserRole), StatusCode> {
         let redis = &mut self.redis;
 
         let account = Account::find()
@@ -81,7 +81,12 @@ impl AccountService {
             .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
             ;
 
-        Ok(session_key)
+        let role = match account.r#type {
+            AccountType::Admin => ActiveUserRole::Admin,
+            AccountType::User => ActiveUserRole::User
+        };
+
+        Ok((session_key, role))
     }
 
     pub async fn logout(&mut self, key: &str) {

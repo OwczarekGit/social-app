@@ -15,6 +15,6 @@ export class FriendRequest implements ListDisplay {
   }
 
   iconUrl(): string {
-    return ""
+    return "/assets/user-icon-s.png"
   }
 }

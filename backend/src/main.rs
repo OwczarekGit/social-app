@@ -12,7 +12,6 @@ use service::{account::AccountService, email::EmailService};
 use tower_cookies::{CookieManagerLayer, Cookies};
 use serde::{Serialize, Deserialize};
 use tower_http::cors::{Any, CorsLayer};
-use crate::entities::account::Model;
 use crate::entities::sea_orm_active_enums::AccountType;
 use crate::service::friend::FriendService;
 use crate::service::image::ImageService;
@@ -122,14 +121,23 @@ pub enum ActiveUserRole {
     Admin
 }
 
-impl From<crate::entities::account::Model> for ActiveUser {
-    fn from(value: Model) -> Self {
+impl From<entities::account::Model> for ActiveUser {
+    fn from(value: entities::account::Model) -> Self {
         Self {
             id: value.id,
             role: match value.r#type {
                 AccountType::Admin => ActiveUserRole::Admin,
                 AccountType::User => ActiveUserRole::User
             }
+        }
+    }
+}
+
+impl ToString for ActiveUserRole {
+    fn to_string(&self) -> String {
+        match self {
+            ActiveUserRole::User => "User".to_string(),
+            ActiveUserRole::Admin => "Admin".to_string()
         }
     }
 }

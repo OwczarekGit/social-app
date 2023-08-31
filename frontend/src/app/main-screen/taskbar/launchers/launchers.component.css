@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.launchers {
+  display: flex;
+  flex-direction: row;
+  gap: 1px;
+}
+
+:host::before, :host::after {
+  content: '';
+  border-left: 1px solid #949494;
+  border-right: 1px solid #fff;
+  height: 100%;
+}

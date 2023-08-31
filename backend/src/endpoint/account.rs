@@ -39,10 +39,11 @@ pub async fn login(
     cookies: Cookies,
     Json(request): Json<LoginRequest>,
 ) -> Result<impl IntoResponse, StatusCode> {
-    let key = account_service.login(&request.email, &request.password).await?;
+    let (key, role) = account_service.login(&request.email, &request.password).await?;
 
     cookies.add(make_cookie(SESSION_COOKIE_NAME.to_string(), key, true));
     cookies.add(make_cookie("AUTH".to_owned(), "".to_string(), false));
+    cookies.add(make_cookie("ROLE".to_owned(), role.to_string(), false));
 
     Ok(StatusCode::OK)
 }
@@ -57,6 +58,7 @@ pub async fn logout(
 
     cookies.remove(remove_cookie(SESSION_COOKIE_NAME.to_string()));
     cookies.remove(remove_cookie("AUTH".to_string()));
+    cookies.remove(remove_cookie("ROLE".to_string()));
 
     StatusCode::OK
 }

@@ -34,6 +34,7 @@ impl ImageService {
         Ok(res)
     }
 
+    //FIXME: Thumbnail sized images.
     pub async fn upload_image(&self, user_id: i64, title: &str, mut tags: Vec<String>, image: DynamicImage) -> Result<(), StatusCode> {
         let object_name = uuid::Uuid::new_v4().to_string() + ".png";
 

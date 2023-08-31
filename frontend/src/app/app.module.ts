@@ -33,6 +33,8 @@ import { ChangeUsernameComponent } from './apps/change-username/change-username.
 import { ShareImageComponent } from './apps/share-image/share-image.component';
 import { TagPickerComponent } from './apps/tag-picker/tag-picker.component';
 import { ButtonIconComponent } from './ui-elements/button-icon/button-icon.component';
+import { LaunchersComponent } from './main-screen/taskbar/launchers/launchers.component';
+import { LauncherAppComponent } from './main-screen/taskbar/launchers/launcher-app/launcher-app.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { ButtonIconComponent } from './ui-elements/button-icon/button-icon.compo
     ShareImageComponent,
     TagPickerComponent,
     ButtonIconComponent,
+    LaunchersComponent,
+    LauncherAppComponent,
   ],
   imports: [
     BrowserModule,

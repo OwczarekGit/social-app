@@ -1,5 +1,13 @@
 <div class="box">
   <app-start-button></app-start-button>
+  <app-launchers>
+    <app-launcher-app
+      (click)="openShareImage()"
+      icon="/assets/share-image-s.png"></app-launcher-app>
+    <app-launcher-app
+      (click)="openWritePost()"
+      icon="/assets/write-post-s.png"></app-launcher-app>
+  </app-launchers>
   <div></div>
   <app-system-tray>
     <app-notification-indicator

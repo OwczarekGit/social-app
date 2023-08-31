@@ -13,6 +13,6 @@ export class Tag implements ListDisplay {
   }
 
   iconUrl(): string {
-    return ""
+    return "/assets/tag-s.png"
   }
 }

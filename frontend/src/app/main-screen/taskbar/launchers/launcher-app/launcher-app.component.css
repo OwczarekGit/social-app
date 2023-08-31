@@ -1,0 +1,24 @@
+:host {
+  width: 23px;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  border: 1px solid transparent;
+}
+
+:host:hover {
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #949494;
+  border-bottom: 1px solid #949494;
+}
+
+img {
+  image-rendering: pixelated;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  object-position: center;
+}
