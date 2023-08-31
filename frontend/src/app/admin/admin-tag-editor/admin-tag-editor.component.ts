@@ -47,12 +47,11 @@ export class AdminTagEditorComponent {
     if (this.searchString == '') {
       this.filteredTags.set(this.allTags())
     } else {
-      this.filteredTags.set(this.allTags().filter(t => t.name.toLowerCase().trim().includes(this.searchString)))
+      this.filteredTags.set(this.allTags().filter(t => t.name.toLowerCase().trim().includes(this.searchString.toLowerCase().trim())))
     }
   }
 
   createNewTag() {
-    console.log(this.newTagName)
     this.tagService.createNewTag(this.newTagName).subscribe({
       next: tag => {
         this.allTags.update(t => [...t, new DetailedTag(tag.id, tag.name, tag.usage)])
