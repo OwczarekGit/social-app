@@ -35,6 +35,8 @@ import { TagPickerComponent } from './apps/tag-picker/tag-picker.component';
 import { ButtonIconComponent } from './ui-elements/button-icon/button-icon.component';
 import { LaunchersComponent } from './main-screen/taskbar/launchers/launchers.component';
 import { LauncherAppComponent } from './main-screen/taskbar/launchers/launcher-app/launcher-app.component';
+import { AdminTagEditorComponent } from './admin/admin-tag-editor/admin-tag-editor.component';
+import { AdminTagEditorFieldComponent } from './admin/admin-tag-editor/admin-tag-editor-field/admin-tag-editor-field.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,8 @@ import { LauncherAppComponent } from './main-screen/taskbar/launchers/launcher-a
     ButtonIconComponent,
     LaunchersComponent,
     LauncherAppComponent,
+    AdminTagEditorComponent,
+    AdminTagEditorFieldComponent,
   ],
   imports: [
     BrowserModule,

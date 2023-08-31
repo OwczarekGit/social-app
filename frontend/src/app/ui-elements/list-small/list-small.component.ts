@@ -9,7 +9,7 @@ import {ListDisplay} from "../../data/list-display";
 export class ListSmallComponent {
 
   @Output()
-  userClicked: EventEmitter<ListDisplay> = new EventEmitter<ListDisplay>()
+  itemClicked: EventEmitter<ListDisplay> = new EventEmitter<ListDisplay>()
 
 
   @Input('label')
@@ -22,6 +22,6 @@ export class ListSmallComponent {
 
   selectionSwitched(item: ListDisplay, index: number) {
     this.selected = index
-    this.userClicked.emit(item)
+    this.itemClicked.emit(item)
   }
 }

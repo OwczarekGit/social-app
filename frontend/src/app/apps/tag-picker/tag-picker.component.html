@@ -15,7 +15,7 @@
     <div class="pickers">
       <div>
         <app-list-small
-          (userClicked)="changeAllTagsSelection($event)"
+          (itemClicked)="changeAllTagsSelection($event)"
           [items]="allTags"
           label="Available tags"></app-list-small>
       </div>
@@ -29,7 +29,7 @@
       </div>
       <div>
         <app-list-small
-          (userClicked)="changeSelectedTagsSelection($event)"
+          (itemClicked)="changeSelectedTagsSelection($event)"
           [items]="selectedTags"
           label="Selected tags"></app-list-small>
       </div>

@@ -1,0 +1,40 @@
+.box {
+  display: grid;
+  padding: 6px;
+  grid-template-rows: 400px auto;
+  gap: 6px;
+}
+
+.content {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 260px 300px;
+}
+
+.list, .editor {
+  display: grid;
+  gap: 6px;
+  grid-template-rows: 25px 1fr;
+  min-height: 0;
+}
+
+.list > div {
+  min-height: 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.editor-fields {
+  display: flex;
+  gap: 40px;
+  flex-direction: column;
+}
+
+.add-tag-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

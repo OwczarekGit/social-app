@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 6px;
+}
+
+p {
+  font-size: 8px;
+}
+
+div {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}

@@ -9,12 +9,17 @@ label {
   justify-content: space-between;
 }
 
+p {
+  font-size: 9px;
+}
+
 p::after {
   content: ':';
 }
 
 .row {
   flex-direction: row;
+  align-items: center;
 }
 
 div {

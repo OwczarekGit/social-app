@@ -17,7 +17,7 @@
     </form>
     <div class="results">
       <app-list-small
-        (userClicked)="changeSelected($event)"
+        (itemClicked)="changeSelected($event)"
         label="Search results"
         [items]="searchResults">
       </app-list-small>

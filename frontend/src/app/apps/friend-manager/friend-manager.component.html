@@ -14,13 +14,13 @@
     </div>
     <div class="tab">
       <app-list-small
-        (userClicked)="setSelectedFriendProfile($event)"
+        (itemClicked)="setSelectedFriendProfile($event)"
         *ngIf="friendsTabOpened"
         [items]="friendProfiles"
         label="Friends">
       </app-list-small>
       <app-list-small
-        (userClicked)="setSelectedFriendRequest($event)"
+        (itemClicked)="setSelectedFriendRequest($event)"
         *ngIf="!friendsTabOpened"
         [items]="friendRequests"
         label="Requests">

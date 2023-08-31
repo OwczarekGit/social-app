@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request, StatusCode}, extract::State};
+use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request, StatusCode}, extract::State, Extension};
 use axum::extract::DefaultBodyLimit;
 use axum_macros::FromRef;
 use minio_rsc::Minio;
@@ -18,6 +18,7 @@ use crate::service::image::ImageService;
 use crate::service::notification::NotificationService;
 use crate::service::post::PostService;
 use crate::service::profile::ProfileService;
+use crate::service::tag::TagService;
 
 mod entities;
 mod endpoint;
@@ -42,6 +43,10 @@ async fn main() {
     let app = Router::<AppState>::new()
         .nest(
             "/api", Router::<AppState>::new()
+                .nest("/admin/tag", endpoint::tag::admin_routes())
+                // All routes above can only be accessed by admin / moderators.
+                .layer(middleware::from_fn_with_state(state.clone(), authorize_moderator_or_admin))
+                .nest("/tag", endpoint::tag::public_routes())
                 .nest("/post", endpoint::post::routes())
                 .nest("/notification", endpoint::notification::routes())
                 .nest("/friend", endpoint::friend::routes())
@@ -60,6 +65,18 @@ async fn main() {
     .serve(app.into_make_service())
     .await
     .unwrap();
+}
+
+async fn authorize_moderator_or_admin<B>(
+    Extension(user): Extension<ActiveUser>,
+    request: Request<B>,
+    next: Next<B>
+) -> Result<impl IntoResponse, StatusCode> {
+    if ActiveUserRole::from(user.role) != ActiveUserRole::Admin {
+        return  Err(StatusCode::UNAUTHORIZED);
+    }
+
+    Ok(next.run(request).await)
 }
 
 async fn authorize_by_cookie<B>(
@@ -87,7 +104,8 @@ pub struct AppState {
     pub notification_service: NotificationService,
     pub friend_service: FriendService,
     pub profile_service: ProfileService,
-    pub image_service: ImageService
+    pub image_service: ImageService,
+    pub tag_service: TagService,
 }
 
 impl AppState {
@@ -104,7 +122,8 @@ impl AppState {
             notification_service: NotificationService::new(neo4j_connection.clone(), postgres_connection.clone()),
             friend_service: FriendService::new(neo4j_connection.clone()),
             profile_service: ProfileService::new(neo4j_connection.clone()),
-            image_service: ImageService::new(neo4j_connection.clone(), minio_connection.clone())
+            image_service: ImageService::new(neo4j_connection.clone(), minio_connection.clone()),
+            tag_service: TagService::new(neo4j_connection.clone()),
         }
     }
 }
@@ -115,7 +134,7 @@ pub struct ActiveUser {
     pub role: ActiveUserRole
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum ActiveUserRole {
     User,
     Admin

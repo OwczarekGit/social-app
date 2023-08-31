@@ -7,6 +7,8 @@ import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-man
 import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
 import {ChangeUsernameComponent} from "../../../../apps/change-username/change-username.component";
 import {ShareImageComponent} from "../../../../apps/share-image/share-image.component";
+import {AuthService} from "../../../../service/auth.service";
+import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-tag-editor.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -17,6 +19,7 @@ export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
   public windowService = inject(WindowService)
+  public authService = inject(AuthService)
 
 
   logout() {
@@ -42,5 +45,10 @@ export class StartMenuComponent {
 
   openShareImage() {
     this.windowService.openApplication(ShareImageComponent)
+  }
+
+  // ADMIN APPS
+  openAdminManageTags() {
+    this.windowService.openApplication(AdminTagEditorComponent)
   }
 }

@@ -1,6 +1,19 @@
 <div class="box w2k-window-inner font-tahoma">
   <div class="banner"></div>
   <div class="items">
+
+    <app-start-menu-item
+      [hasChildren]="true"
+      *ngIf="authService.isAdmin()"
+      caption="Administrative tools"
+      imageUrl="/assets/admin-tools.png">
+      <app-start-menu-item
+        caption="Manage tags"
+        imageUrl="/assets/tag-s.png"
+        (click)="openAdminManageTags()"
+      ></app-start-menu-item>
+    </app-start-menu-item>
+
     <app-start-menu-item
       [hasChildren]="true"
       caption="Edit profile"
@@ -11,6 +24,7 @@
         imageUrl="/assets/profile-username.png">
       ></app-start-menu-item>
     </app-start-menu-item>
+
     <app-start-menu-item (click)="openSearchFriends()" caption="Search for friends" imageUrl="/assets/search-friends.png"></app-start-menu-item>
     <app-start-menu-item (click)="openFriendManager()" caption="Friends" imageUrl="/assets/friends.png"></app-start-menu-item>
     <app-start-menu-item (click)="openShareImage()" caption="Share image" imageUrl="/assets/share-image.png"></app-start-menu-item>

@@ -27,9 +27,14 @@ export class ShareImageComponent {
 
   public share() {
     this.imageService.uploadImage(this.title, this.tags.map(t => t.name), this.file() as File).subscribe({
-      complete: () => {
+      next: _ => {
         this.popupService.info("Image shared", "Your image has been shared.")
         this.close()
+      },
+      error: _ => {
+        this.popupService.error(
+          "Error sharing image",
+          "There was an error sharing image, is the image valid and less than 5MB?")
       }
     })
   }
