@@ -10,6 +10,7 @@ use chrono::NaiveDateTime;
 use futures::Stream;
 use serde::{Serialize};
 use serde_json::Value;
+use tracing::log::debug;
 use crate::{ActiveUser, AppState};
 use crate::service::notification::NotificationService;
 
@@ -25,6 +26,7 @@ pub async fn subscribe_to_notifications(
     Extension(user): Extension<ActiveUser>,
     State(mut notification_service): State<NotificationService>,
 ) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
+    debug!("Subscribed to notifications user {}.", user.id);
     let rx = notification_service.subscribe_to_notifications(user.id).await;
 
     Sse::new(rx)

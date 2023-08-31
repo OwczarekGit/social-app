@@ -6,7 +6,9 @@ use axum_macros::FromRef;
 use neo4rs::query;
 use redis::cmd;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue};
+use tracing::log::debug;
 use crate::{ActiveUser, ActiveUserRole};
+use crate::{Result, Error};
 
 use crate::entities::{*, prelude::*};
 use crate::entities::sea_orm_active_enums::AccountType;
@@ -31,17 +33,14 @@ impl AccountService {
         Self { redis, postgres, neo4j, expire_time_secs: 60*60*24 }
     }
 
-    pub async fn verify_session(&mut self, session_key: &str) -> Result<ActiveUser, StatusCode> {
+    pub async fn verify_session(&mut self, session_key: &str) -> Result<ActiveUser> {
         let redis = &mut self.redis;
         
         let id = cmd("hget")
             .arg(build_prefix(SESSION_PREFIX, session_key))
             .arg("user_id")
             .query_async::<_, String>(redis)
-            .await
-            .map_err(|_|StatusCode::UNAUTHORIZED)?
-        ;
-
+            .await?;
 
         let id: i64 = id.parse().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -54,19 +53,17 @@ impl AccountService {
         Ok(ActiveUser::from(user))
     }
 
-    pub async fn login(&mut self, email: &str, password: &str) -> Result<(String, ActiveUserRole), StatusCode> {
+    pub async fn login(&mut self, email: &str, password: &str) -> Result<(String, ActiveUserRole)> {
         let redis = &mut self.redis;
 
         let account = Account::find()
             .filter(account::Column::Email.eq(email))
             .one(&self.postgres)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-            .ok_or(StatusCode::NOT_FOUND)?
-        ;
+            .await?
+            .ok_or(crate::error::Error::LoginError)?;
 
         if !verify_password(password, &account.password) {
-            return Err(StatusCode::FORBIDDEN);
+            return Err(crate::error::Error::LoginError);
         }
 
         let session_key = generate_session_key();
@@ -77,9 +74,7 @@ impl AccountService {
             .arg("user_id")
             .arg(account.id)
             .query_async(redis)
-            .await
-            .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
-            ;
+            .await?;
 
         let role = match account.r#type {
             AccountType::Admin => ActiveUserRole::Admin,
@@ -98,26 +93,25 @@ impl AccountService {
             ;
     }
 
-    pub async fn activate_account(&mut self, email: &str, key: &str) -> Result<(), StatusCode> {
+    pub async fn activate_account(&mut self, email: &str, key: &str) -> Result<()> {
         let redis = &mut self.redis;
 
         let result = cmd("hgetall")
             .arg(build_prefix(ACCOUNT_PREFIX, email))
             .query_async::<_, Option<HashMap<String, String>>>(redis)
-            .await
-            .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
-            .ok_or(StatusCode::BAD_REQUEST)?
+            .await?
+            .ok_or(Error::NonExistentAccountActivationAttempt)?
             ;
 
         if result.is_empty() {
-            return Err(StatusCode::BAD_REQUEST);
+            return Err(Error::NonExistentAccountActivationAttempt);
         }
 
-        let actual_key = result.get("key").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
-        let password = result.get("password").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+        let actual_key = result.get("key").ok_or(Error::BadRequest)?;
+        let password = result.get("password").ok_or(Error::BadRequest)?;
 
         if !actual_key.eq(key) {
-            return Err(StatusCode::BAD_REQUEST);
+            return Err(Error::AccountActivationWrongPassword);
         }
 
         let model = account::ActiveModel {
@@ -130,51 +124,42 @@ impl AccountService {
         
         let account = Account::insert(model)
             .exec(&self.postgres)
-            .await
-            .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?
-            ;
+            .await?;
 
         cmd("del")
             .arg(build_prefix(ACCOUNT_PREFIX, email))
             .query_async(redis)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-            ;
+            .await?;
 
         self.neo4j.run(
             query("merge (p:Profile{ id: $id, username: $username })")
                 .param("id", account.last_insert_id)
                 .param("username", "New User")
-        ).await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        ).await?;
 
-        println!("Activating '{email}' using the code '{key}'");
+        debug!("Activating '{email}' using the code '{key}'");
         Ok(())   
     }
 
-    pub async fn register_account(&mut self, email: &str, password: &str) -> Result<(String, String), StatusCode> {
+    pub async fn register_account(&mut self, email: &str, password: &str) -> Result<(String, String)> {
         let redis = &mut self.redis;
 
         let is_taken = Account::find()
             .filter(account::Column::Email.eq(email))
             .one(&self.postgres)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-        ;
+            .await?;
 
         if is_taken.is_some() {
-            return Err(StatusCode::BAD_REQUEST);
+            return Err(Error::EmailTaken);
         }
 
         let is_taken: i32 = cmd("exists")
             .arg(build_prefix(ACCOUNT_PREFIX, email))
             .query_async::<redis::aio::ConnectionManager, i32>(redis)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-        ;
+            .await?;
 
         if is_taken == 1 {
-            return Err(StatusCode::BAD_REQUEST);
+            return Err(Error::EmailTakenPendingActivation);
         }
 
         let activation_key = generate_activation_key();
@@ -186,20 +171,19 @@ impl AccountService {
             .arg("password")
             .arg(hash_password(password))
             .query_async(redis)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-        ;
+            .await?;
 
         cmd("expire")
             .arg(build_prefix(ACCOUNT_PREFIX, email))
             .arg(self.expire_time_secs)
             .query_async(redis)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-        ;
+            .await?;
 
         #[cfg(debug_assertions)]
-        let _ = self.activate_account(email, &activation_key).await;
+        {
+            let _ = self.activate_account(email, &activation_key).await;
+            tracing::warn!("In debug builds accounts are activated automatically.")
+        }
 
         Ok((email.to_string(), activation_key))
     }

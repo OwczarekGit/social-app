@@ -3,6 +3,8 @@ use axum::routing::delete;
 use serde::{Serialize, Deserialize};
 use tower_cookies::{Cookies, Cookie};
 
+use crate::{Result};
+
 use crate::{AppState, service::{account::AccountService, email::EmailService}};
 
 pub static SESSION_COOKIE_NAME: &str = "JSESSIONID";
@@ -19,7 +21,7 @@ pub async fn register_account(
     State(mut account_service): State<AccountService>,
     State(email_service): State<EmailService>,
     Json(request): Json<RegistrationRequest>,
-) -> Result<impl IntoResponse, StatusCode> {
+) -> Result<impl IntoResponse> {
     //TODO: Verify that email is a valid email address.
     let (email, key) = account_service.register_account(&request.email, &request.password).await?;
     email_service.send_activation_mail(&email, &key);
@@ -29,7 +31,7 @@ pub async fn register_account(
 pub async fn activate_account(
     State(mut account_service): State<AccountService>,
     Query(params): Query<AccountActivationParams>,
-) -> Result<impl IntoResponse, StatusCode> {
+) -> Result<impl IntoResponse> {
     account_service.activate_account(&params.email, &params.key).await?;
     Ok(StatusCode::CREATED)
 }
@@ -38,7 +40,7 @@ pub async fn login(
     State(mut account_service): State<AccountService>,
     cookies: Cookies,
     Json(request): Json<LoginRequest>,
-) -> Result<impl IntoResponse, StatusCode> {
+) -> Result<impl IntoResponse> {
     let (key, role) = account_service.login(&request.email, &request.password).await?;
 
     cookies.add(make_cookie(SESSION_COOKIE_NAME.to_string(), key, true));

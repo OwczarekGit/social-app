@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
-use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request, StatusCode}, extract::State, Extension};
+use axum::{Router, response::IntoResponse, middleware::{self, Next}, http::{Request}, extract::State, Extension};
 use axum::extract::DefaultBodyLimit;
+use axum::response::Response;
 use axum_macros::FromRef;
 use minio_rsc::Minio;
 use neo4rs::{Graph};
@@ -12,6 +13,9 @@ use service::{account::AccountService, email::EmailService};
 use tower_cookies::{CookieManagerLayer, Cookies};
 use serde::{Serialize, Deserialize};
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::ServeFile;
+use tracing::debug;
+use tracing_subscriber::EnvFilter;
 use crate::entities::sea_orm_active_enums::AccountType;
 use crate::service::friend::FriendService;
 use crate::service::image::ImageService;
@@ -20,7 +24,10 @@ use crate::service::post::PostService;
 use crate::service::profile::ProfileService;
 use crate::service::tag::TagService;
 
+pub use self::error::{Error, Result};
+
 mod entities;
+mod error;
 mod endpoint;
 mod service;
 mod config;
@@ -28,6 +35,15 @@ mod config;
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
+
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_target(false)
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+
+    let static_files = tower_http::services::ServeDir::new("./static")
+        .fallback(ServeFile::new("./static/index.html"));
 
     let cors = CorsLayer::new()
         .allow_origin(Any)
@@ -56,25 +72,30 @@ async fn main() {
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
                 .nest("/account", account::routes())
         )
+        .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new())
         .layer(cors)
         .layer(DefaultBodyLimit::max(1024*1024*1024))
-        .with_state(state);
+        .with_state(state)
+        .fallback_service(static_files);
 
+    debug!("Starting server");
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
-    .serve(app.into_make_service())
-    .await
-    .unwrap();
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
 
 async fn authorize_moderator_or_admin<B>(
     Extension(user): Extension<ActiveUser>,
     request: Request<B>,
     next: Next<B>
-) -> Result<impl IntoResponse, StatusCode> {
-    if ActiveUserRole::from(user.role) != ActiveUserRole::Admin {
-        return  Err(StatusCode::UNAUTHORIZED);
+) -> Result<impl IntoResponse> {
+    if ActiveUserRole::from(user.role.clone()) != ActiveUserRole::Admin {
+        return Err(Error::UnauthorizedForAdminOperations(user.id));
     }
+
+    debug!("User id: ({}), role: ({}) accessed the admin endpoints.", user.id, user.role.to_string());
 
     Ok(next.run(request).await)
 }
@@ -84,9 +105,8 @@ async fn authorize_by_cookie<B>(
     cookies: Cookies,
     request: Request<B>,
     next: Next<B>
-) -> Result<impl IntoResponse, StatusCode> {
-    let cookie = cookies.get(account::SESSION_COOKIE_NAME)
-        .ok_or(StatusCode::UNAUTHORIZED)?;
+) -> Result<impl IntoResponse> {
+    let cookie = cookies.get(account::SESSION_COOKIE_NAME).ok_or(Error::UnauthorizedForUserOperations)?;
 
     let user = acs.verify_session(cookie.value()).await?;
 
@@ -94,6 +114,14 @@ async fn authorize_by_cookie<B>(
     response.extensions_mut().insert(user);
 
     Ok(next.run(response).await)
+}
+
+pub async fn main_response_mapper(res: Response) -> Response {
+    if let Some(err) = res.extensions().get::<Error>() {
+        //TODO: Some of these are probably worth saving.
+        debug!("Error: {:?}", err);
+    }
+    res
 }
 
 #[derive(Clone, FromRef)]

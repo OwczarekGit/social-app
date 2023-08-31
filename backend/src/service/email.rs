@@ -1,4 +1,5 @@
 use axum_macros::FromRef;
+use tracing::log::debug;
 
 
 #[derive(Clone, FromRef)]
@@ -13,6 +14,6 @@ impl EmailService {
 
     pub fn send_activation_mail(&self, email: &str, activation_key: &str) {
         let text = format!("Sending activation mail to {email}, the code is {activation_key}.");
-        println!("{text}");
+        debug!("{text}");
     }
 }
