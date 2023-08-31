@@ -1,24 +1,24 @@
-import {AfterViewInit, Directive, ElementRef, Inject, inject} from '@angular/core';
-import {DOCUMENT} from "@angular/common";
-import {WindowService} from "../service/window.service";
+import {AfterViewInit, Directive, ElementRef} from '@angular/core';
 import {fromEvent, Subscription, takeUntil} from "rxjs";
+
 
 @Directive({
   selector: '[wm_draggable]'
 })
 export class DraggableDirective implements AfterViewInit {
 
-  private element = inject(ElementRef)
-  private windowService = inject(WindowService)
+  private element: ElementRef<any>
 
-  constructor() {
+
+  constructor(element: ElementRef<any>) {
+    this.element = element;
   }
 
   ngAfterViewInit(): void {
     this.initDrag()
   }
 
-  private initDrag() {
+  public initDrag() {
     let el = this.element.nativeElement as HTMLElement
     let dragStart = fromEvent<MouseEvent>(el, "mousedown")
     let dragEnd = fromEvent<MouseEvent>(el, "mouseup")

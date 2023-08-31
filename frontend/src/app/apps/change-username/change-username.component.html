@@ -1,16 +1,6 @@
-<app-window
-  wm_draggable
-  windowIconUrl="/assets/profile-username.png"
-  windowTitle="Change username"
-  [close]="true"
-  [minimize]="false"
-  [maximize]="false"
-  (closeClicked)="close()"
->
-  <form [formGroup]="form">
-    <app-input formControlName="username" caption="Change your username"></app-input>
-    <div>
-      <app-button (click)="changeUsername()" [disabled]="!form.valid" caption="Change"></app-button>
-    </div>
-  </form>
-</app-window>
+<form [formGroup]="form">
+  <app-input formControlName="username" caption="Change your username"></app-input>
+  <div>
+    <app-button (click)="changeUsername()" [disabled]="!form.valid" caption="Change"></app-button>
+  </div>
+</form>

@@ -1,0 +1,15 @@
+<div class="w2k-window-inner">
+  <div class="title-bar dw_draggable">
+    <div class="info">
+      <img [src]="iconUrl()" alt="title-bar-icon" />
+      <div class="font-tahoma-bold">{{title()}}</div>
+    </div>
+    <div class="buttons">
+      <app-title-button (click)="minimizeClicked()" *ngIf="minimize" type="minimize"></app-title-button>
+      <app-title-button (click)="maximizeClicked()" *ngIf="maximize" type="maximize"></app-title-button>
+      <app-title-button (click)="closeClicked()" *ngIf="close" type="close"></app-title-button>
+    </div>
+  </div>
+  <div #content class="window-content">
+  </div>
+</div>

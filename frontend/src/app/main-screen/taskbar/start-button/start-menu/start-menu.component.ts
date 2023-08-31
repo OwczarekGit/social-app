@@ -9,6 +9,8 @@ import {ChangeUsernameComponent} from "../../../../apps/change-username/change-u
 import {ShareImageComponent} from "../../../../apps/share-image/share-image.component";
 import {AuthService} from "../../../../service/auth.service";
 import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-tag-editor.component";
+import {NewWindowService} from "../../../../service/new-window.service";
+import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -19,6 +21,7 @@ export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
   public windowService = inject(WindowService)
+  public newWindowService = inject(NewWindowService)
   public authService = inject(AuthService)
 
 
@@ -28,7 +31,7 @@ export class StartMenuComponent {
   }
 
   openCreatePost() {
-    this.windowService.openApplication(PostWriterComponent)
+    this.newWindowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)
   }
 
   openFriendManager() {
@@ -36,7 +39,7 @@ export class StartMenuComponent {
   }
 
   openChangeUsername() {
-    this.windowService.openApplication(ChangeUsernameComponent)
+    this.newWindowService.openApplication(ChangeUsernameComponent, null, W2kWindowFrameComponent)
   }
 
   openSearchFriends() {
