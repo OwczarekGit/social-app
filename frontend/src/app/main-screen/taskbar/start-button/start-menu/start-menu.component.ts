@@ -35,7 +35,7 @@ export class StartMenuComponent {
   }
 
   openFriendManager() {
-    this.windowService.openApplication(FriendManagerComponent)
+    this.newWindowService.openApplication(FriendManagerComponent, null, W2kWindowFrameComponent)
   }
 
   openChangeUsername() {
@@ -43,15 +43,15 @@ export class StartMenuComponent {
   }
 
   openSearchFriends() {
-    this.windowService.openApplication(PeopleSearcherComponent)
+    this.newWindowService.openApplication(PeopleSearcherComponent, null, W2kWindowFrameComponent)
   }
 
   openShareImage() {
-    this.windowService.openApplication(ShareImageComponent)
+    this.newWindowService.openApplication(ShareImageComponent, null, W2kWindowFrameComponent)
   }
 
   // ADMIN APPS
   openAdminManageTags() {
-    this.windowService.openApplication(AdminTagEditorComponent)
+    this.newWindowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
   }
 }

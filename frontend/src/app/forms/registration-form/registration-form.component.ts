@@ -1,15 +1,17 @@
-import {AfterViewInit, Component, ComponentRef, inject, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {WindowComponent} from "../../ui-elements/window/window.component";
+import {AfterViewInit, Component, inject} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PopupService} from "../../service/popup.service";
 import {RegistrationService} from "../../service/registration.service";
+import {WindowContent} from "../../data/window-content";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-registration-form',
   templateUrl: './registration-form.component.html',
   styleUrls: ['./registration-form.component.css']
 })
-export class RegistrationFormComponent {
+export class RegistrationFormComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
+
   public form = new FormGroup({
     email: new FormControl<string>('', Validators.required),
     password: new FormControl<string>('', Validators.required),
@@ -18,9 +20,6 @@ export class RegistrationFormComponent {
 
   private notificationService = inject(PopupService)
   private registrationService = inject(RegistrationService)
-
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
 
   public register() {
     let form = this.form.getRawValue()
@@ -37,11 +36,10 @@ export class RegistrationFormComponent {
           let status = e.status
 
           switch (status) {
-            case
-            400 : {
+            case 400 : {
               this.notificationService.error("Bad request", "Either the specified email address is in use, or the data is invalid.")
             } break;
-            case 404 : {
+            case 504 : {
               this.notificationService.error("No connection", "The server does not respond. Try again later.")
             } break;
           }
@@ -49,7 +47,11 @@ export class RegistrationFormComponent {
       )
   }
 
-  public closeWindow() {
-    this.window.closeWindow()
+  ngAfterViewInit(): void {
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+    this.windowFrame.onClose = () => this.closeWindow()
+    setTimeout(() => {
+      this.setTitle("Create a new account")
+    })
   }
 }

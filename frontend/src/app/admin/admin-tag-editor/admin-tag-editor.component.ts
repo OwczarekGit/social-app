@@ -1,19 +1,17 @@
-import {Component, inject, signal, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
+import {AfterViewInit, Component, inject, signal, ViewChild} from '@angular/core';
 import {DetailedTag} from "../../data/detailed-tag";
 import {TagService} from "../../service/tag.service";
 import {ListDisplay} from "../../data/list-display";
 import {PopupService} from "../../service/popup.service";
-import {Tag} from "../../data/tag";
+import {WindowContent} from "../../data/window-content";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'admin-tag-editor',
   templateUrl: './admin-tag-editor.component.html',
   styleUrls: ['./admin-tag-editor.component.css']
 })
-export class AdminTagEditorComponent {
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
+export class AdminTagEditorComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
   tagService = inject(TagService)
   popupService = inject(PopupService)
@@ -27,6 +25,7 @@ export class AdminTagEditorComponent {
   allTags = signal<DetailedTag[]>([])
 
   constructor() {
+    super()
     this.tagService.getAllDetailedTags().subscribe({
       next: value => {
         this.allTags.set(value.map(t => new DetailedTag(t.id, t.name, t.usage)))
@@ -35,8 +34,17 @@ export class AdminTagEditorComponent {
     })
   }
 
+  ngAfterViewInit(): void {
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+    this.windowFrame.onClose = () => this.closeWindow()
+    setTimeout(() => {
+      this.setTitle("Mange tags")
+      this.setIcon("/assets/tag-s.png")
+    })
+  }
+
   close() {
-    this.window.closeWindow()
+    this.closeWindow()
   }
 
   editTag($event: ListDisplay) {

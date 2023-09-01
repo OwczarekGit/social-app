@@ -4,6 +4,9 @@ import {ImageService} from "../../service/image.service";
 import {PopupService} from "../../service/popup.service";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {NewWindowService} from "../../service/new-window.service";
+import {TagPickerComponent} from "../tag-picker/tag-picker.component";
+import {TagPickerParams} from "../tag-picker/tag-picker-params";
 
 @Component({
   selector: 'app-share-image',
@@ -14,7 +17,6 @@ export class ShareImageComponent extends WindowContent<null, W2kWindowFrameCompo
   imageService = inject(ImageService)
   popupService = inject(PopupService)
 
-  tagPickerOpened: boolean = false
 
   tags: Tag[] = []
 
@@ -56,11 +58,16 @@ export class ShareImageComponent extends WindowContent<null, W2kWindowFrameCompo
 
   setTags(tags: Tag[]) {
     this.tags = tags
-    this.tagPickerOpened = false
   }
 
   openPicker() {
-    this.tagPickerOpened = true
+    this.wm.openApplication(
+      TagPickerComponent,
+      new TagPickerParams(this.tags, (newTags: Tag[]) => {
+        this.tags = newTags
+      }),
+      W2kWindowFrameComponent
+    )
   }
 
   ngAfterViewInit(): void {

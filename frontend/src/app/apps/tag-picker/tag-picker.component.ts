@@ -1,29 +1,24 @@
-import {Component, EventEmitter, inject, Input, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, inject, Output } from '@angular/core';
 import {Tag} from "../../data/tag";
-import {WindowComponent} from "../../ui-elements/window/window.component";
 import {WindowService} from "../../service/window.service";
 import {ImageService} from "../../service/image.service";
 import {ListDisplay} from "../../data/list-display";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {WindowContent} from "../../data/window-content";
+import {TagPickerParams} from "./tag-picker-params";
 
 @Component({
   selector: 'app-tag-picker',
   templateUrl: './tag-picker.component.html',
   styleUrls: ['./tag-picker.component.css']
 })
-export class TagPickerComponent {
+export class TagPickerComponent extends WindowContent<TagPickerParams, W2kWindowFrameComponent> implements AfterViewInit {
 
   windowService = inject(WindowService)
   imageService = inject(ImageService)
 
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
-
-  @Output()
-  onConfirm: EventEmitter<Tag[]> = new EventEmitter<Tag[]>()
-
   newTagName: string = ''
 
-  @Input()
   selectedTags: Tag[] = []
 
   allTags: Tag[] = []
@@ -31,13 +26,22 @@ export class TagPickerComponent {
   selectedAllTag: Tag | null = null
   selectedSelectedTag: Tag | null = null
 
+  params!: TagPickerParams
+
+  override setParams(params: TagPickerParams) {
+    this.selectedTags = params.currentTags
+    this.params = params
+  }
+
   constructor() {
+    super()
     this.imageService.getAllTags().subscribe({
       next: value => {
         this.allTags = value.map(v => new Tag(v.name))
       }
     })
   }
+
 
   public addTag() {
     if (this.newTagName.trim() == "") return
@@ -46,7 +50,8 @@ export class TagPickerComponent {
   }
 
   public confirm() {
-    this.onConfirm.emit(this.selectedTags)
+    this.params.resultTags(this.selectedTags)
+    this.closeWindow()
   }
 
   changeAllTagsSelection($event: ListDisplay) {
@@ -71,6 +76,17 @@ export class TagPickerComponent {
       this.allTags.push(selected)
       this.selectedSelectedTag = null
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+    this.windowFrame.onClose = () => this.closeWindow()
+
+    setTimeout(() => {
+      this.windowFrame.close = false
+      this.setTitle("Select tags")
+      this.setIcon("/assets/tag-s.png")
+    })
   }
 
 }

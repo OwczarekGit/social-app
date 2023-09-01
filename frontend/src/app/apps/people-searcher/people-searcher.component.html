@@ -1,33 +1,23 @@
-<app-window
-  wm_draggable
-  windowIconUrl="/assets/search-friends-s.png"
-  windowTitle="Search for friends"
-  [close]="true"
-  [minimize]="false"
-  [maximize]="false"
-  (closeClicked)="close()"
->
-  <div class="box">
-    <form [formGroup]="form" class="search-row">
-      <app-input formControlName="phrase" (keyup)="performSearch()"></app-input>
-      <app-button
-        [disabled]="!form.valid"
-        caption="Search"
-        (click)="performSearch()"></app-button>
-    </form>
-    <div class="results">
-      <app-list-small
-        (itemClicked)="changeSelected($event)"
-        label="Search results"
-        [items]="searchResults">
-      </app-list-small>
-    </div>
-    <div class="controls">
-      <app-button [disabled]="selected == null" caption="Show profile"></app-button>
-      <app-button
-        [disabled]="selected == null"
-        caption="Invite"
-        (click)="invite()"></app-button>
-    </div>
+<div class="box">
+  <form [formGroup]="form" class="search-row">
+    <app-input formControlName="phrase" (keyup)="performSearch()"></app-input>
+    <app-button
+      [disabled]="!form.valid"
+      caption="Search"
+      (click)="performSearch()"></app-button>
+  </form>
+  <div class="results">
+    <app-list-small
+      (itemClicked)="changeSelected($event)"
+      label="Search results"
+      [items]="searchResults">
+    </app-list-small>
   </div>
-</app-window>
+  <div class="controls">
+    <app-button [disabled]="selected == null" caption="Show profile"></app-button>
+    <app-button
+      [disabled]="selected == null"
+      caption="Invite"
+      (click)="invite()"></app-button>
+  </div>
+</div>

@@ -1,60 +1,51 @@
-<app-window
-  wm_draggable
-  windowTitle="Edit tags"
-  windowIconUrl="/assets/tag-s.png"
-  (closeClicked)="close()"
-  [close]="true"
-  [minimize]="false"
-  [maximize]="false">
-  <div class="box">
-    <div class="content">
-      <div class="list">
-        <div>
-          <app-input
-            [(text)]="searchString"
-            (keydown)="filterTags()"
-            type="text"
-            [row]="true"
-            caption="Filter tags"></app-input>
-        </div>
-        <div>
-          <app-list-small
-            label="Tags"
-            (itemClicked)="editTag($event)"
-            [items]="filteredTags()"
-          ></app-list-small>
-        </div>
+<div class="box">
+  <div class="content">
+    <div class="list">
+      <div>
+        <app-input
+          [(text)]="searchString"
+          (keydown)="filterTags()"
+          type="text"
+          [row]="true"
+          caption="Filter tags"></app-input>
       </div>
-      <div class="editor">
-        <div></div>
-        <div class="editor-fields">
-          <div class="editor-field">
-            <admin-tag-editor-field
-              *ngIf="nowEditingTag != null"
-              (onTagDelete)="deleteTag($event)"
-              (onTagUpdate)="updateTag($event)"
-              [tag]="nowEditingTag">
-            </admin-tag-editor-field>
-          </div>
-          <div class="add-tag-field">
-            <hr/>
-            <app-input
-              [(text)]="newTagName"
-              caption="Create new tag"></app-input>
-            <div class="controls">
-              <app-button
-                [disabled]="newTagName == ''"
-                (click)="createNewTag()"
-                caption="Create"></app-button>
-            </div>
-          </div>
-        </div>
+      <div>
+        <app-list-small
+          label="Tags"
+          (itemClicked)="editTag($event)"
+          [items]="filteredTags()"
+        ></app-list-small>
       </div>
     </div>
-    <div class="controls">
-      <app-button
-        (click)="close()"
-        caption="Close"></app-button>
+    <div class="editor">
+      <div></div>
+      <div class="editor-fields">
+        <div class="editor-field">
+          <admin-tag-editor-field
+            *ngIf="nowEditingTag != null"
+            (onTagDelete)="deleteTag($event)"
+            (onTagUpdate)="updateTag($event)"
+            [tag]="nowEditingTag">
+          </admin-tag-editor-field>
+        </div>
+        <div class="add-tag-field">
+          <hr/>
+          <app-input
+            [(text)]="newTagName"
+            caption="Create new tag"></app-input>
+          <div class="controls">
+            <app-button
+              [disabled]="newTagName == ''"
+              (click)="createNewTag()"
+              caption="Create"></app-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</app-window>
+  <div class="controls">
+    <app-button
+      (click)="close()"
+      caption="Close"></app-button>
+  </div>
+</div>

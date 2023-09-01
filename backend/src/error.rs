@@ -1,3 +1,4 @@
+use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 
 pub type Result<T> = core::result::Result<T, Error>;
@@ -41,7 +42,18 @@ pub enum Error {
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
-        let mut res = (axum::http::StatusCode::INTERNAL_SERVER_ERROR).into_response();
+        // let mut res = (axum::http::StatusCode::INTERNAL_SERVER_ERROR).into_response();
+        let code = match self {
+            Error::LoginError => StatusCode::BAD_REQUEST,
+            Error::Unauthorized => StatusCode::UNAUTHORIZED,
+            Error::UnauthorizedForAdminOperations(_) => StatusCode::UNAUTHORIZED,
+            Error::UnauthorizedForUserOperations => StatusCode::UNAUTHORIZED,
+            Error::EmailTaken => StatusCode::BAD_REQUEST,
+            Error::EmailTakenPendingActivation => StatusCode::BAD_REQUEST,
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
+        };
+        let mut res = code.into_response();
+
         res.extensions_mut().insert(self);
         res
     }

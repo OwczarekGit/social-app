@@ -1,18 +1,9 @@
-<app-window
-  wm_draggable
-  [close]="true"
-  [minimize]="false"
-  [maximize]="false"
-  [windowTitle]="title"
-  (closeClicked)="close()"
->
-  <div class="box">
-    <div class="message">
-      <img [src]="icon" alt="notification-icon" />
-      <p class="font-tahoma">{{text}}</p>
-    </div>
-    <div class="controls">
-      <app-button (click)="close()" caption="OK"></app-button>
-    </div>
+<div class="box">
+  <div class="message">
+    <img [src]="iconUrl" alt="notification-icon" />
+    <p class="font-tahoma">{{text}}</p>
   </div>
-</app-window>
+  <div class="controls">
+    <app-button (click)="close()" caption="OK"></app-button>
+  </div>
+</div>

@@ -6,34 +6,42 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {LoginService} from "../../service/login.service";
 import {PopupService} from "../../service/popup.service";
 import {Router} from "@angular/router";
+import {WindowContent} from "../../data/window-content";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {NewWindowService} from "../../service/new-window.service";
 
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css']
 })
-export class LoginFormComponent implements AfterViewInit {
+export class LoginFormComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
   public form = new FormGroup({
     email: new FormControl<string>('', Validators.required),
     password: new FormControl<string>('', Validators.required),
   })
 
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
-
-  private windowService = inject(WindowService)
+  private windowService = inject(NewWindowService)
   private loginService = inject(LoginService)
   private notificationService = inject(PopupService)
   private router = inject(Router)
 
   ngAfterViewInit(): void {
-    let [x,y] = this.windowService.getSurfaceSize()
-    this.window.setPosition(x/2-411/2,y/2-230/2)
+    this.windowFrame.onClose = () => this.closeWindow()
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+
+    setTimeout(() => {
+      this.windowFrame.close = false
+      this.setIcon("")
+      this.setTitle("Log on to service")
+      let [x,y] = this.wm.getDisplaySize()
+      this.wm.setPosition(this.id, x/2, y/2, true)
+    })
   }
 
   register() {
-    this.windowService.openApplication(RegistrationFormComponent)
+    this.windowService.openApplication(RegistrationFormComponent, null, W2kWindowFrameComponent)
   }
 
   login() {
@@ -42,17 +50,17 @@ export class LoginFormComponent implements AfterViewInit {
     this.loginService.login(form.email as string, form.password as string).subscribe(
       (r) => {
         this.router.navigate(['/desktop'])
-        this.window.closeWindow()
+        this.closeWindow()
       },
       (e) => {
         let status = e.status
 
         switch (status) {
-          case 403: {
-            this.notificationService.error("Wrong password", "User with this E-Mail address exists, but the password does not match.")
+          case 400: {
+            this.notificationService.error("Wrong password", "Invalid E-Mail address or password.")
           } break;
-          case 404: {
-            this.notificationService.error("User not found", "User with specified E-Mail address not found.")
+          case 504: {
+            this.notificationService.error("Service unavailable", "The service does not respond.")
           } break;
         }
       }

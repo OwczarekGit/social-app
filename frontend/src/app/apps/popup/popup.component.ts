@@ -1,21 +1,33 @@
-import {Component, ElementRef, inject, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
+import {AfterViewInit, Component} from '@angular/core';
+import {WindowContent} from "../../data/window-content";
+import {PopupParams, PopupType} from "./popup-params";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-popup',
   templateUrl: './popup.component.html',
   styleUrls: ['./popup.component.css']
 })
-export class PopupComponent {
+export class PopupComponent extends WindowContent<PopupParams, W2kWindowFrameComponent> implements AfterViewInit {
 
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
-
-  public title!: string
   public text!: string
-  public icon!: string
 
   public close() {
-    this.window.closeWindow()
+    this.closeWindow()
+  }
+
+  override setParams(params: PopupParams) {
+    this.text = params.text
+    this.setTitle(params.title)
+    switch (params.type) {
+      case PopupType.Warning: this.setIcon("/assets/notification-icon.png"); break;
+      case PopupType.Info: this.setIcon("/assets/info.png"); break;
+      case PopupType.Error: this.setIcon("/assets/error.png"); break;
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.windowFrame.onClose = () => this.closeWindow()
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
   }
 }
