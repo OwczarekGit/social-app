@@ -8,7 +8,7 @@ import {ChangeUsernameComponent} from "../../../../apps/change-username/change-u
 import {ShareImageComponent} from "../../../../apps/share-image/share-image.component";
 import {AuthService} from "../../../../service/auth.service";
 import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-tag-editor.component";
-import {NewWindowService} from "../../../../service/new-window.service";
+import {WindowService} from "../../../../service/window.service";
 import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
@@ -19,7 +19,7 @@ import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/
 export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
-  public newWindowService = inject(NewWindowService)
+  public newWindowService = inject(WindowService)
   public authService = inject(AuthService)
 
 

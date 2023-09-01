@@ -6,7 +6,7 @@ import {DraggableDirective} from "../directives/draggable.directive";
 @Injectable({
   providedIn: 'root'
 })
-export class NewWindowService {
+export class WindowService {
 
   private vcr?: ViewContainerRef
 

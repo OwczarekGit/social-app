@@ -6,7 +6,7 @@ import {PopupService} from "../../service/popup.service";
 import {Router} from "@angular/router";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
-import {NewWindowService} from "../../service/new-window.service";
+import {WindowService} from "../../service/window.service";
 
 @Component({
   selector: 'app-login-form',
@@ -20,7 +20,7 @@ export class LoginFormComponent extends WindowContent<null, W2kWindowFrameCompon
     password: new FormControl<string>('', Validators.required),
   })
 
-  private windowService = inject(NewWindowService)
+  private windowService = inject(WindowService)
   private loginService = inject(LoginService)
   private notificationService = inject(PopupService)
   private router = inject(Router)

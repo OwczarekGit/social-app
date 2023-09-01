@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {PopupComponent} from "../apps/popup/popup.component";
 import {SoundService} from "./sound.service";
-import {NewWindowService} from "./new-window.service";
+import {WindowService} from "./window.service";
 import {PopupParams, PopupType} from "../apps/popup/popup-params";
 import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
@@ -10,7 +10,7 @@ import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-windo
 })
 export class PopupService {
 
-  private windowService = inject(NewWindowService)
+  private windowService = inject(WindowService)
   private soundService = inject(SoundService)
 
   constructor() { }

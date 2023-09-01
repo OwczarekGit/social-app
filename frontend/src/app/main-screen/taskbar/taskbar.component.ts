@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {NotificationService} from "../../service/notification.service";
 import {PostWriterComponent} from "../../apps/post-writer/post-writer.component";
 import {ShareImageComponent} from "../../apps/share-image/share-image.component";
-import {NewWindowService} from "../../service/new-window.service";
+import {WindowService} from "../../service/window.service";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
@@ -12,7 +12,7 @@ import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-wi
 })
 export class TaskbarComponent {
   public notificationService = inject(NotificationService)
-  public windowService = inject(NewWindowService)
+  public windowService = inject(WindowService)
 
   public openWritePost() {
     this.windowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)

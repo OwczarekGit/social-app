@@ -1,6 +1,6 @@
 import {Component, inject, Input} from '@angular/core';
 import {NotificationCenterComponent} from "../../../../apps/notification-center/notification-center.component";
-import {NewWindowService} from "../../../../service/new-window.service";
+import {WindowService} from "../../../../service/window.service";
 import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
@@ -13,7 +13,7 @@ export class NotificationIndicatorComponent {
   @Input()
   notificationCount: number = 0
 
-  private windowService = inject(NewWindowService)
+  private windowService = inject(WindowService)
 
   openNotificationCenter() {
     this.windowService.openApplication(NotificationCenterComponent, null ,W2kWindowFrameComponent)

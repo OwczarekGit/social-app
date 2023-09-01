@@ -2,7 +2,7 @@ import {AfterViewInit, Component, inject, ViewContainerRef} from '@angular/core'
 import {LoginFormComponent} from "../forms/login-form/login-form.component";
 import {AuthService} from "../service/auth.service";
 import {Router} from "@angular/router";
-import {NewWindowService} from "../service/new-window.service";
+import {WindowService} from "../service/window.service";
 import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
@@ -13,7 +13,7 @@ import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-windo
 export class LoginScreenComponent implements AfterViewInit {
 
   public vcr = inject(ViewContainerRef)
-  private windowService = inject(NewWindowService)
+  private windowService = inject(WindowService)
   private authService = inject(AuthService)
   private router = inject(Router)
 

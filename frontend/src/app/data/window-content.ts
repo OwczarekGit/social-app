@@ -1,10 +1,10 @@
 import {inject} from "@angular/core";
-import {NewWindowService} from "../service/new-window.service";
+import {WindowService} from "../service/window.service";
 import {WindowFrame} from "./window-frame";
 
 export abstract class WindowContent<P, F extends WindowFrame> {
 
-  wm = inject(NewWindowService)
+  wm = inject(WindowService)
   windowFrame!: F
 
   id: number = -1
