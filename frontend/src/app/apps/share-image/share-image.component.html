@@ -1,49 +1,35 @@
-<app-window
-  wm_draggable
-  windowTitle="Share image"
-  windowIconUrl="/assets/share-image-s.png"
-  (closeClicked)="close()"
-  [minimize]="false"
-  [maximize]="false">
-  <div class="box">
-    <div class="tag-list">
-      <app-list-small
-        [items]="tags"
-        label="Selected tags">
-      </app-list-small>
-      <div class="tag-list-controls">
-        <app-button (click)="openPicker()" caption="Change"></app-button>
-      </div>
-    </div>
-    <div class="picker">
-      <div class="picker-top">
-        <div>
-          <app-input
-            type="text"
-            [(text)]="title"
-            [row]="true"
-            caption="Image title"></app-input>
-        </div>
-        <div class="preview">
-          <img alt="preview-image" class="preview-image" [src]="preview"/>
-          <label>
-            <input type="file" (change)="selectFile($event)"/>
-          </label>
-        </div>
-      </div>
-      <div class="picker-controls">
-        <app-button
-          [disabled]="title.length == 0 || tags.length == 0 || preview == ''"
-          (click)="share()"
-          caption="Share"></app-button>
-        <app-button (click)="close()" caption="Cancel"></app-button>
-      </div>
+<div class="box">
+  <div class="tag-list">
+    <app-list-small
+      [items]="tags"
+      label="Selected tags">
+    </app-list-small>
+    <div class="tag-list-controls">
+      <app-button (click)="openPicker()" caption="Change"></app-button>
     </div>
   </div>
-</app-window>
-<app-tag-picker
-  style="z-index: 1000"
-  [selectedTags]="tags"
-  *ngIf="tagPickerOpened"
-  (onConfirm)="setTags($event)">
-</app-tag-picker>
+  <div class="picker">
+    <div class="picker-top">
+      <div>
+        <app-input
+          type="text"
+          [(text)]="title"
+          [row]="true"
+          caption="Image title"></app-input>
+      </div>
+      <div class="preview">
+        <img alt="preview-image" class="preview-image" [src]="preview"/>
+        <label>
+          <input type="file" (change)="selectFile($event)"/>
+        </label>
+      </div>
+    </div>
+    <div class="picker-controls">
+      <app-button
+        [disabled]="title.length == 0 || tags.length == 0 || preview == ''"
+        (click)="share()"
+        caption="Share"></app-button>
+      <app-button (click)="close()" caption="Cancel"></app-button>
+    </div>
+  </div>
+</div>

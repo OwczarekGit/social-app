@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {LoginService} from "../../../../service/login.service";
 import {Router} from "@angular/router";
-import {WindowService} from "../../../../service/window.service";
 import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
 import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
 import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
@@ -9,6 +8,8 @@ import {ChangeUsernameComponent} from "../../../../apps/change-username/change-u
 import {ShareImageComponent} from "../../../../apps/share-image/share-image.component";
 import {AuthService} from "../../../../service/auth.service";
 import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-tag-editor.component";
+import {WindowService} from "../../../../service/window.service";
+import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -18,7 +19,7 @@ import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-
 export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
-  public windowService = inject(WindowService)
+  public newWindowService = inject(WindowService)
   public authService = inject(AuthService)
 
 
@@ -28,27 +29,27 @@ export class StartMenuComponent {
   }
 
   openCreatePost() {
-    this.windowService.openApplication(PostWriterComponent)
+    this.newWindowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)
   }
 
   openFriendManager() {
-    this.windowService.openApplication(FriendManagerComponent)
+    this.newWindowService.openApplication(FriendManagerComponent, null, W2kWindowFrameComponent)
   }
 
   openChangeUsername() {
-    this.windowService.openApplication(ChangeUsernameComponent)
+    this.newWindowService.openApplication(ChangeUsernameComponent, null, W2kWindowFrameComponent)
   }
 
   openSearchFriends() {
-    this.windowService.openApplication(PeopleSearcherComponent)
+    this.newWindowService.openApplication(PeopleSearcherComponent, null, W2kWindowFrameComponent)
   }
 
   openShareImage() {
-    this.windowService.openApplication(ShareImageComponent)
+    this.newWindowService.openApplication(ShareImageComponent, null, W2kWindowFrameComponent)
   }
 
   // ADMIN APPS
   openAdminManageTags() {
-    this.windowService.openApplication(AdminTagEditorComponent)
+    this.newWindowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
   }
 }

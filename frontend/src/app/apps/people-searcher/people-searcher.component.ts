@@ -1,30 +1,27 @@
-import {Component, inject, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FriendService} from "../../service/friend.service";
 import {SearchNonFriendResult} from "../../data/search-non-friend-result";
 import {ListDisplay} from "../../data/list-display";
-import {WindowComponent} from "../../ui-elements/window/window.component";
 import {PopupService} from "../../service/popup.service";
+import {WindowContent} from "../../data/window-content";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-people-searcher',
   templateUrl: './people-searcher.component.html',
   styleUrls: ['./people-searcher.component.css']
 })
-export class PeopleSearcherComponent {
+export class PeopleSearcherComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
   friendService = inject(FriendService)
   popupService = inject(PopupService)
-
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
 
   public form = new FormGroup({
     phrase: new FormControl<string>('', Validators.required)
   })
 
   public searchResults: SearchNonFriendResult[] = []
-
   public selected: SearchNonFriendResult | null = null
 
   public performSearch() {
@@ -41,7 +38,7 @@ export class PeopleSearcherComponent {
   }
 
   close() {
-    this.window.closeWindow()
+    this.closeWindow()
   }
 
   invite() {
@@ -60,5 +57,14 @@ export class PeopleSearcherComponent {
         this.selected = null
 
       })
+  }
+
+  ngAfterViewInit(): void {
+    this.windowFrame.onClose = () => this.closeWindow()
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+    setTimeout(() => {
+      this.setIcon("/assets/search-friends-s.png")
+      this.setTitle("Search for friends")
+    })
   }
 }

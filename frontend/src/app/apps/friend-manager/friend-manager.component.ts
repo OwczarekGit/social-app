@@ -1,25 +1,21 @@
-import {Component, inject, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
-import {WindowService} from "../../service/window.service";
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {FriendRequest} from "../../data/friend-request";
 import {ListDisplay} from "../../data/list-display";
 import {FriendService} from "../../service/friend.service";
 import {Profile} from "../../data/profile";
-import {verifyHostBindings} from "@angular/compiler";
+import {WindowContent} from "../../data/window-content";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-friend-manager',
   templateUrl: './friend-manager.component.html',
   styleUrls: ['./friend-manager.component.css']
 })
-export class FriendManagerComponent {
+export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
+
   protected readonly Array = Array;
   public friendsTabOpened: boolean = true
-  protected windowService = inject(WindowService)
   private friendService = inject(FriendService)
-
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
 
   selectedFriendRequest: FriendRequest | null = null
   selectedFriendProfile: Profile | null = null
@@ -28,6 +24,7 @@ export class FriendManagerComponent {
   friendProfiles: Profile[] = []
 
   constructor() {
+    super()
     this.openFriendsTab()
   }
 
@@ -56,7 +53,7 @@ export class FriendManagerComponent {
   }
 
   public close() {
-    this.window.closeWindow()
+    this.closeWindow()
   }
 
   setSelectedFriendRequest(e: ListDisplay) {
@@ -85,5 +82,15 @@ export class FriendManagerComponent {
     let i = this.friendProfiles.findIndex(u => u.id == this.selectedFriendProfile?.id)
     this.friendProfiles.splice(i,1)
     this.friendProfiles = [...this.friendProfiles]
+  }
+
+  ngAfterViewInit(): void {
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+    this.windowFrame.onClose = () => this.closeWindow()
+
+    setTimeout(() => {
+      this.setIcon("/assets/user-icon-s.png")
+      this.setTitle("Manage friends")
+    })
   }
 }

@@ -1,25 +1,23 @@
-import {Component, inject, signal, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
+import {AfterViewInit, Component, inject, signal} from '@angular/core';
 import {Tag} from "../../data/tag";
 import {ImageService} from "../../service/image.service";
 import {PopupService} from "../../service/popup.service";
+import {WindowContent} from "../../data/window-content";
+import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {TagPickerComponent} from "../tag-picker/tag-picker.component";
+import {TagPickerParams} from "../tag-picker/tag-picker-params";
 
 @Component({
   selector: 'app-share-image',
   templateUrl: './share-image.component.html',
   styleUrls: ['./share-image.component.css']
 })
-export class ShareImageComponent {
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
-
+export class ShareImageComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit{
   imageService = inject(ImageService)
   popupService = inject(PopupService)
 
-  tagPickerOpened: boolean = false
 
   tags: Tag[] = []
-  title: string = ""
 
   preview: string = ''
 
@@ -40,7 +38,7 @@ export class ShareImageComponent {
   }
 
   public close() {
-    this.window.closeWindow()
+    this.closeWindow()
   }
 
   selectFile(ev: any) {
@@ -59,10 +57,25 @@ export class ShareImageComponent {
 
   setTags(tags: Tag[]) {
     this.tags = tags
-    this.tagPickerOpened = false
   }
 
   openPicker() {
-    this.tagPickerOpened = true
+    this.wm.openApplication(
+      TagPickerComponent,
+      new TagPickerParams(this.tags, (newTags: Tag[]) => {
+        this.tags = newTags
+      }),
+      W2kWindowFrameComponent
+    )
+  }
+
+  ngAfterViewInit(): void {
+    this.windowFrame.onClose = () => this.close()
+    this.windowFrame.onFocus = () => this.wm.focusApplication(this.id)
+
+    setTimeout(() => {
+      this.setIcon("/assets/share-image-s.png")
+      this.setTitle("Share image")
+    })
   }
 }

@@ -1,41 +1,34 @@
-<app-window
-  wm_draggable
-  [minimize]="false"
-  [maximize]="false"
-  [close]="false"
-  windowTitle="Select tags">
-  <div class="box">
-    <div class="add-new-tag">
-      <app-input (keyup.enter)="addTag()" [(text)]="newTagName" type="text"></app-input>
-      <app-button
-        (click)="addTag()"
-        caption="Add new"
-        [disabled]="newTagName.length == 0"></app-button>
+<div class="box">
+  <div class="add-new-tag">
+    <app-input (keyup.enter)="addTag()" [(text)]="newTagName" type="text"></app-input>
+    <app-button
+      (click)="addTag()"
+      caption="Add new"
+      [disabled]="newTagName.length == 0"></app-button>
+  </div>
+  <div class="pickers">
+    <div>
+      <app-list-small
+        (itemClicked)="changeAllTagsSelection($event)"
+        [items]="allTags"
+        label="Available tags"></app-list-small>
     </div>
-    <div class="pickers">
-      <div>
-        <app-list-small
-          (itemClicked)="changeAllTagsSelection($event)"
-          [items]="allTags"
-          label="Available tags"></app-list-small>
-      </div>
-      <div class="move">
-        <app-button-icon
-          (click)="moveSelectedAllTag()"
-          src="/assets/go-next.png"></app-button-icon>
-        <app-button-icon
-          (click)="moveSelectedSelectedTag()"
-          src="/assets/go-previous.png"></app-button-icon>
-      </div>
-      <div>
-        <app-list-small
-          (itemClicked)="changeSelectedTagsSelection($event)"
-          [items]="selectedTags"
-          label="Selected tags"></app-list-small>
-      </div>
+    <div class="move">
+      <app-button-icon
+        (click)="moveSelectedAllTag()"
+        src="/assets/go-next.png"></app-button-icon>
+      <app-button-icon
+        (click)="moveSelectedSelectedTag()"
+        src="/assets/go-previous.png"></app-button-icon>
     </div>
-    <div class="controls">
-      <app-button [disabled]="selectedTags.length == 0" (click)="confirm()" caption="OK"></app-button>
+    <div>
+      <app-list-small
+        (itemClicked)="changeSelectedTagsSelection($event)"
+        [items]="selectedTags"
+        label="Selected tags"></app-list-small>
     </div>
   </div>
-</app-window>
+  <div class="controls">
+    <app-button [disabled]="selectedTags.length == 0" (click)="confirm()" caption="OK"></app-button>
+  </div>
+</div>

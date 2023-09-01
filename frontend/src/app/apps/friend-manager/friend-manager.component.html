@@ -1,37 +1,27 @@
-<app-window
-  wm_draggable
-  windowIconUrl="/assets/user-icon-s.png"
-  windowTitle="Manage friends"
-  [close]="true"
-  [minimize]="false"
-  [maximize]="false"
-  (closeClicked)="close()"
->
-  <div class="panel">
-    <div class="switchers">
-      <app-button (click)="openFriendsTab()" caption="Friends"></app-button>
-      <app-button (click)="openRequestTab()" caption="Requests"></app-button>
-    </div>
-    <div class="tab">
-      <app-list-small
-        (itemClicked)="setSelectedFriendProfile($event)"
-        *ngIf="friendsTabOpened"
-        [items]="friendProfiles"
-        label="Friends">
-      </app-list-small>
-      <app-list-small
-        (itemClicked)="setSelectedFriendRequest($event)"
-        *ngIf="!friendsTabOpened"
-        [items]="friendRequests"
-        label="Requests">
-      </app-list-small>
-    </div>
+<div class="panel">
+  <div class="switchers">
+    <app-button (click)="openFriendsTab()" caption="Friends"></app-button>
+    <app-button (click)="openRequestTab()" caption="Requests"></app-button>
   </div>
-  <div *ngIf="friendsTabOpened" class="controls">
-    <app-button (click)="removeFriend()" [disabled]="this.selectedFriendProfile == null" caption="Remove friend"></app-button>
+  <div class="tab">
+    <app-list-small
+      (itemClicked)="setSelectedFriendProfile($event)"
+      *ngIf="friendsTabOpened"
+      [items]="friendProfiles"
+      label="Friends">
+    </app-list-small>
+    <app-list-small
+      (itemClicked)="setSelectedFriendRequest($event)"
+      *ngIf="!friendsTabOpened"
+      [items]="friendRequests"
+      label="Requests">
+    </app-list-small>
   </div>
-  <div *ngIf="!friendsTabOpened" class="controls">
-    <app-button (click)="acceptFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Accept"></app-button>
-    <app-button (click)="denyFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Deny"></app-button>
-  </div>
-</app-window>
+</div>
+<div *ngIf="friendsTabOpened" class="controls">
+  <app-button (click)="removeFriend()" [disabled]="this.selectedFriendProfile == null" caption="Remove friend"></app-button>
+</div>
+<div *ngIf="!friendsTabOpened" class="controls">
+  <app-button (click)="acceptFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Accept"></app-button>
+  <app-button (click)="denyFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Deny"></app-button>
+</div>

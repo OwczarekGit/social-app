@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, inject, ViewContainerRef} from '@angular/core';
-import {WindowService} from "../service/window.service";
 import {LoginFormComponent} from "../forms/login-form/login-form.component";
 import {AuthService} from "../service/auth.service";
 import {Router} from "@angular/router";
+import {WindowService} from "../service/window.service";
+import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-login-screen',
@@ -17,10 +18,10 @@ export class LoginScreenComponent implements AfterViewInit {
   private router = inject(Router)
 
   ngAfterViewInit(): void {
-    this.windowService.setSurface(this.vcr)
+    this.windowService.setDisplay(this.vcr)
     setTimeout(() => {
       if (this.authService.isNotLoggedIn())
-        this.windowService.openApplication(LoginFormComponent)
+        this.windowService.openApplication(LoginFormComponent, null, W2kWindowFrameComponent)
       else
         this.router.navigate(['/desktop'])
     }, 0)

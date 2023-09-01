@@ -7,8 +7,7 @@ import { InputComponent } from './ui-elements/input/input.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { RegistrationFormComponent } from './forms/registration-form/registration-form.component';
 import { ButtonComponent } from './ui-elements/button/button.component';
-import { WindowComponent } from './ui-elements/window/window.component';
-import { TitleButtonComponent } from './ui-elements/window/title-button/title-button.component';
+import { TitleButtonComponent } from './ui-elements/w2k-window-frame/title-button/title-button.component';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
 import {HttpClientModule} from "@angular/common/http";
 import { PopupComponent } from './apps/popup/popup.component';
@@ -37,6 +36,7 @@ import { LaunchersComponent } from './main-screen/taskbar/launchers/launchers.co
 import { LauncherAppComponent } from './main-screen/taskbar/launchers/launcher-app/launcher-app.component';
 import { AdminTagEditorComponent } from './admin/admin-tag-editor/admin-tag-editor.component';
 import { AdminTagEditorFieldComponent } from './admin/admin-tag-editor/admin-tag-editor-field/admin-tag-editor-field.component';
+import { W2kWindowFrameComponent } from './ui-elements/w2k-window-frame/w2k-window-frame.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +44,6 @@ import { AdminTagEditorFieldComponent } from './admin/admin-tag-editor/admin-tag
     InputComponent,
     RegistrationFormComponent,
     ButtonComponent,
-    WindowComponent,
     TitleButtonComponent,
     LoginScreenComponent,
     PopupComponent,
@@ -73,6 +72,7 @@ import { AdminTagEditorFieldComponent } from './admin/admin-tag-editor/admin-tag
     LauncherAppComponent,
     AdminTagEditorComponent,
     AdminTagEditorFieldComponent,
+    W2kWindowFrameComponent,
   ],
   imports: [
     BrowserModule,
