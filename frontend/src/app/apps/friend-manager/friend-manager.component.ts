@@ -5,6 +5,8 @@ import {FriendService} from "../../service/friend.service";
 import {Profile} from "../../data/profile";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {PopupService} from "../../service/popup.service";
+import {filter} from "rxjs";
 
 @Component({
   selector: 'app-friend-manager',
@@ -16,6 +18,7 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
   protected readonly Array = Array;
   public friendsTabOpened: boolean = true
   private friendService = inject(FriendService)
+  private popupService = inject(PopupService)
 
   selectedFriendRequest: FriendRequest | null = null
   selectedFriendProfile: Profile | null = null
@@ -35,7 +38,7 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
 
     this.friendService.getFriendList().subscribe({
       next: value => {
-        this.friendProfiles = value.map(p => new Profile(p.id, p.username))
+        this.friendProfiles = value.map(p => new Profile(p.user_id, p.username))
       }
     })
   }
@@ -79,9 +82,19 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
   }
 
   removeFriend() {
-    let i = this.friendProfiles.findIndex(u => u.id == this.selectedFriendProfile?.id)
-    this.friendProfiles.splice(i,1)
-    this.friendProfiles = [...this.friendProfiles]
+    if (this.selectedFriendProfile == null) return
+    console.log(this.selectedFriendProfile)
+    this.friendService.removeFriend(this.selectedFriendProfile?.user_id).subscribe({
+      next: value => {
+        let i = this.friendProfiles.findIndex(u => u.user_id == this.selectedFriendProfile?.user_id)
+        this.friendProfiles.splice(i,1)
+        this.friendProfiles = [...this.friendProfiles]
+        this.popupService.info("Friend removed ", "You are no longer friends.")
+      },
+      error: _ => {
+        this.popupService.info("Error removing friend", "There was an error while removing friend.")
+      }
+    })
   }
 
   ngAfterViewInit(): void {

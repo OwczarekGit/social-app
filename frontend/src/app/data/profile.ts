@@ -1,11 +1,11 @@
 import {ListDisplay} from "./list-display";
 
 export class Profile implements ListDisplay {
-  id: number
+  user_id: number
   username: string
 
   constructor(id: number, username: string) {
-    this.id = id
+    this.user_id = id
     this.username = username
   }
 

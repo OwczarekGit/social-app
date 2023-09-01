@@ -9,8 +9,18 @@ pub struct FriendService {
     neo4j: Arc<Graph>,
 }
 
-
 impl FriendService {
+
+    pub async fn remove_friend(&self, user_id: i64, other_id: i64) -> Result<()> {
+        self.neo4j.run(
+            query("match (n:Profile{id: $id})-[r:FRIEND]-(o:Profile{id: $other_id}) delete r")
+                .param("id", user_id)
+                .param("other_id", other_id)
+        ).await?;
+
+        Ok(())
+    }
+
     pub async fn get_friend_list(&self, user_id: i64) -> Result<Vec<Profile>> {
         let q = query("match (m:Profile{id: $id})-[:FRIEND]-(p:Profile) return p")
             .param("id", user_id);

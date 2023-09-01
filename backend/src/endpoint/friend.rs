@@ -1,7 +1,7 @@
 use axum::extract::{Path, Query, State};
 use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
-use axum::routing::{get, post};
+use axum::routing::{delete, get, post};
 use serde::{Deserialize, Serialize};
 use crate::{ActiveUser, AppState};
 use crate::endpoint::notification::{NotificationData, NotificationType};
@@ -17,6 +17,7 @@ pub fn routes() -> Router<AppState> {
         .route("/invite/:target_id", post(send_friend_request))
         .route("/list", get(get_friend_list))
         .route("/", get(search_users))
+        .route("/:id", delete(remove_friend))
 }
 
 pub async fn search_users(
@@ -71,6 +72,15 @@ pub async fn get_friend_list(
 ) -> Result<impl IntoResponse> {
     Ok(Json(friend_service.get_friend_list(user.id).await?))
 }
+
+pub async fn remove_friend(
+    Extension(user): Extension<ActiveUser>,
+    State(friend_service): State<FriendService>,
+    Path(other_id): Path<i64>,
+) -> Result<impl IntoResponse> {
+    friend_service.remove_friend(user.id, other_id).await
+}
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SearchFriendRequest {

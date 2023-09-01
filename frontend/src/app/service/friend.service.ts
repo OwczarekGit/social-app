@@ -37,4 +37,8 @@ export class FriendService {
   public getFriendList(): Observable<Profile[]> {
     return this.http.get<Profile[]>("/api/friend/list")
   }
+
+  public removeFriend(id: number): Observable<any> {
+    return this.http.delete("/api/friend/" + id)
+  }
 }
