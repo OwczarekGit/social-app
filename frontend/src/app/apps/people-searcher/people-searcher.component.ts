@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FriendService} from "../../service/friend.service";
 import {SearchNonFriendResult} from "../../data/search-non-friend-result";
 import {ListDisplay} from "../../data/list-display";
-import {WindowComponent} from "../../ui-elements/window/window.component";
 import {PopupService} from "../../service/popup.service";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";

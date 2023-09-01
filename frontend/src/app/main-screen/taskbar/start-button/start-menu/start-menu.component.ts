@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {LoginService} from "../../../../service/login.service";
 import {Router} from "@angular/router";
-import {WindowService} from "../../../../service/window.service";
 import {PostWriterComponent} from "../../../../apps/post-writer/post-writer.component";
 import {FriendManagerComponent} from "../../../../apps/friend-manager/friend-manager.component";
 import {PeopleSearcherComponent} from "../../../../apps/people-searcher/people-searcher.component";
@@ -20,7 +19,6 @@ import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/
 export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
-  public windowService = inject(WindowService)
   public newWindowService = inject(NewWindowService)
   public authService = inject(AuthService)
 

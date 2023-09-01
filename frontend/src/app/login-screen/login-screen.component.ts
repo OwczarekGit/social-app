@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, inject, ViewContainerRef} from '@angular/core';
-import {WindowService} from "../service/window.service";
 import {LoginFormComponent} from "../forms/login-form/login-form.component";
 import {AuthService} from "../service/auth.service";
 import {Router} from "@angular/router";

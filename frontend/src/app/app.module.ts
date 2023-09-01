@@ -7,8 +7,7 @@ import { InputComponent } from './ui-elements/input/input.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { RegistrationFormComponent } from './forms/registration-form/registration-form.component';
 import { ButtonComponent } from './ui-elements/button/button.component';
-import { WindowComponent } from './ui-elements/window/window.component';
-import { TitleButtonComponent } from './ui-elements/window/title-button/title-button.component';
+import { TitleButtonComponent } from './ui-elements/w2k-window-frame/title-button/title-button.component';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
 import {HttpClientModule} from "@angular/common/http";
 import { PopupComponent } from './apps/popup/popup.component';
@@ -45,7 +44,6 @@ import { W2kWindowFrameComponent } from './ui-elements/w2k-window-frame/w2k-wind
     InputComponent,
     RegistrationFormComponent,
     ButtonComponent,
-    WindowComponent,
     TitleButtonComponent,
     LoginScreenComponent,
     PopupComponent,

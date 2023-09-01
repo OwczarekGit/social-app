@@ -1,6 +1,5 @@
-import {AfterViewInit, Component, EventEmitter, inject, Output } from '@angular/core';
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {Tag} from "../../data/tag";
-import {WindowService} from "../../service/window.service";
 import {ImageService} from "../../service/image.service";
 import {ListDisplay} from "../../data/list-display";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
@@ -14,7 +13,6 @@ import {TagPickerParams} from "./tag-picker-params";
 })
 export class TagPickerComponent extends WindowContent<TagPickerParams, W2kWindowFrameComponent> implements AfterViewInit {
 
-  windowService = inject(WindowService)
   imageService = inject(ImageService)
 
   newTagName: string = ''

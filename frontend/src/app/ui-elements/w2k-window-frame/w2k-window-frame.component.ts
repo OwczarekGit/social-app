@@ -1,6 +1,5 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {WindowFrame} from "../../data/window-frame";
-import {DraggableDirective} from "../../directives/draggable.directive";
 
 @Component({
   selector: 'app-w2k-window-frame',

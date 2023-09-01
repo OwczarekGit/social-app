@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {NotificationService} from "../../service/notification.service";
 import {Notification} from "../../data/notification";
 import {WindowContent} from "../../data/window-content";

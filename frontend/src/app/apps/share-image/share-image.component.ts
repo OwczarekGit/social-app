@@ -1,10 +1,9 @@
-import {AfterViewInit, Component, inject, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, signal} from '@angular/core';
 import {Tag} from "../../data/tag";
 import {ImageService} from "../../service/image.service";
 import {PopupService} from "../../service/popup.service";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
-import {NewWindowService} from "../../service/new-window.service";
 import {TagPickerComponent} from "../tag-picker/tag-picker.component";
 import {TagPickerParams} from "../tag-picker/tag-picker-params";
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ProfileService} from "../../service/profile.service";
 import {PopupService} from "../../service/popup.service";

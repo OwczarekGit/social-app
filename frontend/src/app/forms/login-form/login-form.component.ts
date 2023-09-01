@@ -1,6 +1,4 @@
 import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
-import {WindowService} from "../../service/window.service";
 import {RegistrationFormComponent} from "../registration-form/registration-form.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {LoginService} from "../../service/login.service";

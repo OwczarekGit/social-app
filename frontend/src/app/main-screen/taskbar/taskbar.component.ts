@@ -1,6 +1,5 @@
 import {Component, inject} from '@angular/core';
 import {NotificationService} from "../../service/notification.service";
-import {WindowService} from "../../service/window.service";
 import {PostWriterComponent} from "../../apps/post-writer/post-writer.component";
 import {ShareImageComponent} from "../../apps/share-image/share-image.component";
 import {NewWindowService} from "../../service/new-window.service";

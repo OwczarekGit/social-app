@@ -1,6 +1,4 @@
-import {AfterViewInit, Component, inject, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
-import {WindowService} from "../../service/window.service";
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {FriendRequest} from "../../data/friend-request";
 import {ListDisplay} from "../../data/list-display";
 import {FriendService} from "../../service/friend.service";
@@ -17,7 +15,6 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
 
   protected readonly Array = Array;
   public friendsTabOpened: boolean = true
-  protected windowService = inject(WindowService)
   private friendService = inject(FriendService)
 
   selectedFriendRequest: FriendRequest | null = null

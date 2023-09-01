@@ -1,6 +1,4 @@
-import {AfterViewInit, Component, inject, OnInit, ViewChild} from '@angular/core';
-import {WindowComponent} from "../../ui-elements/window/window.component";
-import {WindowService} from "../../service/window.service";
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PostService} from "../../service/post.service";
 import {PopupService} from "../../service/popup.service";
@@ -18,12 +16,8 @@ export class PostWriterComponent extends WindowContent<null, W2kWindowFrameCompo
     content: new FormControl<string>('', Validators.required)
   })
 
-  public windowService = inject(WindowService)
   public postService = inject(PostService)
   public popupService = inject(PopupService)
-
-  @ViewChild(WindowComponent)
-  window!: WindowComponent
 
   public publishPost(){
     let form = this.form.getRawValue()
