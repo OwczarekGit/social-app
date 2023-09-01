@@ -16,12 +16,25 @@ export class PopupService {
   constructor() { }
 
   public error(title: string, text: string) {
-    this.windowService.openApplication(PopupComponent, new PopupParams(PopupType.Error, text, title), W2kWindowFrameComponent)
-    this.soundService.error()
+    let id = this.windowService.openApplication(PopupComponent, new PopupParams(PopupType.Error, text, title), W2kWindowFrameComponent)
+    if (id != null) {
+      this.centerPopup(id)
+      this.soundService.error()
+    }
   }
 
-  info(title: string, text: string) {
-    this.windowService.openApplication(PopupComponent, new PopupParams(PopupType.Info, text, title), W2kWindowFrameComponent)
-    this.soundService.message()
+  public info(title: string, text: string) {
+    let id = this.windowService.openApplication(PopupComponent, new PopupParams(PopupType.Info, text, title), W2kWindowFrameComponent)
+    if (id != null) {
+      this.centerPopup(id)
+      this.soundService.message()
+    }
+  }
+
+  private centerPopup(id: number) {
+    setTimeout(() => {
+      let [x,y] = this.windowService.getDisplaySize()
+      this.windowService.setPosition(id, x/2, y/2, true)
+    })
   }
 }

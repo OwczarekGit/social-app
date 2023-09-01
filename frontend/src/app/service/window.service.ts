@@ -23,11 +23,11 @@ export class WindowService {
 
   public openApplication
     <P, F extends WindowFrame, T extends WindowContent<P, F>>
-    (componentType: Type<T>, params: P, frame: Type<F>) {
+    (componentType: Type<T>, params: P, frame: Type<F>): number | null {
 
     if (this.vcr == null) {
       console.error("VCR has not been set.")
-      return
+      return null
     }
 
     let window = this.vcr.createComponent(frame)
@@ -52,6 +52,8 @@ export class WindowService {
     this.openedApplications.set(this.currentWindowId, new OpenedApplication(window, windowContent))
     this.focusApplication(this.currentWindowId)
     this.makeDraggable(this.currentWindowId)
+
+    return this.currentWindowId
   }
 
   closeApplication(id: number) {
