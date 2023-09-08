@@ -35,9 +35,10 @@ export class DraggableDirective implements AfterViewInit {
       initX = ev.clientX - this.parseNum(el.style.left)
       initY = ev.clientY - this.parseNum(el.style.top)
 
-      if (!(ev.target as HTMLElement).classList.contains("dw_draggable")) return
+      if (!(ev.target as HTMLElement).classList.contains("wm_draggable")) return
 
       el.style.cursor = 'move'
+      el.classList.add('wm_dragged')
 
       dragSub = drag.subscribe(ev => {
         ev.preventDefault()
@@ -52,6 +53,7 @@ export class DraggableDirective implements AfterViewInit {
         initX = currentX
         initY = currentY
         el.style.cursor = ""
+        el.classList.remove('wm_dragged')
         if (dragSub)
           dragSub.unsubscribe()
       })

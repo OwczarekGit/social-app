@@ -6,6 +6,10 @@
   background-color: var(--color-window-bg);
 }
 
+:host.wm_dragged {
+  opacity: .8;
+}
+
 div.w2k-window-inner {
   display: grid;
   grid-template-rows: 20px 1fr;
