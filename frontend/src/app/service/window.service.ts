@@ -12,8 +12,8 @@ export class WindowService {
 
   private currentWindowId: number = 0
 
-  private openedApplications: Map<number, OpenedApplication> = new Map<number, OpenedApplication>()
-  private focusStack: number[] = []
+  public openedApplications: Map<number, OpenedApplication> = new Map<number, OpenedApplication>()
+  public focusStack: number[] = []
 
   constructor() { }
 

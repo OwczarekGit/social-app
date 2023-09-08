@@ -8,7 +8,7 @@
       (click)="openWritePost()"
       icon="/assets/write-post-s.png"></app-launcher-app>
   </app-launchers>
-  <div></div>
+  <app-active-windows></app-active-windows>
   <app-system-tray>
     <app-notification-indicator
       *ngIf="notificationService.notifications.length > 0"

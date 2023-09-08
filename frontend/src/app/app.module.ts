@@ -37,6 +37,8 @@ import { LauncherAppComponent } from './main-screen/taskbar/launchers/launcher-a
 import { AdminTagEditorComponent } from './admin/admin-tag-editor/admin-tag-editor.component';
 import { AdminTagEditorFieldComponent } from './admin/admin-tag-editor/admin-tag-editor-field/admin-tag-editor-field.component';
 import { W2kWindowFrameComponent } from './ui-elements/w2k-window-frame/w2k-window-frame.component';
+import { ActiveWindowsComponent } from './main-screen/taskbar/active-windows/active-windows.component';
+import { ActiveWindowIndicatorComponent } from './main-screen/taskbar/active-windows/active-window-indicator/active-window-indicator.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +75,8 @@ import { W2kWindowFrameComponent } from './ui-elements/w2k-window-frame/w2k-wind
     AdminTagEditorComponent,
     AdminTagEditorFieldComponent,
     W2kWindowFrameComponent,
+    ActiveWindowsComponent,
+    ActiveWindowIndicatorComponent,
   ],
   imports: [
     BrowserModule,
