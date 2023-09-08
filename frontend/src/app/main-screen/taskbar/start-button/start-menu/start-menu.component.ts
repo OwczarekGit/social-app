@@ -19,37 +19,39 @@ import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/
 export class StartMenuComponent {
   public loginService = inject(LoginService)
   public router = inject(Router)
-  public newWindowService = inject(WindowService)
+  public windowService = inject(WindowService)
   public authService = inject(AuthService)
 
 
   logout() {
-    this.loginService.logout().subscribe({complete: () => this.router.navigate(['/'])})
-
+    this.loginService.logout().subscribe({complete: () => {
+      this.windowService.openedApplications.forEach((_, i) => this.windowService.closeApplication(i))
+      this.router.navigate(['/'])
+      }})
   }
 
   openCreatePost() {
-    this.newWindowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)
   }
 
   openFriendManager() {
-    this.newWindowService.openApplication(FriendManagerComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(FriendManagerComponent, null, W2kWindowFrameComponent)
   }
 
   openChangeUsername() {
-    this.newWindowService.openApplication(ChangeUsernameComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(ChangeUsernameComponent, null, W2kWindowFrameComponent)
   }
 
   openSearchFriends() {
-    this.newWindowService.openApplication(PeopleSearcherComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(PeopleSearcherComponent, null, W2kWindowFrameComponent)
   }
 
   openShareImage() {
-    this.newWindowService.openApplication(ShareImageComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(ShareImageComponent, null, W2kWindowFrameComponent)
   }
 
   // ADMIN APPS
   openAdminManageTags() {
-    this.newWindowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
   }
 }
