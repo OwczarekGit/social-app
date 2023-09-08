@@ -24,4 +24,11 @@ export class SoundService {
     a.src = "./assets/notification.mp3"
     a.play()
   }
+
+  public login() {
+    let a = document.createElement('audio')
+    a.src = "./assets/login.mp3"
+    a.volume = .5
+    a.play()
+  }
 }

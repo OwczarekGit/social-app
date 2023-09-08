@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {WindowService} from "../../service/window.service";
+import {SoundService} from "../../service/sound.service";
 
 @Component({
   selector: 'app-login-form',
@@ -21,6 +22,7 @@ export class LoginFormComponent extends WindowContent<null, W2kWindowFrameCompon
   })
 
   private windowService = inject(WindowService)
+  private soundService = inject(SoundService)
   private loginService = inject(LoginService)
   private notificationService = inject(PopupService)
   private router = inject(Router)
@@ -48,6 +50,7 @@ export class LoginFormComponent extends WindowContent<null, W2kWindowFrameCompon
     this.loginService.login(form.email as string, form.password as string).subscribe(
       (r) => {
         this.router.navigate(['/desktop'])
+        this.soundService.login()
         this.closeWindow()
       },
       (e) => {
