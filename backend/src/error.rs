@@ -35,6 +35,9 @@ pub enum Error {
     BadRequest,
     NotFound,
 
+    // Chat errors
+    InvalidSendMessageRequest(i64,i64),
+
     // Relation errors
     RelationErrorIsAlreadyFriend(i64, i64),
     RelationAttemptToAddSelfAsFriend(i64),

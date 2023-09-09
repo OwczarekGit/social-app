@@ -4,6 +4,7 @@ import {PostWriterComponent} from "../../apps/post-writer/post-writer.component"
 import {ShareImageComponent} from "../../apps/share-image/share-image.component";
 import {WindowService} from "../../service/window.service";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {MessengerComponent} from "../../apps/messenger/messenger.component";
 
 @Component({
   selector: 'app-taskbar',
@@ -20,5 +21,9 @@ export class TaskbarComponent {
 
   public openShareImage() {
     this.windowService.openApplication(ShareImageComponent, null, W2kWindowFrameComponent)
+  }
+
+  openMessenger() {
+    this.windowService.openApplication(MessengerComponent, null, W2kWindowFrameComponent)
   }
 }

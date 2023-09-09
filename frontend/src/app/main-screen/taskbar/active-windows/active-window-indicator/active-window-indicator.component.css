@@ -27,6 +27,7 @@ button {
   justify-content: flex-start;
   align-items: center;
   gap: 2px;
+  padding: 0 2px;
 }
 
 button.focused {

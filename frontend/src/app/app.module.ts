@@ -39,6 +39,8 @@ import { AdminTagEditorFieldComponent } from './admin/admin-tag-editor/admin-tag
 import { W2kWindowFrameComponent } from './ui-elements/w2k-window-frame/w2k-window-frame.component';
 import { ActiveWindowsComponent } from './main-screen/taskbar/active-windows/active-windows.component';
 import { ActiveWindowIndicatorComponent } from './main-screen/taskbar/active-windows/active-window-indicator/active-window-indicator.component';
+import { MessengerComponent } from './apps/messenger/messenger.component';
+import { ChatComponent } from './apps/messenger/chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { ActiveWindowIndicatorComponent } from './main-screen/taskbar/active-win
     W2kWindowFrameComponent,
     ActiveWindowsComponent,
     ActiveWindowIndicatorComponent,
+    MessengerComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

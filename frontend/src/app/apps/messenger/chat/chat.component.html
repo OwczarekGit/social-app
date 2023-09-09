@@ -1,0 +1,17 @@
+<div class="bar">
+  <p class="font-tahoma-bold">{{profile?.username}}</p>
+</div>
+<div class="messages">
+  <div class="messages-inner">
+
+  </div>
+</div>
+<div class="controls">
+  <app-input
+    (keyup.enter)="sendMessage()"
+    [(text)]="messageText"></app-input>
+  <app-button
+    (click)="sendMessage()"
+    [disabled]="messageText == ''"
+    caption="Send"></app-button>
+</div>

@@ -17,6 +17,7 @@ use tower_http::services::ServeFile;
 use tracing::debug;
 use tracing_subscriber::EnvFilter;
 use crate::entities::sea_orm_active_enums::AccountType;
+use crate::service::chat::ChatService;
 use crate::service::friend::FriendService;
 use crate::service::image::ImageService;
 use crate::service::notification::NotificationService;
@@ -68,6 +69,7 @@ async fn main() {
                 .nest("/friend", endpoint::friend::routes())
                 .nest("/profile", endpoint::profile::routes())
                 .nest("/image", endpoint::image::routes())
+                .nest("/chat", endpoint::chat::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
                 .nest("/account", account::routes())
@@ -134,6 +136,7 @@ pub struct AppState {
     pub profile_service: ProfileService,
     pub image_service: ImageService,
     pub tag_service: TagService,
+    pub chat_service: ChatService,
 }
 
 impl AppState {
@@ -152,6 +155,7 @@ impl AppState {
             profile_service: ProfileService::new(neo4j_connection.clone()),
             image_service: ImageService::new(neo4j_connection.clone(), minio_connection.clone()),
             tag_service: TagService::new(neo4j_connection.clone()),
+            chat_service: ChatService::new(neo4j_connection.clone()),
         }
     }
 }

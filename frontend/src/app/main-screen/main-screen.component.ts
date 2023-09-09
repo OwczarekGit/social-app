@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {NotificationService} from "../service/notification.service";
 import {WindowService} from "../service/window.service";
+import {MessengerComponent} from "../apps/messenger/messenger.component";
+import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-main-screen',
@@ -17,6 +19,7 @@ export class MainScreenComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.nWindowService.setDisplay(this.surface)
+    setTimeout(() => this.nWindowService.openApplication(MessengerComponent, null, W2kWindowFrameComponent))
     this.notificationService.subscribeToNotifications()
     this.notificationService.loadRemainingNotifications()
   }
