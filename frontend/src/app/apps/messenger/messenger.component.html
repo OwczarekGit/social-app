@@ -2,4 +2,6 @@
   [items]="friends()"
   (itemClicked)="switchChat($event)"
   label="Chats"></app-list-small>
-<app-chat [profile]="selectedProfile"></app-chat>
+<app-chat
+  [myProfile]="myProfile"
+  [profile]="selectedProfile"></app-chat>

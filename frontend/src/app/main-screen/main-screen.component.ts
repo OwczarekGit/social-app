@@ -19,7 +19,6 @@ export class MainScreenComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.nWindowService.setDisplay(this.surface)
-    setTimeout(() => this.nWindowService.openApplication(MessengerComponent, null, W2kWindowFrameComponent))
     this.notificationService.subscribeToNotifications()
     this.notificationService.loadRemainingNotifications()
   }

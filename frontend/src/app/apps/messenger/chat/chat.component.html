@@ -1,9 +1,12 @@
 <div class="bar">
-  <p class="font-tahoma-bold">{{profile?.username}}</p>
+  <p class="font-tahoma-bold">{{_profile?.username}}</p>
 </div>
 <div class="messages">
   <div class="messages-inner">
-
+    <app-chat-friend-message
+      *ngFor="let m of messages()"
+      [isMine]="_myProfile()?.user_id == m.user_id"
+      [message]="m"></app-chat-friend-message>
   </div>
 </div>
 <div class="controls">

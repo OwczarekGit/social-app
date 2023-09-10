@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  width: 100%;
+}
+
+div {
+  display: flex;
+  background-color: beige;
+  border: 1px solid #000;
+  border-radius: 6px;
+  max-width: 180px;
+  animation-name: fadein;
+  animation-timing-function: linear;
+  animation-duration: .25s;
+}
+
+p {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  padding: 4px;
+  font-size: 10px;
+}
+
+.mine {
+  margin-left: auto;
+}
+
+
+@keyframes fadein {
+  from {
+    opacity: .0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}

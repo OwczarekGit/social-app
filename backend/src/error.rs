@@ -36,7 +36,9 @@ pub enum Error {
     NotFound,
 
     // Chat errors
-    InvalidSendMessageRequest(i64,i64),
+    InvalidSendMessageToFriendRequest(i64, i64),
+    FriendMessageMissingUserNode,
+    FriendMessageMissingMessageBody,
 
     // Relation errors
     RelationErrorIsAlreadyFriend(i64, i64),

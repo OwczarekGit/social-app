@@ -17,7 +17,7 @@ export class NotificationEntryComponent {
   public getIcon(): string {
     switch (this.notification.notification_data.notification_type) {
       case NotificationType.FRIEND_REQUEST: return `/assets/friends.png`;
-      case NotificationType.MESSAGE: return `/assets/friends.png`;
+      case NotificationType.MESSAGE: return `/assets/new-message.png`;
     }
   }
 
@@ -27,7 +27,7 @@ export class NotificationEntryComponent {
         return "You have a new friend request."
       }
       case NotificationType.MESSAGE: {
-        return "New message."
+        return "You have received new message."
       }
     }
   }

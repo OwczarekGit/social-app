@@ -41,6 +41,7 @@ import { ActiveWindowsComponent } from './main-screen/taskbar/active-windows/act
 import { ActiveWindowIndicatorComponent } from './main-screen/taskbar/active-windows/active-window-indicator/active-window-indicator.component';
 import { MessengerComponent } from './apps/messenger/messenger.component';
 import { ChatComponent } from './apps/messenger/chat/chat.component';
+import { ChatFriendMessageComponent } from './apps/messenger/chat/chat-friend-message/chat-friend-message.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { ChatComponent } from './apps/messenger/chat/chat.component';
     ActiveWindowIndicatorComponent,
     MessengerComponent,
     ChatComponent,
+    ChatFriendMessageComponent,
   ],
   imports: [
     BrowserModule,

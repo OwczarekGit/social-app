@@ -1,5 +1,9 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input, signal} from '@angular/core';
 import {Profile} from "../../../data/profile";
+import {ChatService} from "../../../service/chat.service";
+import {FriendMessage} from "../../../data/friend-message";
+import {NotificationService} from "../../../service/notification.service";
+import {NotificationType} from "../../../const/notification-type";
 
 @Component({
   selector: 'app-chat',
@@ -7,14 +11,53 @@ import {Profile} from "../../../data/profile";
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent {
-  @Input('profile')
-  profile?: Profile
+  public chatService = inject(ChatService)
+  public notificationService = inject(NotificationService)
+
+  @Input()
+  set myProfile(value: Profile) {
+    this._myProfile.set(value)
+  }
+
+  public _myProfile = signal<Profile | null>(null)
+
+  _profile?: Profile
+
+  public messages = signal<FriendMessage[]>([])
 
   public messageText: string = ''
 
-  sendMessage() {
-    if (this.messageText == '') return
+  constructor() {
+    this.notificationService.onNewNotification.subscribe(v => {
+      if (v.notification_data.notification_type == NotificationType.MESSAGE) {
+        this.messages.update(o => {
+          // @ts-ignore
+          let n: FriendMessage = v.notification_data.data as FriendMessage
+          return [n, ...o]
+        })
+      }
+    })
+  }
 
+  @Input('profile')
+  set profile(value: Profile) {
+    this._profile = value
+    if (this._profile?.user_id != null) {
+      this.chatService.getMessagesForFriendConversation(this._profile?.user_id).subscribe({
+        next: v => {
+          this.messages.set(v)
+        }
+      })
+    }
+  }
+
+  sendMessage() {
+    let id = this._profile?.user_id
+    if (this.messageText == '' && id != null) return
+
+    this.chatService.sendMessageToFriend(id as number, this.messageText).subscribe({
+      next: value => this.messages.update(o => [value, ...o])
+    })
 
 
     this.messageText = ''

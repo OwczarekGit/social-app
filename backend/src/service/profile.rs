@@ -46,7 +46,7 @@ impl ProfileService {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Profile {
-    id: i64,
+    user_id: i64,
     username: String,
 }
 
@@ -57,7 +57,7 @@ impl TryFrom<Row> for Profile {
         let p: Node = value.get("p").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(Self {
-            id: p.get("id").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
+            user_id: p.get("id").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
             username: p.get("username").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
         })
     }

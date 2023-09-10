@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {SoundService} from "./sound.service";
 import {Notification} from "../data/notification";
-import {Observable} from "rxjs";
+import {SoundService} from "./sound.service";
+import {Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,9 @@ export class NotificationService {
   private es!: EventSource
   private http = inject(HttpClient)
   private soundService = inject(SoundService)
+  public onNewNotification: Subject<Notification> = new Subject<Notification>()
 
-  public notifications: Notification[] = [];
+  public notifications: Notification[] = []
 
   constructor() {
   }
@@ -30,7 +31,9 @@ export class NotificationService {
     this.es = new EventSource("/api/notification/subscribe")
     this.es.addEventListener("message", n => {
       let json: Notification = JSON.parse(n.data)
+      this.soundService.message()
       this.notifications.unshift(this.parseNotification(json))
+      this.onNewNotification.next(this.parseNotification(json))
     })
   }
 

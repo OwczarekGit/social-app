@@ -10,6 +10,7 @@ import {AuthService} from "../../../../service/auth.service";
 import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-tag-editor.component";
 import {WindowService} from "../../../../service/window.service";
 import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {MessengerComponent} from "../../../../apps/messenger/messenger.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -50,8 +51,13 @@ export class StartMenuComponent {
     this.windowService.openApplication(ShareImageComponent, null, W2kWindowFrameComponent)
   }
 
+  openMessenger() {
+    this.windowService.openApplication(MessengerComponent, null, W2kWindowFrameComponent)
+  }
+
   // ADMIN APPS
   openAdminManageTags() {
     this.windowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
   }
+
 }
