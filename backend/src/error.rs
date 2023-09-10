@@ -55,6 +55,7 @@ impl IntoResponse for Error {
             Error::UnauthorizedForUserOperations => StatusCode::UNAUTHORIZED,
             Error::EmailTaken => StatusCode::BAD_REQUEST,
             Error::EmailTakenPendingActivation => StatusCode::BAD_REQUEST,
+            Error::InvalidSendMessageToFriendRequest(_,_) => StatusCode::BAD_REQUEST,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
         let mut res = code.into_response();

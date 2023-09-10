@@ -40,7 +40,7 @@ impl ChatService {
     pub async fn get_friend_conversation_messages(&self, user_id: i64, friend_id: i64) -> Result<Vec<FriendMessage>>{
         let q = query(r#"
             match (p:Profile{id: $id})-[m:MESSAGE]-(f:Profile{id: $friend_id})
-            return p,f,m"#
+            return p,f,m order by m.date desc"#
         )
             .param("id", user_id)
             .param("friend_id", friend_id);
