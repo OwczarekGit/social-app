@@ -1,8 +1,7 @@
 import {AfterViewInit, Component, inject, ViewChild, ViewContainerRef} from '@angular/core';
 import {NotificationService} from "../service/notification.service";
 import {WindowService} from "../service/window.service";
-import {MessengerComponent} from "../apps/messenger/messenger.component";
-import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {WallpaperService} from "../service/wallpaper.service";
 
 @Component({
   selector: 'app-main-screen',
@@ -16,11 +15,14 @@ export class MainScreenComponent implements AfterViewInit {
 
   private nWindowService = inject(WindowService)
   private notificationService = inject(NotificationService)
+  private wallpaperService = inject(WallpaperService)
 
   ngAfterViewInit(): void {
     this.nWindowService.setDisplay(this.surface)
     this.notificationService.subscribeToNotifications()
     this.notificationService.loadRemainingNotifications()
+
+    setTimeout(() => this.wallpaperService.restoreWallpaper())
   }
 
 }

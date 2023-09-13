@@ -16,6 +16,17 @@
 
     <app-start-menu-item
       [hasChildren]="true"
+      caption="Preferences"
+      imageUrl="/assets/settings.png">
+      <app-start-menu-item
+        (click)="openWallpaperSettings()"
+        caption="Wallpaper settings"
+        imageUrl="/assets/wallpaper-settings-s.png">
+        ></app-start-menu-item>
+    </app-start-menu-item>
+
+    <app-start-menu-item
+      [hasChildren]="true"
       caption="Edit profile"
       imageUrl="/assets/profile-settings.png">
       <app-start-menu-item

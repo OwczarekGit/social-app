@@ -11,6 +11,7 @@ import {AdminTagEditorComponent} from "../../../../admin/admin-tag-editor/admin-
 import {WindowService} from "../../../../service/window.service";
 import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {MessengerComponent} from "../../../../apps/messenger/messenger.component";
+import {WallpaperPickerComponent} from "../../../../apps/wallpaper-picker/wallpaper-picker.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -53,6 +54,10 @@ export class StartMenuComponent {
 
   openMessenger() {
     this.windowService.openApplication(MessengerComponent, null, W2kWindowFrameComponent)
+  }
+
+  openWallpaperSettings() {
+    this.windowService.openApplication(WallpaperPickerComponent, null, W2kWindowFrameComponent)
   }
 
   // ADMIN APPS

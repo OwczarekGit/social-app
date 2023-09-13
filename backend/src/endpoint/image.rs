@@ -3,7 +3,7 @@ use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
 use axum::extract::State;
 use axum::http::StatusCode;
-use axum::routing::post;
+use axum::routing::{get, post};
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use image::io::Reader;
 use tempfile::NamedTempFile;
@@ -14,13 +14,14 @@ use crate::service::image::ImageService;
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/", post(share_image).get(get_all_tags))
+        .route("/wallpapers", get(get_all_wallpapers))
 }
 
 pub async fn share_image(
     Extension(user): Extension<ActiveUser>,
     State(image_service): State<ImageService>,
     TypedMultipart(request): TypedMultipart<ImageUploadRequest>,
-) -> Result<impl IntoResponse, StatusCode> {
+) -> crate::Result<impl IntoResponse> {
     let mut image_bytes = vec![];
     request.image.contents.as_file().read_to_end(&mut image_bytes)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -36,9 +37,15 @@ pub async fn share_image(
     Ok(())
 }
 
+pub async fn get_all_wallpapers(
+    State(image_service): State<ImageService>,
+) -> crate::Result<impl IntoResponse> {
+    Ok(Json(image_service.get_all_wallpapers().await?))
+}
+
 pub async fn get_all_tags(
     State(image_service): State<ImageService>,
-) -> Result<impl IntoResponse, StatusCode> {
+) -> crate::Result<impl IntoResponse> {
     Ok(Json(image_service.get_all_tags().await?))
 }
 

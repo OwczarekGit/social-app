@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Tag} from "../data/tag";
+import {Wallpaper} from "../data/wallpaper";
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,9 @@ export class ImageService {
 
   public getAllTags(): Observable<Tag[]> {
     return this.http.get<Tag[]>("/api/image")
+  }
+
+  public getAllWallpapers(): Observable<Wallpaper[]> {
+    return this.http.get<Wallpaper[]>("/api/image/wallpapers")
   }
 }

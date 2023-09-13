@@ -8,6 +8,7 @@ use minio_rsc::types::args::ObjectArgs;
 use neo4rs::{Graph, Node, query, Row};
 use serde::{Deserialize, Serialize};
 
+
 #[derive(Clone, FromRef)]
 pub struct ImageService {
     neo4j: Arc<Graph>,
@@ -19,7 +20,7 @@ impl ImageService {
         Self { neo4j, minio }
     }
 
-    pub async fn get_all_tags(&self) -> Result<Vec<Tag>, StatusCode> {
+    pub async fn get_all_tags(&self) -> crate::Result<Vec<Tag>> {
         let mut tags = self.neo4j.execute(query("match (t:Tag) return t order by t.name"))
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -34,8 +35,24 @@ impl ImageService {
         Ok(res)
     }
 
+    pub async fn get_all_wallpapers(&self) -> crate::Result<Vec<Image>> {
+        let q = query("match (i:Image)-[:TAGGED_AS]->(:Tag{name: 'Wallpaper'}) return i");
+
+        let mut results = self.neo4j.execute(q)
+            .await?;
+
+        let mut res = vec![];
+        while let Ok(Some(row)) = results.next().await {
+            if let Ok(img) = Image::try_from(row) {
+                res.push(img);
+            }
+        }
+
+        Ok(res)
+    }
+
     //FIXME: Thumbnail sized images.
-    pub async fn upload_image(&self, user_id: i64, title: &str, mut tags: Vec<String>, image: DynamicImage) -> Result<(), StatusCode> {
+    pub async fn upload_image(&self, user_id: i64, title: &str, mut tags: Vec<String>, image: DynamicImage) -> crate::Result<()> {
         let object_name = uuid::Uuid::new_v4().to_string() + ".png";
 
         let mut bytes = Vec::new();
@@ -84,7 +101,7 @@ impl ImageService {
         Ok(())
     }
 
-    async fn connect_image_to_tags(&self, image_id: i64, tags: Vec<String>) -> Result<(), StatusCode> {
+    async fn connect_image_to_tags(&self, image_id: i64, tags: Vec<String>) -> crate::Result<()> {
         for tag in tags {
             self.tag_image(image_id, &tag).await?;
         }
@@ -92,7 +109,7 @@ impl ImageService {
         Ok(())
     }
 
-    async fn tag_image(&self, image_id: i64, name: &str) -> Result<(), StatusCode> {
+    async fn tag_image(&self, image_id: i64, name: &str) -> crate::Result<()> {
         let tag_image_query = query(r#"
             match (t:Tag), (i:Image)
             where toLower(t.name) = toLower($name)
@@ -116,7 +133,7 @@ impl ImageService {
         Ok(())
     }
 
-    async fn tag_node_exists(&self, name: &str) -> Result<bool, StatusCode> {
+    async fn tag_node_exists(&self, name: &str) -> crate::Result<bool> {
         let q = query("match (t:Tag) where toLower(t.name) = toLower($name) return true AS x limit 1")
             .param("name", name.trim());
 
@@ -149,6 +166,28 @@ impl TryFrom<Row> for Tag {
 
         Ok(Self {
             name: t.get("name").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
+        })
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Image {
+    pub id: i64,
+    pub title: String,
+    pub url: String,
+}
+
+impl TryFrom<Row> for Image {
+    type Error = StatusCode;
+
+    fn try_from(value: Row) -> Result<Self, Self::Error> {
+        let t = value.get::<Node>("i")
+            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        Ok(Self {
+            id: t.id(),
+            title: t.get("title").unwrap_or("".to_string()),
+            url: t.get("url").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
         })
     }
 }

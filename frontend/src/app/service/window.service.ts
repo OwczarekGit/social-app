@@ -8,7 +8,7 @@ import {DraggableDirective} from "../directives/draggable.directive";
 })
 export class WindowService {
 
-  private vcr?: ViewContainerRef
+  public vcr?: ViewContainerRef
 
   private currentWindowId: number = 0
 

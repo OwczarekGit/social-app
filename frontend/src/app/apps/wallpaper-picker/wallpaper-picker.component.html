@@ -1,0 +1,27 @@
+<div class="preview">
+  <div class="preview-inner">
+    <img [src]="selectedWallpaper()?.url" alt="wallpaper-preview" />
+  </div>
+</div>
+<div class="select">
+  <div class="picker">
+    <p class="font-tahoma">Select a background picture as Wallpaper:</p>
+    <app-list-small
+      (itemClicked)="wallpaperClicked($event)"
+      [items]="wallpapers()">
+    </app-list-small>
+  </div>
+  <div>
+  </div>
+</div>
+<div class="controls">
+  <app-button
+    (click)="setWallpaper()"
+    caption="Ok"></app-button>
+  <app-button
+    (click)="closeWindow()"
+    caption="Cancel"></app-button>
+  <app-button
+    (click)="resetWallpaper()"
+    caption="Reset wallpaper"></app-button>
+</div>

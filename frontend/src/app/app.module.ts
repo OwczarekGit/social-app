@@ -42,6 +42,7 @@ import { ActiveWindowIndicatorComponent } from './main-screen/taskbar/active-win
 import { MessengerComponent } from './apps/messenger/messenger.component';
 import { ChatComponent } from './apps/messenger/chat/chat.component';
 import { ChatFriendMessageComponent } from './apps/messenger/chat/chat-friend-message/chat-friend-message.component';
+import { WallpaperPickerComponent } from './apps/wallpaper-picker/wallpaper-picker.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { ChatFriendMessageComponent } from './apps/messenger/chat/chat-friend-me
     MessengerComponent,
     ChatComponent,
     ChatFriendMessageComponent,
+    WallpaperPickerComponent,
   ],
   imports: [
     BrowserModule,
