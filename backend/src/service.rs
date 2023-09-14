@@ -7,3 +7,4 @@ pub mod profile;
 pub mod image;
 pub mod tag;
 pub mod chat;
+pub mod wallpaper;

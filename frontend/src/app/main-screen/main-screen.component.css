@@ -4,3 +4,9 @@
   height: 100%;
   grid-template-rows: 1fr 28px;
 }
+
+.surface {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}

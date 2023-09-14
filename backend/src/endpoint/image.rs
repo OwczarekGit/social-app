@@ -3,7 +3,7 @@ use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
 use axum::extract::State;
 use axum::http::StatusCode;
-use axum::routing::{get, post};
+use axum::routing::{post};
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use image::io::Reader;
 use tempfile::NamedTempFile;
@@ -14,7 +14,6 @@ use crate::service::image::ImageService;
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/", post(share_image).get(get_all_tags))
-        .route("/wallpapers", get(get_all_wallpapers))
 }
 
 pub async fn share_image(
@@ -35,12 +34,6 @@ pub async fn share_image(
     image_service.upload_image(user.id, &request.title, request.tags, image).await?;
 
     Ok(())
-}
-
-pub async fn get_all_wallpapers(
-    State(image_service): State<ImageService>,
-) -> crate::Result<impl IntoResponse> {
-    Ok(Json(image_service.get_all_wallpapers().await?))
 }
 
 pub async fn get_all_tags(

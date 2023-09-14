@@ -13,7 +13,6 @@ import {WallpaperService} from "../../service/wallpaper.service";
 })
 export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
-  public imageService = inject(ImageService)
   public wallpaperService = inject(WallpaperService)
 
   wallpapers = signal<Wallpaper[]>([])
@@ -21,7 +20,7 @@ export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrame
 
   constructor() {
     super();
-    this.imageService.getAllWallpapers().subscribe({
+    this.wallpaperService.getAllWallpapers().subscribe({
       next: value => this.wallpapers.set(value.map(v => new Wallpaper(v.id, v.title, v.url)))
     })
   }
@@ -41,7 +40,11 @@ export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrame
 
   setWallpaper() {
     if (this.selectedWallpaper() == null) return
-    this.wallpaperService.setWallpaper(this.selectedWallpaper()?.url as string)
+    this.wallpaperService.setWallpaper(this.selectedWallpaper()?.id as number).subscribe({
+      next: value => {
+        this.wallpaperService.restoreWallpaper()
+      }
+    })
   }
 
   resetWallpaper() {

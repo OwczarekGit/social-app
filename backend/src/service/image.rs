@@ -35,22 +35,6 @@ impl ImageService {
         Ok(res)
     }
 
-    pub async fn get_all_wallpapers(&self) -> crate::Result<Vec<Image>> {
-        let q = query("match (i:Image)-[:TAGGED_AS]->(:Tag{name: 'Wallpaper'}) return i");
-
-        let mut results = self.neo4j.execute(q)
-            .await?;
-
-        let mut res = vec![];
-        while let Ok(Some(row)) = results.next().await {
-            if let Ok(img) = Image::try_from(row) {
-                res.push(img);
-            }
-        }
-
-        Ok(res)
-    }
-
     //FIXME: Thumbnail sized images.
     pub async fn upload_image(&self, user_id: i64, title: &str, mut tags: Vec<String>, image: DynamicImage) -> crate::Result<()> {
         let object_name = uuid::Uuid::new_v4().to_string() + ".png";
@@ -166,28 +150,6 @@ impl TryFrom<Row> for Tag {
 
         Ok(Self {
             name: t.get("name").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
-        })
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Image {
-    pub id: i64,
-    pub title: String,
-    pub url: String,
-}
-
-impl TryFrom<Row> for Image {
-    type Error = StatusCode;
-
-    fn try_from(value: Row) -> Result<Self, Self::Error> {
-        let t = value.get::<Node>("i")
-            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
-
-        Ok(Self {
-            id: t.id(),
-            title: t.get("title").unwrap_or("".to_string()),
-            url: t.get("url").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
         })
     }
 }

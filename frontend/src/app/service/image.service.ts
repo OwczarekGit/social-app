@@ -26,7 +26,4 @@ export class ImageService {
     return this.http.get<Tag[]>("/api/image")
   }
 
-  public getAllWallpapers(): Observable<Wallpaper[]> {
-    return this.http.get<Wallpaper[]>("/api/image/wallpapers")
-  }
 }

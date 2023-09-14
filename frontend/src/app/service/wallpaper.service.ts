@@ -1,5 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {WindowService} from "./window.service";
+import {Observable} from "rxjs";
+import {Wallpaper} from "../data/wallpaper";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -7,26 +10,36 @@ import {WindowService} from "./window.service";
 export class WallpaperService {
 
   public windowService = inject(WindowService)
+  public http = inject(HttpClient)
 
   constructor() {}
 
-  public setWallpaper(url: string) {
-    let el = (this.windowService.vcr?.element.nativeElement as HTMLDivElement)
-    el.style.background = `url(${url}) no-repeat center center`;
-    el.style.backgroundSize = 'cover'
-    localStorage.setItem("wallpaper", url)
+  public setWallpaper(id: number): Observable<Wallpaper> {
+    return this.http.post<Wallpaper>("/api/wallpaper/" + id, {})
   }
 
   public restoreWallpaper() {
-    let wall = localStorage.getItem("wallpaper")
-    if (wall != null) {
-      this.setWallpaper(wall)
-    }
+    this.http.get<Wallpaper | null>("/api/wallpaper/current").subscribe({
+      next: value => {
+        let el = (this.windowService.vcr?.element.nativeElement as HTMLDivElement)
+        if (value != null) {
+          el.style.backgroundImage = `url(${value.url})`
+        } else {
+          el.style.backgroundImage = ''
+        }
+      }
+    })
   }
 
   public resetWallpaper() {
-    let el = (this.windowService.vcr?.element.nativeElement as HTMLDivElement)
-    el.style.background = ``
-    localStorage.removeItem("wallpaper")
+    this.http.delete("/api/wallpaper").subscribe({
+      next: value => {
+        this.restoreWallpaper()
+      }
+    })
+  }
+
+  public getAllWallpapers(): Observable<Wallpaper[]> {
+    return this.http.get<Wallpaper[]>("/api/wallpaper")
   }
 }
