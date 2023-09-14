@@ -16,9 +16,6 @@ export class NotificationService {
 
   public notifications: Notification[] = []
 
-  constructor() {
-  }
-
   public dismissNotification(id: number) {
     return this.http.delete("/api/notification/"+id).subscribe({
       complete:() => {
@@ -43,6 +40,11 @@ export class NotificationService {
         this.notifications = value.map(v => this.parseNotification(v))
       }
     })
+  }
+
+  public unsubscribe() {
+    if (this.es != null)
+      this.es.close()
   }
 
   private parseNotification(data: Notification): Notification {

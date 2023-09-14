@@ -12,6 +12,7 @@ import {WindowService} from "../../../../service/window.service";
 import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {MessengerComponent} from "../../../../apps/messenger/messenger.component";
 import {WallpaperPickerComponent} from "../../../../apps/wallpaper-picker/wallpaper-picker.component";
+import {NotificationService} from "../../../../service/notification.service";
 
 @Component({
   selector: 'app-start-menu',
@@ -23,12 +24,14 @@ export class StartMenuComponent {
   public router = inject(Router)
   public windowService = inject(WindowService)
   public authService = inject(AuthService)
+  public notificationService = inject(NotificationService)
 
 
   logout() {
     this.loginService.logout().subscribe({complete: () => {
-      this.windowService.openedApplications.forEach((_, i) => this.windowService.closeApplication(i))
-      this.router.navigate(['/'])
+        this.windowService.openedApplications.forEach((_, i) => this.windowService.closeApplication(i))
+        this.notificationService.unsubscribe()
+        this.router.navigate(['/'])
       }})
   }
 
