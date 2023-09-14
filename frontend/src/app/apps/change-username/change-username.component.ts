@@ -32,6 +32,7 @@ export class ChangeUsernameComponent extends WindowContent<null, W2kWindowFrameC
     this.profileService.changeUsername(form.username as string).subscribe({
       complete: () => {
         this.popupService.info("Username changed", `Your username has been changed to ${form.username}.`)
+        this.closeWindow()
       }
     })
   }
