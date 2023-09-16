@@ -20,9 +20,10 @@ export class WallpaperService {
 
   public restoreWallpaper() {
     this.http.get<Wallpaper | null>("/api/wallpaper/current").subscribe({
-      next: value => {
+      next: v => {
         let el = (this.windowService.vcr?.element.nativeElement as HTMLDivElement)
-        if (value != null) {
+        if (v != null) {
+          let value = new Wallpaper(v.id, v.title, v.url);
           el.style.backgroundImage = `url(${value.url})`
         } else {
           el.style.backgroundImage = ''

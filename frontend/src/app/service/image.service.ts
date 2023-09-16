@@ -2,7 +2,6 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Tag} from "../data/tag";
-import {Wallpaper} from "../data/wallpaper";
 
 @Injectable({
   providedIn: 'root'
