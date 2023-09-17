@@ -5,11 +5,9 @@ import {WindowService} from "../../service/window.service";
 import {
   AdminActivationEmailEditorPreviewComponent
 } from "./admin-activation-email-editor-preview/admin-activation-email-editor-preview.component";
-import {
-  AdminActivationEmailPreviewProps
-} from "./admin-activation-email-editor-preview/admin-activation-email-preview-props";
 import {ActivationService} from "../../service/activation.service";
 import {PopupService} from "../../service/popup.service";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-admin-activation-email-editor',
@@ -21,11 +19,13 @@ export class AdminActivationEmailEditorComponent extends WindowContent<null, W2k
   private windowService = inject(WindowService)
   private activationService = inject(ActivationService)
   private popupService = inject(PopupService)
+  private subject: Subject<string> = new Subject()
 
   private _content: string = ''
 
   set content(v: string) {
     this._content = v
+    this.subject.next(this._content)
   }
 
   get content(): string {
@@ -64,7 +64,7 @@ export class AdminActivationEmailEditorComponent extends WindowContent<null, W2k
   showPreview() {
     this.windowService.openApplication(
       AdminActivationEmailEditorPreviewComponent,
-      new AdminActivationEmailPreviewProps(this.content),
+      this.subject,
       W2kWindowFrameComponent
     )
   }

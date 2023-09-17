@@ -1,14 +1,14 @@
-import {AfterViewInit, Component, computed, effect, ElementRef, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {WindowContent} from "../../../data/window-content";
 import {W2kWindowFrameComponent} from "../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
-import {AdminActivationEmailPreviewProps} from "./admin-activation-email-preview-props";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-admin-activation-email-editor-preview',
   templateUrl: './admin-activation-email-editor-preview.component.html',
   styleUrls: ['./admin-activation-email-editor-preview.component.css']
 })
-export class AdminActivationEmailEditorPreviewComponent extends WindowContent<AdminActivationEmailPreviewProps, W2kWindowFrameComponent> implements AfterViewInit {
+export class AdminActivationEmailEditorPreviewComponent extends WindowContent<Subject<string>, W2kWindowFrameComponent> implements AfterViewInit {
 
   @ViewChild('display')
   display!: ElementRef<HTMLDivElement>
@@ -16,11 +16,14 @@ export class AdminActivationEmailEditorPreviewComponent extends WindowContent<Ad
   _content: string = ''
   set content(s: string) {
     this._content = s
+    this.updatePreview()
   }
 
-  override setParams(params: AdminActivationEmailPreviewProps) {
-    this.content = params.content
-    setTimeout(() => this.updatePreview())
+
+  override setParams(params: Subject<string>) {
+    params.subscribe({
+      next: value => this.content = value
+    })
   }
 
   public updatePreview() {
