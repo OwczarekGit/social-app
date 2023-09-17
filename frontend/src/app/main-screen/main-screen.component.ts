@@ -2,6 +2,10 @@ import {AfterViewInit, Component, inject, ViewChild, ViewContainerRef} from '@an
 import {NotificationService} from "../service/notification.service";
 import {WindowService} from "../service/window.service";
 import {WallpaperService} from "../service/wallpaper.service";
+import {
+  AdminActivationEmailEditorComponent
+} from "../admin/admin-activation-email-editor/admin-activation-email-editor.component";
+import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-main-screen',

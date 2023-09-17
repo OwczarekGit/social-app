@@ -13,6 +13,9 @@ import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/
 import {MessengerComponent} from "../../../../apps/messenger/messenger.component";
 import {WallpaperPickerComponent} from "../../../../apps/wallpaper-picker/wallpaper-picker.component";
 import {NotificationService} from "../../../../service/notification.service";
+import {
+  AdminActivationEmailEditorComponent
+} from "../../../../admin/admin-activation-email-editor/admin-activation-email-editor.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -68,4 +71,7 @@ export class StartMenuComponent {
     this.windowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
   }
 
+  openChangeActivationEmail() {
+    this.windowService.openApplication(AdminActivationEmailEditorComponent, null, W2kWindowFrameComponent)
+  }
 }

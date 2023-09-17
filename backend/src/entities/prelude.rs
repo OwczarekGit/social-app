@@ -2,3 +2,4 @@
 
 pub use super::account::Entity as Account;
 pub use super::notification::Entity as Notification;
+pub use super::variables::Entity as Variables;

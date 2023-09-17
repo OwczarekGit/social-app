@@ -68,8 +68,8 @@ img {
   display: none;
   background-color: var(--color-window-bg);
   position: absolute;
-  width: 158px;
-  right: -158px;
+  width: 180px;
+  right: -180px;
   bottom: 0;
 
   border-bottom: 1px solid #4a4a4a;

@@ -1,11 +1,12 @@
 use std::sync::Arc;
+use axum_macros::FromRef;
 use chrono::NaiveDateTime;
 use neo4rs::{Graph, Node, query, Relation, Row};
 use serde::{Deserialize, Serialize};
 
 use crate::{Result, Error};
 
-#[derive(Clone)]
+#[derive(Clone, FromRef)]
 pub struct ChatService {
     graph: Arc<Graph>
 }

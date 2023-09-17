@@ -17,6 +17,7 @@ use tower_http::services::ServeFile;
 use tracing::debug;
 use tracing_subscriber::EnvFilter;
 use crate::entities::sea_orm_active_enums::AccountType;
+use crate::service::activation::ActivationService;
 use crate::service::chat::ChatService;
 use crate::service::friend::FriendService;
 use crate::service::image::ImageService;
@@ -61,6 +62,7 @@ async fn main() {
     let app = Router::<AppState>::new()
         .nest(
             "/api", Router::<AppState>::new()
+                .nest("/admin/activation", endpoint::activation::admin_routes())
                 .nest("/admin/tag", endpoint::tag::admin_routes())
                 // All routes above can only be accessed by admin / moderators.
                 .layer(middleware::from_fn_with_state(state.clone(), authorize_moderator_or_admin))
@@ -140,6 +142,7 @@ pub struct AppState {
     pub tag_service: TagService,
     pub chat_service: ChatService,
     pub wallpaper_service: WallpaperService,
+    pub activation_service: ActivationService,
 }
 
 impl AppState {
@@ -160,6 +163,7 @@ impl AppState {
             tag_service: TagService::new(neo4j_connection.clone()),
             chat_service: ChatService::new(neo4j_connection.clone()),
             wallpaper_service: WallpaperService::new(neo4j_connection.clone()),
+            activation_service: ActivationService::new(postgres_connection.clone()),
         }
     }
 }

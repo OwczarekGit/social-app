@@ -7,7 +7,7 @@ export class Wallpaper implements ListDisplay {
   constructor(id: number, title: string, url: string) {
     this.id = id;
     this.title = title;
-    this.url = url;
+    this.url = `http://192.168.1.45:9000${url}`;
   }
 
   display(): string {

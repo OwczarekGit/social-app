@@ -5,3 +5,4 @@ pub mod prelude;
 pub mod account;
 pub mod notification;
 pub mod sea_orm_active_enums;
+pub mod variables;

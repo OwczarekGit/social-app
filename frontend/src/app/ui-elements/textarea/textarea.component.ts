@@ -1,4 +1,4 @@
-import {Component, forwardRef, Input} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
@@ -15,8 +15,11 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 })
 export class TextareaComponent implements ControlValueAccessor {
   @Input() text!: string
+  @Output() textChange = new EventEmitter<string>()
 
-  onChange: any = () => {}
+  onChange: any = () => {
+    this.textChange.emit(this.text)
+  }
   onTouch: any = () => {}
   registerOnChange(fn: any): void {
     this.onChange = fn;

@@ -1,0 +1,12 @@
+<div class="form">
+  <app-textarea [(text)]="content"></app-textarea>
+</div>
+<div class="controls">
+  <app-button
+    (click)="updateActivationEmail()"
+    [disabled]="content.trim() == ''"
+    caption="Save"></app-button>
+  <app-button
+    (click)="showPreview()"
+    caption="Preview"></app-button>
+</div>
