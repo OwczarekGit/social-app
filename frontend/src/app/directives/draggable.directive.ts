@@ -1,5 +1,6 @@
-import {AfterViewInit, Directive, ElementRef} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef, inject} from '@angular/core';
 import {fromEvent, Subscription, takeUntil} from "rxjs";
+import {WindowService} from "../service/window.service";
 
 
 @Directive({
@@ -8,10 +9,11 @@ import {fromEvent, Subscription, takeUntil} from "rxjs";
 export class DraggableDirective implements AfterViewInit {
 
   private element: ElementRef<any>
+  private display: ElementRef<HTMLDivElement>
 
-
-  constructor(element: ElementRef<any>) {
+  constructor(element: ElementRef<any>, display: ElementRef<HTMLDivElement>) {
     this.element = element;
+    this.display = display
   }
 
   ngAfterViewInit(): void {
@@ -22,7 +24,7 @@ export class DraggableDirective implements AfterViewInit {
     let el = this.element.nativeElement as HTMLElement
     let dragStart = fromEvent<MouseEvent>(el, "mousedown")
     let dragEnd = fromEvent<MouseEvent>(el, "mouseup")
-    let drag = fromEvent<MouseEvent>(el, "mousemove").pipe(takeUntil(dragEnd))
+    let drag = fromEvent<MouseEvent>(this.display.nativeElement, "mousemove").pipe(takeUntil(dragEnd))
 
     let initX: number
     let initY: number

@@ -113,8 +113,8 @@ export class WindowService {
 
   makeDraggable(id: number) {
     let app = this.openedApplications.get(id)
-    if (app != null) {
-      let dir = new DraggableDirective(app.window.location)
+    if (app != null && this.vcr != null) {
+      let dir = new DraggableDirective(app.window.location, this.vcr.element)
       dir.initDrag()
     }
   }
