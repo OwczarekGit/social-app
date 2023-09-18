@@ -7,6 +7,7 @@ import {
 } from "../admin/admin-activation-email-editor/admin-activation-email-editor.component";
 import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {ChangePasswordComponent} from "../apps/change-password/change-password.component";
+import {AdminManageDomainsComponent} from "../admin/admin-manage-domains/admin-manage-domains.component";
 
 @Component({
   selector: 'app-main-screen',

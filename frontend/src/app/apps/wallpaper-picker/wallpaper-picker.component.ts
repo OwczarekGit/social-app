@@ -5,6 +5,7 @@ import {ImageService} from "../../service/image.service";
 import {Wallpaper} from "../../data/wallpaper";
 import {ListDisplay} from "../../data/list-display";
 import {WallpaperService} from "../../service/wallpaper.service";
+import {DomainService} from "../../service/domain.service";
 
 @Component({
   selector: 'app-wallpaper-picker',
@@ -14,6 +15,7 @@ import {WallpaperService} from "../../service/wallpaper.service";
 export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
   public wallpaperService = inject(WallpaperService)
+  private domainService = inject(DomainService)
 
   wallpapers = signal<Wallpaper[]>([])
   selectedWallpaper = signal<Wallpaper | null>(null)
@@ -21,7 +23,7 @@ export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrame
   constructor() {
     super();
     this.wallpaperService.getAllWallpapers().subscribe({
-      next: value => this.wallpapers.set(value.map(v => new Wallpaper(v.id, v.title, v.url)))
+      next: value => this.wallpapers.set(value.map(v => new Wallpaper(v.id, v.title, v.url, this.domainService.imageDomain)))
     })
   }
 

@@ -1,7 +1,5 @@
-import {AfterViewInit, Directive, ElementRef, inject} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef} from '@angular/core';
 import {fromEvent, Subscription, takeUntil} from "rxjs";
-import {WindowService} from "../service/window.service";
-
 
 @Directive({
   selector: '[wm_draggable]'

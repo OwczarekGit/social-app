@@ -7,7 +7,7 @@ use clap::Parser;
 use tower_cookies::CookieManagerLayer;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeFile;
-use tracing::debug;
+use tracing::{debug, warn};
 use tracing_subscriber::EnvFilter;
 use crate::app_state::AppState;
 
@@ -51,7 +51,10 @@ async fn main() {
     if let Some(action) = args.create_admin_args {
         match action {
             arguments::ExecuteActionOnStart::CreateAdminAccount(admin) => {
-                let _ = state.account_service.create_admin_account(&admin.email, &admin.password).await;
+                if let Ok(_) = state.account_service.create_admin_account(&admin.email, &admin.password).await {
+                    warn!("Admin account: {} has been created. Shutting down.", &admin.email);
+                    return;
+                }
             }
         }
     }
@@ -60,6 +63,7 @@ async fn main() {
         .nest(
             "/api", Router::<AppState>::new()
                 .nest("/admin/activation", endpoint::activation::admin_routes())
+                .nest("/admin/domain", endpoint::domain::admin_routes())
                 .nest("/admin/tag", endpoint::tag::admin_routes())
                 // All routes above can only be accessed by admin / moderators.
                 .layer(middleware::from_fn_with_state(state.clone(), authorization_filter::authorize_moderator_or_admin))
@@ -72,6 +76,7 @@ async fn main() {
                 .nest("/chat", endpoint::chat::routes())
                 .nest("/wallpaper", endpoint::wallpaper::routes())
                 .nest("/account", endpoint::account::logged_in_routes())
+                .nest("/domain", endpoint::domain::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorization_filter::authorize_by_cookie))
                 .nest("/account", endpoint::account::routes())

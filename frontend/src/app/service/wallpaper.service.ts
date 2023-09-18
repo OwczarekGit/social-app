@@ -3,6 +3,7 @@ import {WindowService} from "./window.service";
 import {Observable} from "rxjs";
 import {Wallpaper} from "../data/wallpaper";
 import {HttpClient} from "@angular/common/http";
+import {DomainService} from "./domain.service";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import {HttpClient} from "@angular/common/http";
 export class WallpaperService {
 
   public windowService = inject(WindowService)
+  public domainService = inject(DomainService)
   public http = inject(HttpClient)
 
   constructor() {}
@@ -23,7 +25,7 @@ export class WallpaperService {
       next: v => {
         let el = (this.windowService.vcr?.element.nativeElement as HTMLDivElement)
         if (v != null) {
-          let value = new Wallpaper(v.id, v.title, v.url);
+          let value = new Wallpaper(v.id, v.title, v.url, this.domainService.imageDomain);
           el.style.backgroundImage = `url(${value.url})`
         } else {
           el.style.backgroundImage = ''

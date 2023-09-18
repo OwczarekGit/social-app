@@ -46,6 +46,7 @@ import { WallpaperPickerComponent } from './apps/wallpaper-picker/wallpaper-pick
 import { AdminActivationEmailEditorComponent } from './admin/admin-activation-email-editor/admin-activation-email-editor.component';
 import { AdminActivationEmailEditorPreviewComponent } from './admin/admin-activation-email-editor/admin-activation-email-editor-preview/admin-activation-email-editor-preview.component';
 import { ChangePasswordComponent } from './apps/change-password/change-password.component';
+import { AdminManageDomainsComponent } from './admin/admin-manage-domains/admin-manage-domains.component';
 
 @NgModule({
   declarations: [
@@ -91,6 +92,7 @@ import { ChangePasswordComponent } from './apps/change-password/change-password.
     AdminActivationEmailEditorComponent,
     AdminActivationEmailEditorPreviewComponent,
     ChangePasswordComponent,
+    AdminManageDomainsComponent,
   ],
   imports: [
     BrowserModule,

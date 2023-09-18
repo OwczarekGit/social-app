@@ -17,6 +17,7 @@ import {
   AdminActivationEmailEditorComponent
 } from "../../../../admin/admin-activation-email-editor/admin-activation-email-editor.component";
 import {ChangePasswordComponent} from "../../../../apps/change-password/change-password.component";
+import {AdminManageDomainsComponent} from "../../../../admin/admin-manage-domains/admin-manage-domains.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -80,4 +81,7 @@ export class StartMenuComponent {
     this.windowService.openApplication(AdminActivationEmailEditorComponent, null, W2kWindowFrameComponent)
   }
 
+  openManageDomains() {
+    this.windowService.openApplication(AdminManageDomainsComponent, null, W2kWindowFrameComponent)
+  }
 }

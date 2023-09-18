@@ -10,6 +10,7 @@ use crate::entities::sea_orm_active_enums::AccountType;
 use crate::service::account::AccountService;
 use crate::service::activation::ActivationService;
 use crate::service::chat::ChatService;
+use crate::service::domain::DomainService;
 use crate::service::email::EmailService;
 use crate::service::friend::FriendService;
 use crate::service::image::ImageService;
@@ -32,6 +33,7 @@ pub struct AppState {
     pub chat_service: ChatService,
     pub wallpaper_service: WallpaperService,
     pub activation_service: ActivationService,
+    pub domain_service: DomainService,
 }
 
 impl AppState {
@@ -53,6 +55,7 @@ impl AppState {
             chat_service: ChatService::new(neo4j_connection.clone()),
             wallpaper_service: WallpaperService::new(neo4j_connection.clone()),
             activation_service: ActivationService::new(postgres_connection.clone()),
+            domain_service: DomainService::new(postgres_connection.clone()),
         }
     }
 }

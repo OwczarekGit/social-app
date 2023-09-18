@@ -1,0 +1,18 @@
+<div class="content">
+  <div>
+    <app-list-small
+      (itemClicked)="selectDomain($event)"
+      [items]="domains"></app-list-small>
+  </div>
+  <div>
+    <app-input [caption]="'Value for ' + selectedDomain()?.value" [(text)]="inputValue"></app-input>
+  </div>
+</div>
+<div class="controls">
+  <app-button
+    (click)="update()"
+    caption="Update"></app-button>
+  <app-button
+    (click)="closeWindow()"
+    caption="Close"></app-button>
+</div>

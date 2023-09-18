@@ -1,0 +1,18 @@
+:host {
+  display: grid;
+  grid-template-rows: 200px auto;
+  padding: 6px;
+  gap: 6px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 120px 300px;
+  gap: 6px;
+}
+
+.controls {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
