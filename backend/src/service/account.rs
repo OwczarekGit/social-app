@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use axum_macros::FromRef;
 use neo4rs::query;
 use redis::cmd;
-use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue};
+use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue, IntoActiveModel, ActiveModelTrait};
 use tracing::log::debug;
 use crate::{ActiveUser, ActiveUserRole};
 use crate::{Result, Error};
@@ -60,10 +60,10 @@ impl AccountService {
             .filter(account::Column::Email.eq(email))
             .one(&self.postgres)
             .await?
-            .ok_or(crate::error::Error::LoginError)?;
+            .ok_or(Error::LoginError)?;
 
         if !verify_password(password, &account.password) {
-            return Err(crate::error::Error::LoginError);
+            return Err(Error::LoginError);
         }
 
         let session_key = generate_session_key();
@@ -91,6 +91,24 @@ impl AccountService {
             .query_async::<_, i32>(redis)
             .await
             ;
+    }
+
+    pub async fn change_password(&self, user_id: i64, old_password: &str, new_password: &str) -> Result<()> {
+        let account = Account::find_by_id(user_id)
+            .one(&self.postgres)
+            .await?
+            .ok_or(Error::AccountForUpdatePasswordNotFound(user_id))?;
+
+        if !verify_password(&old_password, &account.password) {
+            return Err(Error::AccountForUpdatePasswordWrongPasswordProvided(user_id));
+        }
+
+        let mut account = account.into_active_model();
+
+        // FIXME: Logout all sessions after the password is changed.
+        account.password = ActiveValue::Set(hash_password(new_password));
+        account.save(&self.postgres).await?;
+        Ok(())
     }
 
     pub async fn activate_account(&mut self, email: &str, key: &str) -> Result<()> {

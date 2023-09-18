@@ -1,9 +1,9 @@
-use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode};
-use axum::routing::delete;
+use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode, Extension};
+use axum::routing::{delete, put};
 use serde::{Serialize, Deserialize};
 use tower_cookies::{Cookies, Cookie};
 
-use crate::{Result};
+use crate::{ActiveUser, Result};
 
 use crate::{AppState, service::{account::AccountService, email::EmailService}};
 
@@ -16,6 +16,7 @@ pub fn routes() -> Router<AppState> {
         .route("/login", post(login))
         .route("/logout", delete(logout))
 }
+
 
 pub async fn register_account(
     State(mut account_service): State<AccountService>,
@@ -65,6 +66,19 @@ pub async fn logout(
     StatusCode::OK
 }
 
+pub fn logged_in_routes() -> Router<AppState> {
+    Router::new()
+        .route("/password", put(change_password))
+}
+
+pub async fn change_password(
+    Extension(user): Extension<ActiveUser>,
+    State(account_service): State<AccountService>,
+    Json(request): Json<ChangePasswordRequest>,
+) -> Result<impl IntoResponse> {
+    account_service.change_password(user.id, &request.old_password, &request.new_password).await
+}
+
 pub fn make_cookie(name: String, value: String, http: bool) -> Cookie<'static> {
     Cookie::build(name, value)
         .http_only(http)
@@ -94,4 +108,10 @@ pub struct RegistrationRequest {
 pub struct AccountActivationParams {
     email: String,
     key: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ChangePasswordRequest {
+    old_password: String,
+    new_password: String,
 }

@@ -6,7 +6,6 @@ use axum::response::Response;
 use axum_macros::FromRef;
 use minio_rsc::Minio;
 use neo4rs::{Graph};
-use endpoint::account;
 use redis::aio::ConnectionManager;
 use sea_orm::{DatabaseConnection};
 use service::{account::AccountService, email::EmailService};
@@ -74,9 +73,10 @@ async fn main() {
                 .nest("/image", endpoint::image::routes())
                 .nest("/chat", endpoint::chat::routes())
                 .nest("/wallpaper", endpoint::wallpaper::routes())
+                .nest("/account", endpoint::account::logged_in_routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorize_by_cookie))
-                .nest("/account", account::routes())
+                .nest("/account", endpoint::account::routes())
         )
         .layer(middleware::map_response(main_response_mapper))
         .layer(CookieManagerLayer::new())
@@ -112,7 +112,7 @@ async fn authorize_by_cookie<B>(
     request: Request<B>,
     next: Next<B>
 ) -> Result<impl IntoResponse> {
-    let cookie = cookies.get(account::SESSION_COOKIE_NAME).ok_or(Error::UnauthorizedForUserOperations)?;
+    let cookie = cookies.get(endpoint::account::SESSION_COOKIE_NAME).ok_or(Error::UnauthorizedForUserOperations)?;
 
     let user = acs.verify_session(cookie.value()).await?;
 

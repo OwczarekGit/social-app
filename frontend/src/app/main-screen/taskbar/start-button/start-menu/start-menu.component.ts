@@ -16,6 +16,7 @@ import {NotificationService} from "../../../../service/notification.service";
 import {
   AdminActivationEmailEditorComponent
 } from "../../../../admin/admin-activation-email-editor/admin-activation-email-editor.component";
+import {ChangePasswordComponent} from "../../../../apps/change-password/change-password.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -50,6 +51,10 @@ export class StartMenuComponent {
     this.windowService.openApplication(ChangeUsernameComponent, null, W2kWindowFrameComponent)
   }
 
+  openChangePassword() {
+    this.windowService.openApplication(ChangePasswordComponent, null, W2kWindowFrameComponent)
+  }
+
   openSearchFriends() {
     this.windowService.openApplication(PeopleSearcherComponent, null, W2kWindowFrameComponent)
   }
@@ -74,4 +79,5 @@ export class StartMenuComponent {
   openChangeActivationEmail() {
     this.windowService.openApplication(AdminActivationEmailEditorComponent, null, W2kWindowFrameComponent)
   }
+
 }

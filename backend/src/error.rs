@@ -18,6 +18,7 @@ pub enum Error {
     EmailTakenPendingActivation,
     NonExistentAccountActivationAttempt,
     AccountActivationWrongPassword,
+    AccountForUpdatePasswordNotFound(i64),
 
     // Database errors
     DatabaseConnectionError,
@@ -43,6 +44,7 @@ pub enum Error {
     // Relation errors
     RelationErrorIsAlreadyFriend(i64, i64),
     RelationAttemptToAddSelfAsFriend(i64),
+    AccountForUpdatePasswordWrongPasswordProvided(i64),
 }
 
 impl IntoResponse for Error {

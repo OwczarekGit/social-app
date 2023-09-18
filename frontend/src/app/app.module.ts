@@ -45,6 +45,7 @@ import { ChatFriendMessageComponent } from './apps/messenger/chat/chat-friend-me
 import { WallpaperPickerComponent } from './apps/wallpaper-picker/wallpaper-picker.component';
 import { AdminActivationEmailEditorComponent } from './admin/admin-activation-email-editor/admin-activation-email-editor.component';
 import { AdminActivationEmailEditorPreviewComponent } from './admin/admin-activation-email-editor/admin-activation-email-editor-preview/admin-activation-email-editor-preview.component';
+import { ChangePasswordComponent } from './apps/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ import { AdminActivationEmailEditorPreviewComponent } from './admin/admin-activa
     WallpaperPickerComponent,
     AdminActivationEmailEditorComponent,
     AdminActivationEmailEditorPreviewComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     BrowserModule,
