@@ -38,7 +38,7 @@ services:
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=admin123
-      - MINIO_DEFAULT_BUCKETS=images:policy.json
+      - MINIO_DEFAULT_BUCKETS=images
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -50,4 +50,3 @@ volumes:
   redis:
   neo4j:
   minio:
-

@@ -21,19 +21,7 @@ export class DomainService {
   }
 
   constructor() {
-    this.getSystemDomain().subscribe({
-      next: v => {
-        if (v != null)
-          this._systemDomain = v.value
-      }
-    })
-
-    this.getImageDomain().subscribe({
-      next: v => {
-        if (v != null)
-          this._imageDomain = v.value
-      }
-    })
+    this.refreshDomains()
   }
 
   public getSystemDomain(): Observable<VariableResponse | null> {
@@ -53,6 +41,22 @@ export class DomainService {
   public setSystemDomain(value: string): Observable<any> {
     return this.http.put("/api/admin/domain/system", {
       value: value
+    })
+  }
+
+  refreshDomains() {
+    this.getSystemDomain().subscribe({
+      next: v => {
+        if (v != null)
+          this._systemDomain = v.value
+      }
+    })
+
+    this.getImageDomain().subscribe({
+      next: v => {
+        if (v != null)
+          this._imageDomain = v.value
+      }
     })
   }
 }
