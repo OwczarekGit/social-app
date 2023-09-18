@@ -3,9 +3,10 @@ use axum::routing::{delete, put};
 use serde::{Serialize, Deserialize};
 use tower_cookies::{Cookies, Cookie};
 
-use crate::{ActiveUser, Result};
+use crate::{Result};
 
 use crate::{AppState, service::{account::AccountService, email::EmailService}};
+use crate::app_state::ActiveUser;
 
 pub static SESSION_COOKIE_NAME: &str = "JSESSIONID";
 

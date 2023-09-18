@@ -7,8 +7,8 @@ use neo4rs::query;
 use redis::cmd;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait, ActiveValue, IntoActiveModel, ActiveModelTrait};
 use tracing::log::debug;
-use crate::{ActiveUser, ActiveUserRole};
 use crate::{Result, Error};
+use crate::app_state::{ActiveUser, ActiveUserRole};
 
 use crate::entities::{*, prelude::*};
 use crate::entities::sea_orm_active_enums::AccountType;
@@ -129,7 +129,7 @@ impl AccountService {
         let password = result.get("password").ok_or(Error::BadRequest)?;
 
         if !actual_key.eq(key) {
-            return Err(Error::AccountActivationWrongPassword);
+            return Err(Error::AccountActivationWrongActivationKey);
         }
 
         let model = account::ActiveModel {
@@ -204,6 +204,33 @@ impl AccountService {
         }
 
         Ok((email.to_string(), activation_key))
+    }
+
+    /// # Use as runtime arg only
+    /// This will create an admin account.
+    /// The admin account has top level privilege level in the system.
+    /// Therefore exposing this method in any endpoint is not a good idea.
+    pub async fn create_admin_account(&self, email: &str, password: &str) -> Result<()> {
+        // FIXME: Make sure that the account that you want to create is not taken already.
+        let model = account::ActiveModel {
+            email:    ActiveValue::Set(email.to_string()),
+            password: ActiveValue::Set(hash_password(password)),
+            joined:   ActiveValue::Set(chrono::Utc::now().naive_utc()),
+            r#type:   ActiveValue::Set(AccountType::Admin),
+            ..Default::default()
+        };
+
+        let account = Account::insert(model)
+            .exec(&self.postgres)
+            .await?;
+
+        let _ = self.neo4j.run(
+            query("merge (p:Profile{ id: $id, username: $username })")
+                .param("id", account.last_insert_id)
+                .param("username", "New Admin")
+        ).await?;
+
+        Ok(())
     }
 }
 

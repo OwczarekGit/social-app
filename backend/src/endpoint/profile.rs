@@ -4,7 +4,8 @@ use axum::{Extension, Json, Router};
 use axum::extract::State;
 use axum::routing::put;
 use serde::{Deserialize, Serialize};
-use crate::{ActiveUser, AppState};
+use crate::{AppState};
+use crate::app_state::ActiveUser;
 use crate::service::profile::ProfileService;
 
 pub fn routes() -> Router<AppState> {

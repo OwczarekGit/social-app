@@ -17,7 +17,7 @@ pub enum Error {
     EmailTaken,
     EmailTakenPendingActivation,
     NonExistentAccountActivationAttempt,
-    AccountActivationWrongPassword,
+    AccountActivationWrongActivationKey,
     AccountForUpdatePasswordNotFound(i64),
 
     // Database errors

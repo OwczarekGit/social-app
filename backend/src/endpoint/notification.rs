@@ -11,7 +11,8 @@ use futures::Stream;
 use serde::{Serialize};
 use serde_json::Value;
 use tracing::log::debug;
-use crate::{ActiveUser, AppState};
+use crate::{AppState};
+use crate::app_state::ActiveUser;
 use crate::service::notification::NotificationService;
 
 pub fn routes() -> Router<AppState> {

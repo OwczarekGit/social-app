@@ -3,7 +3,8 @@ use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
 use axum::routing::{get, post};
 use serde::{Deserialize, Serialize};
-use crate::{ActiveUser, AppState};
+use crate::{AppState};
+use crate::app_state::ActiveUser;
 use crate::endpoint::notification::{NotificationData, NotificationType};
 
 use crate::Result;

@@ -2,7 +2,8 @@ use axum::{Router, response::IntoResponse, http::StatusCode, Json, routing::post
 use axum::extract::State;
 use serde::{Serialize, Deserialize};
 
-use crate::{AppState, ActiveUser};
+use crate::{AppState};
+use crate::app_state::ActiveUser;
 use crate::service::post::PostService;
 
 pub fn routes() -> Router<AppState> {

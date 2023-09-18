@@ -8,7 +8,8 @@ use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use image::io::Reader;
 use tempfile::NamedTempFile;
 
-use crate::{ActiveUser, AppState};
+use crate::{AppState};
+use crate::app_state::ActiveUser;
 use crate::service::image::ImageService;
 
 pub fn routes() -> Router<AppState> {

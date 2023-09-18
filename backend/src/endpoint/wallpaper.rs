@@ -2,10 +2,11 @@ use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
 use axum::routing::{delete, get, post};
-use crate::{ActiveUser, AppState};
+use crate::{AppState};
 use crate::service::wallpaper::WallpaperService;
 
 use crate::{Result};
+use crate::app_state::ActiveUser;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
