@@ -9,7 +9,7 @@ use crate::{Result, Error, endpoint};
 use crate::app_state::{ActiveUser, ActiveUserRole};
 use crate::service::account::AccountService;
 
-pub async fn authorize_moderator_or_admin<B>(
+pub async fn authorize_admin<B>(
     Extension(user): Extension<ActiveUser>,
     request: Request<B>,
     next: Next<B>

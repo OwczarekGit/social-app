@@ -70,7 +70,8 @@ pub struct ActiveUser {
 #[derive(Serialize, Deserialize, Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum ActiveUserRole {
     User,
-    Admin
+    Moderator,
+    Admin,
 }
 
 impl From<entities::account::Model> for ActiveUser {
@@ -79,6 +80,7 @@ impl From<entities::account::Model> for ActiveUser {
             id: value.id,
             role: match value.r#type {
                 AccountType::Admin => ActiveUserRole::Admin,
+                AccountType::Moderator => ActiveUserRole::Moderator,
                 AccountType::User => ActiveUserRole::User
             }
         }
@@ -89,6 +91,7 @@ impl ToString for ActiveUserRole {
     fn to_string(&self) -> String {
         match self {
             ActiveUserRole::User => "User".to_string(),
+            ActiveUserRole::Moderator => "Moderator".to_string(),
             ActiveUserRole::Admin => "Admin".to_string()
         }
     }

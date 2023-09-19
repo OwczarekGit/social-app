@@ -12,7 +12,7 @@ impl MigrationTrait for Migration {
         let _ = manager.create_type(
             Type::create()
                 .as_enum(AccountType::Table)
-                .values([AccountType::User, AccountType::Admin])
+                .values([AccountType::User, AccountType::Moderator, AccountType::Admin])
                 .to_owned()
         ).await;
 
@@ -33,7 +33,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Account::Joined).timestamp().not_null())
                     .col(
                         ColumnDef::new(Account::Type)
-                            .enumeration(AccountType::Table, [AccountType::User, AccountType::Admin])
+                            .enumeration(AccountType::Table, [AccountType::User, AccountType::Moderator, AccountType::Admin])
                             .not_null()
                     )
                     .to_owned(),
@@ -63,6 +63,8 @@ pub enum AccountType {
     Table,
     #[iden = "User"]
     User,
+    #[iden = "Moderator"]
+    Moderator,
     #[iden = "Admin"]
     Admin,
 }

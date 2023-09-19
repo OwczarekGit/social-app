@@ -65,8 +65,8 @@ async fn main() {
                 .nest("/admin/activation", endpoint::activation::admin_routes())
                 .nest("/admin/domain", endpoint::domain::admin_routes())
                 .nest("/admin/tag", endpoint::tag::admin_routes())
-                // All routes above can only be accessed by admin / moderators.
-                .layer(middleware::from_fn_with_state(state.clone(), authorization_filter::authorize_moderator_or_admin))
+                // All routes above can only be accessed by admin.
+                .layer(middleware::from_fn_with_state(state.clone(), authorization_filter::authorize_admin))
                 .nest("/tag", endpoint::tag::public_routes())
                 .nest("/post", endpoint::post::routes())
                 .nest("/notification", endpoint::notification::routes())

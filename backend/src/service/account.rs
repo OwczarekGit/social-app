@@ -78,7 +78,8 @@ impl AccountService {
 
         let role = match account.r#type {
             AccountType::Admin => ActiveUserRole::Admin,
-            AccountType::User => ActiveUserRole::User
+            AccountType::Moderator => ActiveUserRole::Moderator,
+            AccountType::User => ActiveUserRole::User,
         };
 
         Ok((session_key, role))

@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 pub enum AccountType {
     #[sea_orm(string_value = "Admin")]
     Admin,
+    #[sea_orm(string_value = "Moderator")]
+    Moderator,
     #[sea_orm(string_value = "User")]
     User,
 }

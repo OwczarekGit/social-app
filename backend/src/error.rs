@@ -19,6 +19,7 @@ pub enum Error {
     NonExistentAccountActivationAttempt,
     AccountActivationWrongActivationKey,
     AccountForUpdatePasswordNotFound(i64),
+    AccountForUpdatePasswordWrongPasswordProvided(i64),
 
     // Database errors
     DatabaseConnectionError,
@@ -44,12 +45,10 @@ pub enum Error {
     // Relation errors
     RelationErrorIsAlreadyFriend(i64, i64),
     RelationAttemptToAddSelfAsFriend(i64),
-    AccountForUpdatePasswordWrongPasswordProvided(i64),
 }
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
-        // let mut res = (axum::http::StatusCode::INTERNAL_SERVER_ERROR).into_response();
         let code = match self {
             Error::LoginError => StatusCode::BAD_REQUEST,
             Error::Unauthorized => StatusCode::UNAUTHORIZED,
@@ -58,6 +57,8 @@ impl IntoResponse for Error {
             Error::EmailTaken => StatusCode::BAD_REQUEST,
             Error::EmailTakenPendingActivation => StatusCode::BAD_REQUEST,
             Error::InvalidSendMessageToFriendRequest(_,_) => StatusCode::BAD_REQUEST,
+            Error::AccountForUpdatePasswordWrongPasswordProvided(_) => StatusCode::BAD_REQUEST,
+            Error::AccountActivationWrongActivationKey => StatusCode::BAD_REQUEST,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
         let mut res = code.into_response();
