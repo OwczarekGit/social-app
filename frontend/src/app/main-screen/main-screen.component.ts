@@ -10,6 +10,7 @@ import {ChangePasswordComponent} from "../apps/change-password/change-password.c
 import {AdminManageDomainsComponent} from "../admin/admin-manage-domains/admin-manage-domains.component";
 import {UserProfileComponent} from "../apps/user-profile/user-profile.component";
 import {ChangeProfilePictureComponent} from "../apps/change-profile-picture/change-profile-picture.component";
+import {DomainService} from "../service/domain.service";
 
 @Component({
   selector: 'app-main-screen',

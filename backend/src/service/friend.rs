@@ -152,6 +152,7 @@ pub struct SearchNonFriendsResult {
 pub struct Profile {
     user_id: i64,
     username: String,
+    picture_url: String,
 }
 
 impl TryFrom<Row> for Profile {
@@ -162,7 +163,8 @@ impl TryFrom<Row> for Profile {
 
         Ok(Self {
             user_id: n.get("id").ok_or(Error::Neo4jInvalidNode(n.id()))?,
-            username: n.get("username").ok_or(Error::Neo4jInvalidNode(n.id()))?
+            username: n.get("username").ok_or(Error::Neo4jInvalidNode(n.id()))?,
+            picture_url: n.get("picture_url").unwrap_or("".to_string())
         })
     }
 }

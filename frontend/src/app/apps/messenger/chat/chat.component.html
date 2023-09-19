@@ -1,5 +1,9 @@
 <div class="bar">
-  <p class="font-tahoma-bold">{{_profile?.username}}</p>
+  <img
+    loading="lazy"
+    *ngIf="_profile()?.picture_url != ''"
+    [src]="_profile()?.picture_url" alt="">
+  <p class="font-tahoma-bold">{{_profile()?.username}}</p>
 </div>
 <div class="messages">
   <div class="messages-inner">

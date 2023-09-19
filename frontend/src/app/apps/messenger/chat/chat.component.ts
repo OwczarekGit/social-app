@@ -4,6 +4,7 @@ import {ChatService} from "../../../service/chat.service";
 import {FriendMessage} from "../../../data/friend-message";
 import {NotificationService} from "../../../service/notification.service";
 import {NotificationType} from "../../../const/notification-type";
+import {single} from "rxjs";
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,7 @@ export class ChatComponent {
 
   public _myProfile = signal<Profile | null>(null)
 
-  _profile?: Profile
+  _profile = signal<Profile | null>(null)
 
   public messages = signal<FriendMessage[]>([])
 
@@ -41,9 +42,9 @@ export class ChatComponent {
 
   @Input('profile')
   set profile(value: Profile) {
-    this._profile = value
-    if (this._profile?.user_id != null) {
-      this.chatService.getMessagesForFriendConversation(this._profile?.user_id).subscribe({
+    this._profile.set(value)
+    if (this._profile()?.user_id != null) {
+      this.chatService.getMessagesForFriendConversation(this._profile()?.user_id as number).subscribe({
         next: v => {
           this.messages.set(v)
         }
@@ -52,7 +53,7 @@ export class ChatComponent {
   }
 
   sendMessage() {
-    let id = this._profile?.user_id
+    let id = this._profile()?.user_id
     if (this.messageText == '' && id != null) return
 
     this.chatService.sendMessageToFriend(id as number, this.messageText).subscribe({
