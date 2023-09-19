@@ -4,6 +4,7 @@
   border-left: 1px solid #949494;
   border-right: 1px solid #fff;
   border-bottom: 1px solid #fff;
+  min-height: 0;
 }
 
 textarea {
@@ -11,6 +12,7 @@ textarea {
   height: 100%;
   outline: none;
   padding: 3px;
+  min-height: 0;
 
   border-top: 1px solid #4a4a4a;
   border-left: 1px solid #4a4a4a;

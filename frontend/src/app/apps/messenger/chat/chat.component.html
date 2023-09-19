@@ -14,9 +14,10 @@
   </div>
 </div>
 <div class="controls">
-  <app-input
+  <app-textarea
+    (keyup.shift.enter)="$event.preventDefault()"
     (keyup.enter)="sendMessage()"
-    [(text)]="messageText"></app-input>
+    [(text)]="messageText"></app-textarea>
   <app-button
     (click)="sendMessage()"
     [disabled]="messageText == ''"

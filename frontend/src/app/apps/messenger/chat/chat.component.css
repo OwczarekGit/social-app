@@ -1,6 +1,6 @@
 :host {
   display: grid;
-  grid-template-rows: 24px 400px auto;
+  grid-template-rows: 24px 400px 28px;
   gap: 6px;
   height: 100%;
 }
@@ -48,5 +48,6 @@ img {
 .controls {
   display: grid;
   grid-template-columns: 1fr auto;
+  min-height: 0;
   gap: 6px;
 }

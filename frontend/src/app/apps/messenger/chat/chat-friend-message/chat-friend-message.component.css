@@ -20,6 +20,7 @@ p {
   hyphens: auto;
   padding: 4px;
   font-size: 10px;
+  white-space: pre-wrap;
 }
 
 .mine {
