@@ -3,10 +3,12 @@ import {ListDisplay} from "./list-display";
 export class Profile implements ListDisplay {
   user_id: number
   username: string
+  picture_url: string
 
-  constructor(id: number, username: string) {
-    this.user_id = id
-    this.username = username
+  constructor(user_id: number, username: string, picture_url: string, domain: string) {
+    this.user_id = user_id;
+    this.username = username;
+    this.picture_url = domain + picture_url;
   }
 
   display(): string {

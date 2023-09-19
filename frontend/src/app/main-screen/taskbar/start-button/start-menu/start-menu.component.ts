@@ -18,6 +18,7 @@ import {
 } from "../../../../admin/admin-activation-email-editor/admin-activation-email-editor.component";
 import {ChangePasswordComponent} from "../../../../apps/change-password/change-password.component";
 import {AdminManageDomainsComponent} from "../../../../admin/admin-manage-domains/admin-manage-domains.component";
+import {ChangeProfilePictureComponent} from "../../../../apps/change-profile-picture/change-profile-picture.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -54,6 +55,10 @@ export class StartMenuComponent {
 
   openChangePassword() {
     this.windowService.openApplication(ChangePasswordComponent, null, W2kWindowFrameComponent)
+  }
+
+  openChangeProfilePicture() {
+    this.windowService.openApplication(ChangeProfilePictureComponent, null, W2kWindowFrameComponent)
   }
 
   openSearchFriends() {

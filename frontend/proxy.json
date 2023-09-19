@@ -7,5 +7,10 @@
     "target": "http://0.0.0.0:9000",
     "secure": false,
     "changeOrigin": true
+  },
+  "/profiles": {
+    "target": "http://0.0.0.0:9000",
+    "secure": false,
+    "changeOrigin": true
   }
 }

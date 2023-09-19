@@ -47,6 +47,8 @@ import { AdminActivationEmailEditorComponent } from './admin/admin-activation-em
 import { AdminActivationEmailEditorPreviewComponent } from './admin/admin-activation-email-editor/admin-activation-email-editor-preview/admin-activation-email-editor-preview.component';
 import { ChangePasswordComponent } from './apps/change-password/change-password.component';
 import { AdminManageDomainsComponent } from './admin/admin-manage-domains/admin-manage-domains.component';
+import { UserProfileComponent } from './apps/user-profile/user-profile.component';
+import { ChangeProfilePictureComponent } from './apps/change-profile-picture/change-profile-picture.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +95,8 @@ import { AdminManageDomainsComponent } from './admin/admin-manage-domains/admin-
     AdminActivationEmailEditorPreviewComponent,
     ChangePasswordComponent,
     AdminManageDomainsComponent,
+    UserProfileComponent,
+    ChangeProfilePictureComponent,
   ],
   imports: [
     BrowserModule,

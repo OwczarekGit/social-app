@@ -19,6 +19,16 @@ export class ProfileService {
   }
 
   getMyProfile(): Observable<Profile> {
-    return this.http.get<Profile>("/api/profile/username")
+    return this.http.get<Profile>("/api/profile")
+  }
+
+  getProfileForUserId(params: number): Observable<Profile> {
+    return this.http.get<Profile>("/api/profile/" + params)
+  }
+
+  public setProfilePicture(file: File): Observable<any> {
+    let form = new FormData()
+    form.set("image", file)
+    return this.http.put("/api/profile/picture", form)
   }
 }

@@ -2,7 +2,6 @@ use std::io::{Cursor, Read};
 use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
 use axum::extract::State;
-use axum::http::StatusCode;
 use axum::routing::{post};
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use image::io::Reader;
@@ -23,14 +22,13 @@ pub async fn share_image(
     TypedMultipart(request): TypedMultipart<ImageUploadRequest>,
 ) -> crate::Result<impl IntoResponse> {
     let mut image_bytes = vec![];
-    request.image.contents.as_file().read_to_end(&mut image_bytes)
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    request.image.contents
+        .as_file()
+        .read_to_end(&mut image_bytes)?;
 
     let image = Reader::new(Cursor::new(&mut image_bytes))
-        .with_guessed_format()
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-        .decode()
-        .map_err(|_| StatusCode::BAD_REQUEST)?;
+        .with_guessed_format()?
+        .decode()?;
 
     image_service.upload_image(user.id, &request.title, request.tags, image).await?;
 

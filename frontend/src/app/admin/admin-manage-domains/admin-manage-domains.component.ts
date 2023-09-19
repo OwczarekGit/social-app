@@ -60,7 +60,6 @@ export class AdminManageDomainsComponent extends WindowContent<null, W2kWindowFr
       this.setTitle("Mange domains")
       this.setIcon("/assets/manage-domain-s.png")
     })
-
   }
 
   selectDomain($event: ListDisplay) {

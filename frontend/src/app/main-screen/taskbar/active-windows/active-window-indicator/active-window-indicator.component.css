@@ -52,3 +52,11 @@ p {
 .focused p {
   font-family: 'Tahoma Bold', sans-serif;
 }
+
+img {
+  width: 16px;
+  height: 16px;
+  object-position: center;
+  object-fit: contain;
+  image-rendering: pixelated;
+}

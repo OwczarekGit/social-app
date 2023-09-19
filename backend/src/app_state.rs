@@ -49,7 +49,7 @@ impl AppState {
             post_service: PostService::new(neo4j_connection.clone()),
             notification_service: NotificationService::new(neo4j_connection.clone(), postgres_connection.clone()),
             friend_service: FriendService::new(neo4j_connection.clone()),
-            profile_service: ProfileService::new(neo4j_connection.clone()),
+            profile_service: ProfileService::new(neo4j_connection.clone(), minio_connection.clone()),
             image_service: ImageService::new(neo4j_connection.clone(), minio_connection.clone()),
             tag_service: TagService::new(neo4j_connection.clone()),
             chat_service: ChatService::new(neo4j_connection.clone()),

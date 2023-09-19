@@ -1,5 +1,7 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
+use image::ImageError;
+use minio_rsc::errors::MinioError;
 
 pub type Result<T> = core::result::Result<T, Error>;
 
@@ -36,6 +38,7 @@ pub enum Error {
     InternalServerError,
     BadRequest,
     NotFound,
+    IOError,
 
     // Chat errors
     InvalidSendMessageToFriendRequest(i64, i64),
@@ -45,6 +48,12 @@ pub enum Error {
     // Relation errors
     RelationErrorIsAlreadyFriend(i64, i64),
     RelationAttemptToAddSelfAsFriend(i64),
+
+    // Image errors
+    UnhandlerImageProcessingError,
+
+    // Minio errors
+    UnhandledMinioError,
 }
 
 impl IntoResponse for Error {
@@ -132,6 +141,40 @@ impl From<neo4rs::Error> for Error {
         //     neo4rs::Error::InvalidTypeMarker(_) => {}
         //     neo4rs::Error::DeserializationError(_) => {}
             _ => Self::UnhandledError,
+        }
+    }
+}
+
+impl From<std::io::Error> for Error {
+    fn from(_value: std::io::Error) -> Self {
+        Self::IOError
+    }
+}
+
+impl From<image::ImageError> for Error {
+    fn from(value: ImageError) -> Self {
+        match value {
+            // ImageError::Decoding(_) => {}
+            // ImageError::Encoding(_) => {}
+            // ImageError::Parameter(_) => {}
+            // ImageError::Limits(_) => {}
+            // ImageError::Unsupported(_) => {}
+            // ImageError::IoError(_) => {}
+            _ => Self::UnhandlerImageProcessingError
+        }
+    }
+}
+
+impl From<MinioError> for Error {
+    fn from(value: MinioError) -> Self {
+        match value {
+            // MinioError::ValueError(_) => {}
+            // MinioError::RequestError(_) => {}
+            // MinioError::XmlError(_) => {}
+            // MinioError::S3Error(_) => {}
+            // MinioError::HttpError => {}
+            // MinioError::IoError(_) => {}
+            _ => Self::UnhandledMinioError
         }
     }
 }

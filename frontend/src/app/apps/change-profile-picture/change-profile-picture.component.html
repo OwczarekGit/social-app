@@ -1,0 +1,16 @@
+<label class="picker">
+  <img src="" #preview alt="preview">
+  <input
+    #picker
+    (change)="setSelectedImage()"
+    style="display: none"
+    type="file"
+  />
+</label>
+<div class="controls">
+  <app-button
+    [disabled]="file() == null"
+    (click)="updateProfilePicture()"
+    caption="Change"></app-button>
+  <app-button caption="Cancel"></app-button>
+</div>

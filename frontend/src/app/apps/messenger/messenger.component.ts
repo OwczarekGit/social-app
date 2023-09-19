@@ -5,6 +5,7 @@ import {FriendService} from "../../service/friend.service";
 import {Profile} from "../../data/profile";
 import {ListDisplay} from "../../data/list-display";
 import {ProfileService} from "../../service/profile.service";
+import {DomainService} from "../../service/domain.service";
 
 @Component({
   selector: 'app-messenger',
@@ -13,6 +14,7 @@ import {ProfileService} from "../../service/profile.service";
 })
 export class MessengerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
   public friendService = inject(FriendService)
+  private domainService = inject(DomainService)
 
   public friends = signal<Profile[]>([])
   public profileService = inject(ProfileService)
@@ -25,7 +27,7 @@ export class MessengerComponent extends WindowContent<null, W2kWindowFrameCompon
     super();
     this.friendService.getFriendList().subscribe({
       next: value => {
-        this.friends.set(value.map(v => new Profile(v.user_id, v.username)))
+        this.friends.set(value.map(v => new Profile(v.user_id, v.username, v.picture_url, this.domainService.imageDomain)))
         let p = this.friends()[0]
         if (p != null)
           this.selectedProfile = p
@@ -34,7 +36,7 @@ export class MessengerComponent extends WindowContent<null, W2kWindowFrameCompon
 
     this.profileService.getMyProfile().subscribe({
       next: v => {
-        this.myProfile = new Profile(v.user_id, v.username)
+        this.myProfile = new Profile(v.user_id, v.username, v.picture_url, this.domainService.imageDomain)
       }
     })
   }

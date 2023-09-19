@@ -151,7 +151,7 @@ impl AccountService {
             .await?;
 
         self.neo4j.run(
-            query("merge (p:Profile{ id: $id, username: $username })")
+            query("merge (p:Profile{ id: $id, username: $username, picture_url: ''})")
                 .param("id", account.last_insert_id)
                 .param("username", "New User")
         ).await?;
@@ -226,7 +226,7 @@ impl AccountService {
             .await?;
 
         let _ = self.neo4j.run(
-            query("merge (p:Profile{ id: $id, username: $username })")
+            query("merge (p:Profile{ id: $id, username: $username, picture_url: ''})")
                 .param("id", account.last_insert_id)
                 .param("username", "New Admin")
         ).await?;

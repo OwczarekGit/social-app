@@ -8,6 +8,8 @@ import {
 import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {ChangePasswordComponent} from "../apps/change-password/change-password.component";
 import {AdminManageDomainsComponent} from "../admin/admin-manage-domains/admin-manage-domains.component";
+import {UserProfileComponent} from "../apps/user-profile/user-profile.component";
+import {ChangeProfilePictureComponent} from "../apps/change-profile-picture/change-profile-picture.component";
 
 @Component({
   selector: 'app-main-screen',
