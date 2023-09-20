@@ -16,6 +16,7 @@ export class UserProfileComponent extends WindowContent<number, W2kWindowFrameCo
   private profileService = inject(ProfileService)
   private domainService = inject(DomainService)
   private postService = inject(PostService)
+
   public profile = signal<Profile | null>(null)
   public posts = signal<Post[]>([])
 
@@ -34,7 +35,8 @@ export class UserProfileComponent extends WindowContent<number, W2kWindowFrameCo
         this.setTitle(`${value.username}'s profile`)
 
         this.postService.getPostsForUser(value.user_id).subscribe({
-          next: posts => this.posts.set(posts)
+          next: posts => this.posts.set(posts.map(p =>
+            new Post(p.id, p.author_id, p.author_username, p.author_picture_url, p.content, p.date, this.domainService.imageDomain)))
         })
 
       }
