@@ -60,3 +60,7 @@ hr {
 .content {
   width: 100%;
 }
+
+.content p {
+  white-space: pre-wrap;
+}
