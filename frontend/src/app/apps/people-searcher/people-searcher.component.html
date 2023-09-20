@@ -14,7 +14,10 @@
     </app-list-small>
   </div>
   <div class="controls">
-    <app-button [disabled]="selected == null" caption="Show profile"></app-button>
+    <app-button
+      (click)="showProfile()"
+      [disabled]="selected == null"
+      caption="Show profile"></app-button>
     <app-button
       [disabled]="selected == null"
       caption="Invite"

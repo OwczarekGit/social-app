@@ -6,6 +6,8 @@ import {ListDisplay} from "../../data/list-display";
 import {PopupService} from "../../service/popup.service";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import {WindowService} from "../../service/window.service";
+import {UserProfileComponent} from "../user-profile/user-profile.component";
 
 @Component({
   selector: 'app-people-searcher',
@@ -16,6 +18,7 @@ export class PeopleSearcherComponent extends WindowContent<null, W2kWindowFrameC
 
   friendService = inject(FriendService)
   popupService = inject(PopupService)
+  windowService = inject(WindowService)
 
   public form = new FormGroup({
     phrase: new FormControl<string>('', Validators.required)
@@ -66,5 +69,9 @@ export class PeopleSearcherComponent extends WindowContent<null, W2kWindowFrameC
       this.setIcon("/assets/search-friends-s.png")
       this.setTitle("Search for friends")
     })
+  }
+
+  showProfile() {
+    this.windowService.openApplication(UserProfileComponent, this.selected?.user_id, W2kWindowFrameComponent)
   }
 }
