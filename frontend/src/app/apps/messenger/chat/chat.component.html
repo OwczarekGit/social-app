@@ -1,9 +1,17 @@
 <div class="bar">
-  <img
-    loading="lazy"
-    *ngIf="_profile()?.picture_url != ''"
-    [src]="_profile()?.picture_url" alt="">
-  <p class="font-tahoma-bold">{{_profile()?.username}}</p>
+  <div class="details">
+    <img
+      loading="lazy"
+      *ngIf="_profile() != null &&_profile()?.picture_url != ''"
+      [src]="_profile()?.picture_url" alt="">
+    <p class="font-tahoma-bold">{{_profile()?.username}}</p>
+  </div>
+  <div class="open-profile">
+    <app-button
+      [disabled]="_profile() == null"
+      (click)="openProfile()"
+      caption="Profile"></app-button>
+  </div>
 </div>
 <div class="messages">
   <div class="messages-inner">

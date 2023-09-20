@@ -5,6 +5,9 @@ import {FriendMessage} from "../../../data/friend-message";
 import {NotificationService} from "../../../service/notification.service";
 import {NotificationType} from "../../../const/notification-type";
 import {single} from "rxjs";
+import {WindowService} from "../../../service/window.service";
+import {UserProfileComponent} from "../../user-profile/user-profile.component";
+import {W2kWindowFrameComponent} from "../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
   selector: 'app-chat',
@@ -14,6 +17,7 @@ import {single} from "rxjs";
 export class ChatComponent {
   public chatService = inject(ChatService)
   public notificationService = inject(NotificationService)
+  public windowService = inject(WindowService)
 
   @Input()
   set myProfile(value: Profile) {
@@ -62,5 +66,9 @@ export class ChatComponent {
 
 
     this.messageText = ''
+  }
+
+  openProfile() {
+    this.windowService.openApplication(UserProfileComponent, this._profile()?.user_id, W2kWindowFrameComponent)
   }
 }
