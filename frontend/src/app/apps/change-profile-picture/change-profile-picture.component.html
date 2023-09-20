@@ -12,5 +12,7 @@
     [disabled]="file() == null"
     (click)="updateProfilePicture()"
     caption="Change"></app-button>
-  <app-button caption="Cancel"></app-button>
+  <app-button
+    (click)="closeWindow()"
+    caption="Cancel"></app-button>
 </div>
