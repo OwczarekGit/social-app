@@ -13,6 +13,14 @@ export class Tag implements ListDisplay {
   }
 
   iconUrl(): string {
-    return "/assets/tag-s.png"
+    let url = ''
+
+    switch(this.name) {
+      case 'Wallpaper': url = 'wallpaper-settings-s.png'; break;
+      case 'NSFW': url = 'error.png'; break;
+      default: url = 'tag-s.png'; break;
+    }
+
+    return '/assets/' + url
   }
 }
