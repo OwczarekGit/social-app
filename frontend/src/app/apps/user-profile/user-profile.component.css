@@ -1,0 +1,21 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 400px;
+  height: 500px;
+  padding: 6px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden scroll;
+}

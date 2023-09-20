@@ -6,8 +6,9 @@ import {Profile} from "../../data/profile";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {PopupService} from "../../service/popup.service";
-import {filter} from "rxjs";
 import {DomainService} from "../../service/domain.service";
+import {WindowService} from "../../service/window.service";
+import {UserProfileComponent} from "../user-profile/user-profile.component";
 
 @Component({
   selector: 'app-friend-manager',
@@ -21,6 +22,7 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
   private friendService = inject(FriendService)
   private popupService = inject(PopupService)
   private domainService = inject(DomainService)
+  private windowService = inject(WindowService)
 
   selectedFriendRequest: FriendRequest | null = null
   selectedFriendProfile: Profile | null = null
@@ -107,5 +109,10 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
       this.setIcon("/assets/user-icon-s.png")
       this.setTitle("Manage friends")
     })
+  }
+
+  showProfile(id: number | undefined) {
+    if (id != null)
+      this.windowService.openApplication(UserProfileComponent, id, W2kWindowFrameComponent)
   }
 }

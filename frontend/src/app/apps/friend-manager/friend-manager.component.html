@@ -20,8 +20,16 @@
 </div>
 <div *ngIf="friendsTabOpened" class="controls">
   <app-button (click)="removeFriend()" [disabled]="this.selectedFriendProfile == null" caption="Remove friend"></app-button>
+  <app-button
+    [disabled]="this.selectedFriendProfile == null"
+    (click)="showProfile(selectedFriendProfile?.user_id)"
+    caption="Profile"></app-button>
 </div>
 <div *ngIf="!friendsTabOpened" class="controls">
   <app-button (click)="acceptFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Accept"></app-button>
   <app-button (click)="denyFriendRequest()" [disabled]="this.selectedFriendRequest == null" caption="Deny"></app-button>
+  <app-button
+    [disabled]="this.selectedFriendRequest == null"
+    (click)="showProfile(selectedFriendRequest?.user_id)"
+    caption="Profile"></app-button>
 </div>

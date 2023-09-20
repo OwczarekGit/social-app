@@ -1,0 +1,21 @@
+<div class="box">
+  <div class="title">
+    <div class="left">
+      <img *ngIf="post?.author_picture_url != ''" [src]="post?.author_picture_url" alt="profile-picture" />
+      <p class="font-tahoma">{{post?.author_username}}</p>
+    </div>
+    <div class="right">
+      <p class="font-tahoma-bold">
+        {{post?.date + 'Z' | date: 'HH:mm | dd.MM.YYYY'}}
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="content">
+    <p class="font-tahoma">
+      {{post?.content}}
+    </p>
+  </div>
+</div>

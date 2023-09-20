@@ -49,6 +49,8 @@ import { ChangePasswordComponent } from './apps/change-password/change-password.
 import { AdminManageDomainsComponent } from './admin/admin-manage-domains/admin-manage-domains.component';
 import { UserProfileComponent } from './apps/user-profile/user-profile.component';
 import { ChangeProfilePictureComponent } from './apps/change-profile-picture/change-profile-picture.component';
+import { UserProfileBannerComponent } from './apps/user-profile/user-profile-banner/user-profile-banner.component';
+import { UserProfilePostComponent } from './apps/user-profile/user-profile-post/user-profile-post.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +99,8 @@ import { ChangeProfilePictureComponent } from './apps/change-profile-picture/cha
     AdminManageDomainsComponent,
     UserProfileComponent,
     ChangeProfilePictureComponent,
+    UserProfileBannerComponent,
+    UserProfilePostComponent,
   ],
   imports: [
     BrowserModule,

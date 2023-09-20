@@ -1,1 +1,10 @@
-<p>{{profile() | json}}</p>
+<div class="banner">
+  <app-user-profile-banner [profile]="profile()"></app-user-profile-banner>
+</div>
+<div class="tabs">
+  <app-button caption="Posts"></app-button>
+  <app-button [disabled]="true" caption="Images"></app-button>
+</div>
+<div class="posts">
+  <app-user-profile-post *ngFor="let p of posts()" [post]="p"></app-user-profile-post>
+</div>
