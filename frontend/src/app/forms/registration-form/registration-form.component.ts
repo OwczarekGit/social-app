@@ -52,9 +52,9 @@ export class RegistrationFormComponent extends WindowContent<null, W2kWindowFram
     this.windowFrame.onClose = () => this.closeWindow()
     setTimeout(() => {
       this.setTitle("Create a new account")
-
-      let [x,y] = this.wm.getDisplaySize()
-      this.wm.setPosition(this.id, x/2, y/2, true)
+      this.wm
+        .getDisplaySize()
+        .ifPresent(([x,y]) => this.wm.setPosition(this.id, x/2, y/2, true))
     })
   }
 }

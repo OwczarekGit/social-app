@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {Wallpaper} from "../data/wallpaper";
 import {HttpClient} from "@angular/common/http";
 import {DomainService} from "./domain.service";
+import {Maybe} from "option-value";
 
 @Injectable({
   providedIn: 'root'
@@ -23,13 +24,14 @@ export class WallpaperService {
   public restoreWallpaper() {
     this.http.get<Wallpaper | null>("/api/wallpaper/current").subscribe({
       next: v => {
-        let el = (this.windowService.vcr?.element.nativeElement as HTMLDivElement)
-        if (v != null) {
-          let value = new Wallpaper(v.id, v.title, v.url, this.domainService.imageDomain);
-          el.style.backgroundImage = `url(${value.url})`
-        } else {
-          el.style.backgroundImage = ''
-        }
+        this.windowService.vcr
+          .ifPresent(vcr => {
+            let el = (vcr.element.nativeElement as HTMLDivElement)
+            Maybe(v).ifPresent(wallpaper => {
+              let wall = new Wallpaper(wallpaper.id, wallpaper.title, wallpaper.url, this.domainService.imageDomain)
+              el.style.backgroundImage = `url(${wall.url})`
+            })
+          })
       }
     })
   }

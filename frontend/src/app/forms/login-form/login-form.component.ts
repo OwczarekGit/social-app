@@ -35,8 +35,9 @@ export class LoginFormComponent extends WindowContent<null, W2kWindowFrameCompon
       this.windowFrame.close = false
       this.setIcon("")
       this.setTitle("Log on to service")
-      let [x,y] = this.wm.getDisplaySize()
-      this.wm.setPosition(this.id, x/2, y/2, true)
+      this.wm
+        .getDisplaySize()
+        .ifPresent(([x,y]) => this.wm.setPosition(this.id, x/2, y/2, true))
     })
   }
 
