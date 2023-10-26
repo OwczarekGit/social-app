@@ -10,8 +10,6 @@ use tower_http::services::ServeFile;
 use tracing::{debug, warn};
 use tracing_subscriber::EnvFilter;
 use crate::app_state::AppState;
-
-
 pub use self::error::{Error, Result};
 
 mod entities;
