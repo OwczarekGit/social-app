@@ -44,7 +44,12 @@ async fn main() {
     let neo4j_connection = Arc::new(config::neo4j_connection().await.expect("To connect n4j."));
     let minio_connection = config::minio_connection().await.expect("To connect minio.");
 
-    let state = AppState::new(redis_connection, postgres_connection, neo4j_connection.clone(), minio_connection);
+    let state = AppState::new(
+        redis_connection,
+        postgres_connection,
+        neo4j_connection.clone(),
+        minio_connection
+    ).await;
 
     if let Some(action) = args.create_admin_args {
         match action {

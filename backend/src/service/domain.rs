@@ -1,9 +1,11 @@
+use std::sync::Arc;
 use axum::extract::State;
 use axum::http::Request;
 use axum::middleware::Next;
 use axum::response::IntoResponse;
 use axum_macros::FromRef;
 use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter};
+use tokio::sync::RwLock;
 use crate::entities::{*, prelude::*};
 use crate::{Result};
 
@@ -13,11 +15,18 @@ static IMAGE_DOMAIN_VAR_NAME:  &str  = "image_domain";
 #[derive(Clone, FromRef)]
 pub struct DomainService {
     postgres: sea_orm::DatabaseConnection,
+    image_domain: Arc<RwLock<Option<String>>>
 }
 
 impl DomainService {
-    pub fn new(postgres: sea_orm::DatabaseConnection) -> Self {
-        Self { postgres }
+    pub async fn new(postgres: sea_orm::DatabaseConnection) -> Self {
+        let image_domain = Self::get_variable(&postgres, IMAGE_DOMAIN_VAR_NAME)
+            .await
+            .expect("Database connection to be established.");
+        Self {
+            postgres,
+            image_domain: Arc::new(RwLock::new(image_domain))
+        }
     }
 }
 
@@ -30,14 +39,15 @@ impl DomainService {
         Self::get_variable(&self.postgres, SYSTEM_DOMAIN_VAR_NAME).await
     }
 
-    pub async fn set_image_domain(&self, value: &str) -> Result<()> {
-        Self::set_variable(&self.postgres, IMAGE_DOMAIN_VAR_NAME, value).await
+    pub async fn set_image_domain(&mut self, value: &str) -> Result<()> {
+        if Self::set_variable(&self.postgres, IMAGE_DOMAIN_VAR_NAME, value).await.is_ok() {
+            *self.image_domain.write().await = Some(value.to_owned())
+        }
+        Ok(())
     }
 
     pub async fn get_image_domain(&self) -> Result<Option<String>> {
-        // TODO: Cache that to avoid unnecessary database access.
-        //       This is totally fine since domain will rarely change.
-        Self::get_variable(&self.postgres, IMAGE_DOMAIN_VAR_NAME).await
+        Ok(self.image_domain.read().await.clone())
     }
 
     async fn get_variable(pg: &sea_orm::DatabaseConnection, key: &str) -> Result<Option<String>> {

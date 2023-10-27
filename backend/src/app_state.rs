@@ -37,7 +37,7 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn new(
+    pub async fn new(
         redis_connection:ConnectionManager,
         postgres_connection: DatabaseConnection,
         neo4j_connection: Arc<Graph>,
@@ -55,7 +55,7 @@ impl AppState {
             chat_service: ChatService::new(neo4j_connection.clone()),
             wallpaper_service: WallpaperService::new(neo4j_connection.clone()),
             activation_service: ActivationService::new(postgres_connection.clone()),
-            domain_service: DomainService::new(postgres_connection.clone()),
+            domain_service: DomainService::new(postgres_connection.clone()).await,
         }
     }
 }

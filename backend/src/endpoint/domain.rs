@@ -51,7 +51,7 @@ pub async fn set_system_domain(
 }
 
 pub async fn set_image_domain(
-    State(domain_service): State<DomainService>,
+    State(mut domain_service): State<DomainService>,
     Json(request): Json<SetVariableRequest>,
 ) -> Result<()> {
     domain_service.set_image_domain(&request.value).await
