@@ -5,10 +5,10 @@ export class Profile implements ListDisplay {
   username: string
   picture_url: string
 
-  constructor(user_id: number, username: string, picture_url: string, domain: string) {
+  constructor(user_id: number, username: string, picture_url: string) {
     this.user_id = user_id;
     this.username = username;
-    this.picture_url = domain + picture_url;
+    this.picture_url = picture_url;
   }
 
   display(): string {

@@ -14,7 +14,6 @@ import {DomainService} from "../../service/domain.service";
 export class ChangeProfilePictureComponent extends WindowContent<null, W2kWindowFrameComponent>{
 
   private profileService = inject(ProfileService)
-  private domainService = inject(DomainService)
   private popupService = inject(PopupService)
 
   @ViewChild('picker')
@@ -35,7 +34,7 @@ export class ChangeProfilePictureComponent extends WindowContent<null, W2kWindow
 
     this.profileService.getMyProfile().subscribe({
       next: v => {
-        this.preview.nativeElement.src = new Profile(v.user_id, v.username, v.picture_url, this.domainService.imageDomain).picture_url
+        this.preview.nativeElement.src = new Profile(v.user_id, v.username, v.picture_url).picture_url
       }
     })
   }

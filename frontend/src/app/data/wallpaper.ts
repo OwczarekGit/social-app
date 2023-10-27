@@ -5,10 +5,10 @@ export class Wallpaper implements ListDisplay {
   title: string
   url: string
 
-  constructor(id: number, title: string, url: string, domain: string) {
+  constructor(id: number, title: string, url: string) {
     this.id = id;
     this.title = title;
-    this.url = `${domain}${url}`;
+    this.url = url
   }
 
   display(): string {

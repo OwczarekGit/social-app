@@ -6,7 +6,6 @@ import {Profile} from "../../data/profile";
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {PopupService} from "../../service/popup.service";
-import {DomainService} from "../../service/domain.service";
 import {WindowService} from "../../service/window.service";
 import {UserProfileComponent} from "../user-profile/user-profile.component";
 
@@ -21,7 +20,6 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
   public friendsTabOpened: boolean = true
   private friendService = inject(FriendService)
   private popupService = inject(PopupService)
-  private domainService = inject(DomainService)
   private windowService = inject(WindowService)
 
   selectedFriendRequest: FriendRequest | null = null
@@ -42,7 +40,7 @@ export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameCo
 
     this.friendService.getFriendList().subscribe({
       next: value => {
-        this.friendProfiles = value.map(p => new Profile(p.user_id, p.username, p.picture_url, this.domainService.imageDomain))
+        this.friendProfiles = value.map(p => new Profile(p.user_id, p.username, p.picture_url))
       }
     })
   }

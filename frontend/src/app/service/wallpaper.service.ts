@@ -28,7 +28,7 @@ export class WallpaperService {
           .ifPresent(vcr => {
             let el = (vcr.element.nativeElement as HTMLDivElement)
             Maybe(v).ifPresent(wallpaper => {
-              let wall = new Wallpaper(wallpaper.id, wallpaper.title, wallpaper.url, this.domainService.imageDomain)
+              let wall = new Wallpaper(wallpaper.id, wallpaper.title, wallpaper.url)
               el.style.backgroundImage = `url(${wall.url})`
             })
           })

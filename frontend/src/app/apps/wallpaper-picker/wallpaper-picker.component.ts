@@ -1,11 +1,9 @@
 import {AfterViewInit, Component, inject, signal} from '@angular/core';
 import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
-import {ImageService} from "../../service/image.service";
 import {Wallpaper} from "../../data/wallpaper";
 import {ListDisplay} from "../../data/list-display";
 import {WallpaperService} from "../../service/wallpaper.service";
-import {DomainService} from "../../service/domain.service";
 
 @Component({
   selector: 'app-wallpaper-picker',
@@ -15,7 +13,6 @@ import {DomainService} from "../../service/domain.service";
 export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
   public wallpaperService = inject(WallpaperService)
-  private domainService = inject(DomainService)
 
   wallpapers = signal<Wallpaper[]>([])
   selectedWallpaper = signal<Wallpaper | null>(null)
@@ -23,7 +20,7 @@ export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrame
   constructor() {
     super();
     this.wallpaperService.getAllWallpapers().subscribe({
-      next: value => this.wallpapers.set(value.map(v => new Wallpaper(v.id, v.title, v.url, this.domainService.imageDomain)))
+      next: value => this.wallpapers.set(value.map(v => new Wallpaper(v.id, v.title, v.url)))
     })
   }
 
