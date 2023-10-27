@@ -61,6 +61,7 @@ impl AppState {
 }
 
 
+// TODO: Custom extractor for that could be nice.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ActiveUser {
     pub id: i64,

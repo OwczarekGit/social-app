@@ -21,7 +21,7 @@ impl TagService {
             return Err(StatusCode::CONFLICT);
         }
 
-        Ok(self.neo4j.execute(
+        self.neo4j.execute(
             query("create (t:Tag{name: $name}) return t")
                 .param("name", name)
         )
@@ -31,7 +31,7 @@ impl TagService {
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
             .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
-            .try_into()?)
+            .try_into()
     }
 
     pub async fn delete_tag(&self, id: i64) -> Result<(), StatusCode> {

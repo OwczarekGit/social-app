@@ -9,7 +9,8 @@ use serde::{Deserialize, Serialize};
 use tempfile::NamedTempFile;
 use crate::{AppState};
 use crate::app_state::ActiveUser;
-use crate::service::profile::ProfileService;
+use crate::service::domain::ImageDomain;
+use crate::service::profile::{Profile, ProfileService};
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -28,17 +29,37 @@ pub async fn change_username(
 }
 
 pub async fn get_my_profile(
+    Extension(image_domain): Extension<ImageDomain>,
     Extension(user): Extension<ActiveUser>,
     State(profile_service): State<ProfileService>,
 ) -> crate::Result<impl IntoResponse> {
-    Ok(Json(profile_service.get_profile(user.id).await?))
+    Ok(
+        Json(
+            profile_service.get_profile(user.id)
+                .await
+                .map(|p| Profile {
+                    picture_url: format!("{}{}", image_domain.0, p.picture_url),
+                    ..p
+                })?
+        )
+    )
 }
 
 pub async fn get_profile(
+    Extension(image_domain): Extension<ImageDomain>,
     State(profile_service): State<ProfileService>,
     Path(id): Path<i64>
 ) -> crate::Result<impl IntoResponse> {
-    Ok(Json(profile_service.get_profile(id).await?))
+    Ok(
+        Json(
+            profile_service.get_profile(id)
+                .await
+                .map(|p| Profile {
+                    picture_url: format!("{}{}", image_domain.0, p.picture_url),
+                    ..p
+                })?
+        )
+    )
 }
 
 pub async fn set_profile_picture(

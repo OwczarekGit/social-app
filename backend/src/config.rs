@@ -52,5 +52,5 @@ pub async fn minio_connection() -> Result<Minio, ()> {
 }
 
 fn get_arg(name: &str) -> String {
-    env::var(name).expect(&format!("{name} to be set in .env"))
+    env::var(name).unwrap_or_else(|_| panic!("{name} to be set in .env"))
 }

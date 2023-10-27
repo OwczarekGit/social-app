@@ -5,11 +5,12 @@ use axum::routing::{delete, get, post};
 use serde::{Deserialize, Serialize};
 use crate::{AppState};
 use crate::endpoint::notification::{NotificationData, NotificationType};
-use crate::service::friend::FriendService;
+use crate::service::friend::{FriendService, Profile};
 use crate::service::notification::NotificationService;
 
 use crate::{Result, Error};
 use crate::app_state::ActiveUser;
+use crate::service::domain::ImageDomain;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -68,10 +69,21 @@ pub async fn send_friend_request(
 }
 
 pub async fn get_friend_list(
+    Extension(image_domain): Extension<ImageDomain>,
     Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
 ) -> Result<impl IntoResponse> {
-    Ok(Json(friend_service.get_friend_list(user.id).await?))
+    Ok(
+        Json(
+            friend_service.get_friend_list(user.id)
+                .await?
+                .into_iter()
+                .map(|p| Profile {
+                    picture_url: format!("{}{}", image_domain.0, p.picture_url),
+                    ..p
+                }).collect::<Vec<_>>()
+        )
+    )
 }
 
 pub async fn remove_friend(

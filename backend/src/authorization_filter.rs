@@ -14,7 +14,7 @@ pub async fn authorize_admin<B>(
     request: Request<B>,
     next: Next<B>
 ) -> Result<impl IntoResponse> {
-    if ActiveUserRole::from(user.role.clone()) != ActiveUserRole::Admin {
+    if user.role != ActiveUserRole::Admin {
         return Err(Error::UnauthorizedForAdminOperations(user.id));
     }
 

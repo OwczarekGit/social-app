@@ -100,7 +100,7 @@ impl AccountService {
             .await?
             .ok_or(Error::AccountForUpdatePasswordNotFound(user_id))?;
 
-        if !verify_password(&old_password, &account.password) {
+        if !verify_password(old_password, &account.password) {
             return Err(Error::AccountForUpdatePasswordWrongPasswordProvided(user_id));
         }
 
@@ -225,7 +225,7 @@ impl AccountService {
             .exec(&self.postgres)
             .await?;
 
-        let _ = self.neo4j.run(
+        self.neo4j.run(
             query("merge (p:Profile{ id: $id, username: $username, picture_url: ''})")
                 .param("id", account.last_insert_id)
                 .param("username", "New Admin")

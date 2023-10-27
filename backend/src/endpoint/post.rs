@@ -5,9 +5,10 @@ use serde::{Serialize, Deserialize};
 
 use crate::{AppState};
 use crate::app_state::ActiveUser;
-use crate::service::post::PostService;
+use crate::service::post::{Post, PostService};
 
 use crate::Result;
+use crate::service::domain::ImageDomain;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -26,17 +27,39 @@ pub async fn create_post(
 }
 
 pub async fn get_user_posts(
+    Extension(image_domain): Extension<ImageDomain>,
     State(post_service): State<PostService>,
     Path(id): Path<i64>,
 ) -> Result<impl IntoResponse> {
-    Ok(Json(post_service.get_posts_for_user(id).await?))
+    Ok(
+        Json(
+            post_service.get_posts_for_user(id)
+                .await?
+                .into_iter()
+                .map(|p| Post {
+                    author_picture_url: format!("{}{}", image_domain.0, p.author_picture_url),
+                    ..p
+                }).collect::<Vec<_>>()
+        )
+    )
 }
 
 pub async fn get_my_posts(
+    Extension(image_domain): Extension<ImageDomain>,
     Extension(user): Extension<ActiveUser>,
     State(post_service): State<PostService>,
 ) -> Result<impl IntoResponse> {
-    Ok(Json(post_service.get_posts_for_user(user.id).await?))
+    Ok(
+        Json(
+            post_service.get_posts_for_user(user.id)
+                .await?
+                .into_iter()
+                .map(|p| Post {
+                    author_picture_url: format!("{}{}", image_domain.0, p.author_picture_url),
+                    ..p
+                }).collect::<Vec<_>>()
+        )
+    )
 }
 
 #[derive(Serialize, Deserialize, Debug)]

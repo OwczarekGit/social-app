@@ -74,9 +74,9 @@ impl ProfileService {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Profile {
-    user_id: i64,
-    username: String,
-    picture_url: String,
+    pub user_id: i64,
+    pub username: String,
+    pub picture_url: String,
 }
 
 impl TryFrom<Row> for Profile {

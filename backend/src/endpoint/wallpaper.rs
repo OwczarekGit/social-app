@@ -3,10 +3,11 @@ use axum::response::IntoResponse;
 use axum::{Extension, Json, Router};
 use axum::routing::{delete, get, post};
 use crate::{AppState};
-use crate::service::wallpaper::WallpaperService;
+use crate::service::wallpaper::{Image, WallpaperService};
 
 use crate::{Result};
 use crate::app_state::ActiveUser;
+use crate::service::domain::ImageDomain;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -17,9 +18,20 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn get_all_wallpapers(
+    Extension(image_domain): Extension<ImageDomain>,
     State(image_service): State<WallpaperService>,
-) -> crate::Result<impl IntoResponse> {
-    Ok(Json(image_service.get_all_wallpapers().await?))
+) -> Result<impl IntoResponse> {
+    Ok(
+        Json(
+            image_service.get_all_wallpapers()
+                .await?
+                .into_iter()
+                .map(|i| Image{
+                    url: format!("{}{}", image_domain.0, i.url),
+                    ..i
+                }).collect::<Vec<_>>()
+        )
+    )
 }
 
 pub async fn set_wallpaper(
@@ -34,12 +46,23 @@ pub async fn unset_wallpaper(
     Extension(user): Extension<ActiveUser>,
     State(wallpaper_service): State<WallpaperService>,
 ) -> Result<impl IntoResponse> {
-    Ok(wallpaper_service.unset_wallpaper(user.id).await?)
+    wallpaper_service.unset_wallpaper(user.id).await
 }
 
 pub async fn get_current_wallpaper(
     Extension(user): Extension<ActiveUser>,
+    Extension(image_domain): Extension<ImageDomain>,
     State(wallpaper_service): State<WallpaperService>,
 ) -> Result<impl IntoResponse> {
-    Ok(Json(wallpaper_service.get_current_wallpaper(user.id).await?))
+    Ok(
+        Json(
+            wallpaper_service.get_current_wallpaper(user.id)
+                .await?
+                .map(|i| Image {
+                    id: i.id,
+                    title: i.title,
+                    url: format!("{}{}", image_domain.0, i.url)
+                })
+        )
+    )
 }

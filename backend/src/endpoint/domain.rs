@@ -37,7 +37,6 @@ pub async fn get_system_domain(
     )
 }
 
-
 pub fn admin_routes() -> Router<AppState> {
     Router::new()
         .route("/system", put(set_system_domain))

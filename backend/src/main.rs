@@ -49,7 +49,7 @@ async fn main() {
     if let Some(action) = args.create_admin_args {
         match action {
             arguments::ExecuteActionOnStart::CreateAdminAccount(admin) => {
-                if let Ok(_) = state.account_service.create_admin_account(&admin.email, &admin.password).await {
+                if state.account_service.create_admin_account(&admin.email, &admin.password).await.is_ok() {
                     warn!("Admin account: {} has been created. Shutting down.", &admin.email);
                     return;
                 }
@@ -77,6 +77,7 @@ async fn main() {
                 .nest("/domain", endpoint::domain::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorization_filter::authorize_by_cookie))
+                .layer(middleware::from_fn_with_state(state.domain_service.clone(), service::domain::extract_image_domain))
                 .nest("/account", endpoint::account::routes())
         )
         .layer(middleware::map_response(main_response_mapper))
