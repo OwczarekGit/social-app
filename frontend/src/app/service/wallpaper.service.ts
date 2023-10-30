@@ -27,10 +27,11 @@ export class WallpaperService {
         this.windowService.vcr
           .ifPresent(vcr => {
             let el = (vcr.element.nativeElement as HTMLDivElement)
-            Maybe(v).ifPresent(wallpaper => {
-              let wall = new Wallpaper(wallpaper.id, wallpaper.title, wallpaper.url)
-              el.style.backgroundImage = `url(${wall.url})`
-            })
+            Maybe(v)
+              .ifPresentOrElse(wallpaper => {
+                let wall = new Wallpaper(wallpaper.id, wallpaper.title, wallpaper.url)
+                el.style.backgroundImage = `url(${wall.url})`
+              }, () => el.style.backgroundImage = ``)
           })
       }
     })
