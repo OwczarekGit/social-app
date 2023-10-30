@@ -11,8 +11,9 @@ export class RegistrationService {
 
   constructor() { }
 
-  public register(email: string, password: string): Observable<any> {
+  public register(username: string, email: string, password: string): Observable<any> {
     return this.http.post("/api/account", {
+      username: username,
       email: email,
       password: password
     })

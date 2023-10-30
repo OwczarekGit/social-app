@@ -13,6 +13,7 @@ import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-wi
 export class RegistrationFormComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 
   public form = new FormGroup({
+    username: new FormControl<string>('', Validators.required),
     email: new FormControl<string>('', Validators.required),
     password: new FormControl<string>('', Validators.required),
     confirmPassword: new FormControl<string>('', Validators.required),
@@ -23,9 +24,12 @@ export class RegistrationFormComponent extends WindowContent<null, W2kWindowFram
 
   public register() {
     let form = this.form.getRawValue()
-    this.registrationService.register(form.email as string, form.password as string)
-      .subscribe(
-        (r) => {
+    this.registrationService.register(
+      form.username as string,
+      form.email as string,
+      form.password as string
+    ).subscribe(
+        (_) => {
           this.notificationService.info(
             "Account created",
             "The verification email has been send to your E-Mail address. You'll need to activate your account before you can start using the system."

@@ -8,6 +8,7 @@ pub enum ExecuteActionOnStart {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Args)]
 pub struct  CreateAdminAccount {
+    pub username: String,
     pub email: String,
     pub password: String,
 }

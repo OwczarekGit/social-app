@@ -1,4 +1,5 @@
 <form [formGroup]="form">
+  <app-input formControlName="username"        type="text"     [row]="true" caption="Username"></app-input>
   <app-input formControlName="email"           type="mail"     [row]="true" caption="E-Mail"></app-input>
   <app-input formControlName="password"        type="password" [row]="true" caption="Password"></app-input>
   <app-input formControlName="confirmPassword" type="password" [row]="true" caption="Confirm password"></app-input>

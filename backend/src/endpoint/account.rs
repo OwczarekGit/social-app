@@ -25,7 +25,7 @@ pub async fn register_account(
     Json(request): Json<RegistrationRequest>,
 ) -> Result<impl IntoResponse> {
     //TODO: Verify that email is a valid email address.
-    let (email, key) = account_service.register_account(&request.email, &request.password).await?;
+    let (email, key) = account_service.register_account(&request.username, &request.email, &request.password).await?;
     email_service.send_activation_mail(&email, &key);
     Ok(())
 }
@@ -101,6 +101,7 @@ pub struct LoginRequest {
 
 #[derive(Serialize, Deserialize)]
 pub struct RegistrationRequest {
+    pub username: String,
     pub email: String,
     pub password: String,
 }

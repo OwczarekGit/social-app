@@ -128,6 +128,7 @@ impl AccountService {
 
         let actual_key = result.get("key").ok_or(Error::BadRequest)?;
         let password = result.get("password").ok_or(Error::BadRequest)?;
+        let username = result.get("username").ok_or(Error::BadRequest)?;
 
         if !actual_key.eq(key) {
             return Err(Error::AccountActivationWrongActivationKey);
@@ -153,14 +154,14 @@ impl AccountService {
         self.neo4j.run(
             query("merge (p:Profile{ id: $id, username: $username, picture_url: ''})")
                 .param("id", account.last_insert_id)
-                .param("username", "New User")
+                .param("username", username.to_owned())
         ).await?;
 
         debug!("Activating '{email}' using the code '{key}'");
         Ok(())   
     }
 
-    pub async fn register_account(&mut self, email: &str, password: &str) -> Result<(String, String)> {
+    pub async fn register_account(&mut self, username: &str, email: &str, password: &str) -> Result<(String, String)> {
         let redis = &mut self.redis;
 
         let is_taken = Account::find()
@@ -189,6 +190,8 @@ impl AccountService {
             .arg(activation_key.clone())
             .arg("password")
             .arg(hash_password(password))
+            .arg("username")
+            .arg(username)
             .query_async(redis)
             .await?;
 
@@ -211,7 +214,7 @@ impl AccountService {
     /// This will create an admin account.
     /// The admin account has top level privilege level in the system.
     /// Therefore exposing this method in any endpoint is not a good idea.
-    pub async fn create_admin_account(&self, email: &str, password: &str) -> Result<()> {
+    pub async fn create_admin_account(&self, username: &str, email: &str, password: &str) -> Result<()> {
         // FIXME: Make sure that the account that you want to create is not taken already.
         let model = account::ActiveModel {
             email:    ActiveValue::Set(email.to_string()),
@@ -228,7 +231,7 @@ impl AccountService {
         self.neo4j.run(
             query("merge (p:Profile{ id: $id, username: $username, picture_url: ''})")
                 .param("id", account.last_insert_id)
-                .param("username", "New Admin")
+                .param("username", username.to_owned())
         ).await?;
 
         Ok(())

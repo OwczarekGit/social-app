@@ -54,7 +54,7 @@ async fn main() {
     if let Some(action) = args.create_admin_args {
         match action {
             arguments::ExecuteActionOnStart::CreateAdminAccount(admin) => {
-                if state.account_service.create_admin_account(&admin.email, &admin.password).await.is_ok() {
+                if state.account_service.create_admin_account(&admin.username, &admin.email, &admin.password).await.is_ok() {
                     warn!("Admin account: {} has been created. Shutting down.", &admin.email);
                     return;
                 }
