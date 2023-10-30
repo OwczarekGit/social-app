@@ -1,6 +1,6 @@
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;
-use axum::{Extension, Json, Router};
+use axum::{Json, Router};
 use axum::routing::{delete, get, post};
 use crate::{AppState};
 use crate::service::wallpaper::{Image, WallpaperService};
@@ -35,7 +35,7 @@ pub async fn get_all_wallpapers(
 }
 
 pub async fn set_wallpaper(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(wallpaper_service): State<WallpaperService>,
     Path(id): Path<i64>,
 ) -> Result<impl IntoResponse> {
@@ -43,7 +43,7 @@ pub async fn set_wallpaper(
 }
 
 pub async fn unset_wallpaper(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(wallpaper_service): State<WallpaperService>,
 ) -> Result<impl IntoResponse> {
     wallpaper_service.unset_wallpaper(user.id).await
@@ -51,7 +51,7 @@ pub async fn unset_wallpaper(
 
 pub async fn get_current_wallpaper(
     image_domain: ImageDomain,
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(wallpaper_service): State<WallpaperService>,
 ) -> Result<impl IntoResponse> {
     Ok(

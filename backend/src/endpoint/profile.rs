@@ -1,6 +1,6 @@
 use std::io::{Cursor, Read};
 use axum::response::IntoResponse;
-use axum::{Extension, Json, Router};
+use axum::{Json, Router};
 use axum::extract::{Path, State};
 use axum::routing::{get, put};
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
@@ -21,7 +21,7 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn change_username(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(profile_service): State<ProfileService>,
     Json(request): Json<ChangeUsernameRequest>,
 ) -> crate::Result<impl IntoResponse> {
@@ -30,7 +30,7 @@ pub async fn change_username(
 
 pub async fn get_my_profile(
     image_domain: ImageDomain,
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(profile_service): State<ProfileService>,
 ) -> crate::Result<impl IntoResponse> {
     Ok(
@@ -63,7 +63,7 @@ pub async fn get_profile(
 }
 
 pub async fn set_profile_picture(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(profile_service): State<ProfileService>,
     TypedMultipart(request): TypedMultipart<ChangeProfilePictureRequest>
 ) -> crate::Result<impl IntoResponse> {

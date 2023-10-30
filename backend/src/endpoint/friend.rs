@@ -1,6 +1,6 @@
 use axum::extract::{Path, Query, State};
 use axum::response::IntoResponse;
-use axum::{Extension, Json, Router};
+use axum::{Json, Router};
 use axum::routing::{delete, get, post};
 use serde::{Deserialize, Serialize};
 use crate::{AppState};
@@ -23,7 +23,7 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn search_users(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(friend_service): State<FriendService>,
     Query(search_request): Query<SearchFriendRequest>,
 ) -> Result<impl IntoResponse> {
@@ -31,14 +31,14 @@ pub async fn search_users(
 }
 
 pub async fn get_pending_friend_requests(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(friend_service): State<FriendService>,
 ) -> Result<impl IntoResponse> {
     Ok(Json(friend_service.get_pending_friend_requests(user.id).await?))
 }
 
 pub async fn accept_friend_request(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(friend_service): State<FriendService>,
     Path(requester_id): Path<i64>,
 ) -> Result<impl IntoResponse> {
@@ -46,7 +46,7 @@ pub async fn accept_friend_request(
 }
 
 pub async fn send_friend_request(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(friend_service): State<FriendService>,
     State(notification_service): State<NotificationService>,
     Path(target_id): Path<i64>,
@@ -70,7 +70,7 @@ pub async fn send_friend_request(
 
 pub async fn get_friend_list(
     image_domain: ImageDomain,
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(friend_service): State<FriendService>,
 ) -> Result<impl IntoResponse> {
     Ok(
@@ -87,7 +87,7 @@ pub async fn get_friend_list(
 }
 
 pub async fn remove_friend(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(friend_service): State<FriendService>,
     Path(other_id): Path<i64>,
 ) -> Result<impl IntoResponse> {

@@ -1,6 +1,6 @@
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;
-use axum::{Extension, Json, Router};
+use axum::{Json, Router};
 use axum::routing::{get, post};
 use serde::{Deserialize, Serialize};
 use crate::{AppState};
@@ -18,7 +18,7 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn send_message_to_friend(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(chat_service): State<ChatService>,
     State(notification_service): State<NotificationService>,
     Json(request): Json<SendMessageToFriendRequest>,
@@ -36,7 +36,7 @@ pub async fn send_message_to_friend(
 }
 
 pub async fn get_friend_conversation_messages(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(chat_service): State<ChatService>,
     Path(friend_id): Path<i64>,
 ) -> Result<impl IntoResponse> {

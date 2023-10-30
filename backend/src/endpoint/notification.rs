@@ -3,7 +3,7 @@ use std::time::Duration;
 use axum::extract::{Path, State};
 use axum::response::{IntoResponse, Sse};
 use axum::response::sse::{Event, KeepAlive};
-use axum::{Extension, Json, Router};
+use axum::{Json, Router};
 use axum::http::StatusCode;
 use axum::routing::{delete, get};
 use chrono::NaiveDateTime;
@@ -24,7 +24,7 @@ pub fn routes() -> Router<AppState> {
 
 
 pub async fn subscribe_to_notifications(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(mut notification_service): State<NotificationService>,
 ) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
     debug!("Subscribed to notifications user {}.", user.id);
@@ -39,14 +39,14 @@ pub async fn subscribe_to_notifications(
 }
 
 pub async fn get_remaining_notifications(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(notification_service): State<NotificationService>,
 ) -> Result<impl IntoResponse, StatusCode> {
     Ok(Json(notification_service.get_remaining_notifications(user.id).await?))
 }
 
 pub async fn dismiss_notification(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(notification_service): State<NotificationService>,
     Path(id): Path<i64>,
 ) -> Result<impl IntoResponse, StatusCode> {

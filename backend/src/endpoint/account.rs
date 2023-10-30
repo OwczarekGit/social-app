@@ -1,4 +1,4 @@
-use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode, Extension};
+use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode};
 use axum::routing::{delete, put};
 use serde::{Serialize, Deserialize};
 use tower_cookies::{Cookies, Cookie};
@@ -73,7 +73,7 @@ pub fn logged_in_routes() -> Router<AppState> {
 }
 
 pub async fn change_password(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(account_service): State<AccountService>,
     Json(request): Json<ChangePasswordRequest>,
 ) -> Result<impl IntoResponse> {

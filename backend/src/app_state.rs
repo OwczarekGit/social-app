@@ -1,4 +1,8 @@
 use std::sync::Arc;
+use axum::async_trait;
+use axum::extract::FromRequestParts;
+use axum::http::request::Parts;
+use axum::http::StatusCode;
 use axum_macros::FromRef;
 use minio_rsc::Minio;
 use neo4rs::Graph;
@@ -66,6 +70,19 @@ impl AppState {
 pub struct ActiveUser {
     pub id: i64,
     pub role: ActiveUserRole
+}
+
+#[async_trait]
+impl<S> FromRequestParts<S> for ActiveUser {
+    type Rejection = StatusCode;
+
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        if let Some(user) = parts.extensions.get::<ActiveUser>() {
+            Ok(user.clone())
+        } else {
+            Err(StatusCode::UNAUTHORIZED)
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]

@@ -1,6 +1,6 @@
 use std::io::{Cursor, Read};
 use axum::response::IntoResponse;
-use axum::{Extension, Json, Router};
+use axum::{Json, Router};
 use axum::extract::State;
 use axum::routing::{post};
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
@@ -17,7 +17,7 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn share_image(
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(image_service): State<ImageService>,
     TypedMultipart(request): TypedMultipart<ImageUploadRequest>,
 ) -> crate::Result<impl IntoResponse> {

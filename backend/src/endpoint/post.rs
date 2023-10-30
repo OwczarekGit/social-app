@@ -1,4 +1,4 @@
-use axum::{Router, response::IntoResponse, Json, routing::post, Extension};
+use axum::{Router, response::IntoResponse, Json, routing::post};
 use axum::extract::{Path, State};
 use axum::routing::get;
 use serde::{Serialize, Deserialize};
@@ -18,8 +18,8 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn create_post(
+    user: ActiveUser,
     State(post_service): State<PostService>,
-    Extension(user): Extension<ActiveUser>,
     Json(request): Json<CreatePostRequest>,
 ) -> Result<impl IntoResponse> {
     post_service.create_post(user.id, &request.content).await?;
@@ -46,7 +46,7 @@ pub async fn get_user_posts(
 
 pub async fn get_my_posts(
     image_domain: ImageDomain,
-    Extension(user): Extension<ActiveUser>,
+    user: ActiveUser,
     State(post_service): State<PostService>,
 ) -> Result<impl IntoResponse> {
     Ok(
