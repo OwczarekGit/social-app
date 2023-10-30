@@ -18,7 +18,7 @@ pub fn routes() -> Router<AppState> {
 }
 
 pub async fn get_all_wallpapers(
-    Extension(image_domain): Extension<ImageDomain>,
+    image_domain: ImageDomain,
     State(image_service): State<WallpaperService>,
 ) -> Result<impl IntoResponse> {
     Ok(
@@ -50,8 +50,8 @@ pub async fn unset_wallpaper(
 }
 
 pub async fn get_current_wallpaper(
+    image_domain: ImageDomain,
     Extension(user): Extension<ActiveUser>,
-    Extension(image_domain): Extension<ImageDomain>,
     State(wallpaper_service): State<WallpaperService>,
 ) -> Result<impl IntoResponse> {
     Ok(

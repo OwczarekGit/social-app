@@ -69,7 +69,7 @@ pub async fn send_friend_request(
 }
 
 pub async fn get_friend_list(
-    Extension(image_domain): Extension<ImageDomain>,
+    image_domain: ImageDomain,
     Extension(user): Extension<ActiveUser>,
     State(friend_service): State<FriendService>,
 ) -> Result<impl IntoResponse> {

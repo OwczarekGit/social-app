@@ -27,7 +27,7 @@ pub async fn create_post(
 }
 
 pub async fn get_user_posts(
-    Extension(image_domain): Extension<ImageDomain>,
+    image_domain: ImageDomain,
     State(post_service): State<PostService>,
     Path(id): Path<i64>,
 ) -> Result<impl IntoResponse> {
@@ -45,7 +45,7 @@ pub async fn get_user_posts(
 }
 
 pub async fn get_my_posts(
-    Extension(image_domain): Extension<ImageDomain>,
+    image_domain: ImageDomain,
     Extension(user): Extension<ActiveUser>,
     State(post_service): State<PostService>,
 ) -> Result<impl IntoResponse> {

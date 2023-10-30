@@ -29,7 +29,7 @@ pub async fn change_username(
 }
 
 pub async fn get_my_profile(
-    Extension(image_domain): Extension<ImageDomain>,
+    image_domain: ImageDomain,
     Extension(user): Extension<ActiveUser>,
     State(profile_service): State<ProfileService>,
 ) -> crate::Result<impl IntoResponse> {
@@ -46,7 +46,7 @@ pub async fn get_my_profile(
 }
 
 pub async fn get_profile(
-    Extension(image_domain): Extension<ImageDomain>,
+    image_domain: ImageDomain,
     State(profile_service): State<ProfileService>,
     Path(id): Path<i64>
 ) -> crate::Result<impl IntoResponse> {

@@ -1,6 +1,8 @@
 use std::sync::Arc;
-use axum::extract::State;
-use axum::http::Request;
+use axum::async_trait;
+use axum::extract::{FromRequestParts, State};
+use axum::http::{Request, StatusCode};
+use axum::http::request::Parts;
 use axum::middleware::Next;
 use axum::response::IntoResponse;
 use axum_macros::FromRef;
@@ -104,3 +106,16 @@ pub async fn extract_image_domain<B>(
 
 #[derive(Debug, Clone)]
 pub struct ImageDomain(pub String);
+
+#[async_trait]
+impl<S> FromRequestParts<S> for ImageDomain {
+    type Rejection = StatusCode;
+
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> std::result::Result<Self, Self::Rejection> {
+        if let Some(domain) = parts.extensions.get::<ImageDomain>() {
+            Ok(domain.clone())
+        } else {
+            Err(StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
+}
