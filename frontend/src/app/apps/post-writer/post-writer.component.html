@@ -4,6 +4,7 @@
     <app-textarea formControlName="content"></app-textarea>
   </div>
   <div class="controls">
-    <app-button [disabled]="!form.valid" caption="Publish" (click)="publishPost()"></app-button>
+    <app-button *ngIf="editMode"  [disabled]="!form.valid" caption="Update" (click)="updatePost()"></app-button>
+    <app-button *ngIf="!editMode" [disabled]="!form.valid" caption="Publish" (click)="publishPost()"></app-button>
   </div>
 </form>

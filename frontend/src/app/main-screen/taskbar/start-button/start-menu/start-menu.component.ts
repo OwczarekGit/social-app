@@ -21,6 +21,7 @@ import {AdminManageDomainsComponent} from "../../../../admin/admin-manage-domain
 import {ChangeProfilePictureComponent} from "../../../../apps/change-profile-picture/change-profile-picture.component";
 import {ProfileService} from "../../../../service/profile.service";
 import {UserProfileComponent} from "../../../../apps/user-profile/user-profile.component";
+import {None} from "option-value";
 
 @Component({
   selector: 'app-start-menu',
@@ -45,7 +46,7 @@ export class StartMenuComponent {
   }
 
   openCreatePost() {
-    this.windowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(PostWriterComponent, None(), W2kWindowFrameComponent)
   }
 
   openFriendManager() {

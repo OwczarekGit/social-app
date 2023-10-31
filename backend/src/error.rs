@@ -54,6 +54,7 @@ pub enum Error {
 
     // Minio errors
     UnhandledMinioError,
+    UnauthorizedForEditingPost(i64, i64),
 }
 
 impl IntoResponse for Error {

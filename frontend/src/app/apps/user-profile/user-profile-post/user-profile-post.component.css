@@ -64,3 +64,11 @@ hr {
 .content p {
   white-space: pre-wrap;
 }
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  justify-content: flex-end;
+  width: 100%;
+}

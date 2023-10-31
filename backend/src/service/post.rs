@@ -19,8 +19,24 @@ impl PostService {
         }
     }
 
+    // TODO: Mark the post as "edited".
+    pub async fn edit_post(&self, author_id: i64, post_id: i64, content: &str) -> Result<()> {
+        let q = query(r#"
+            match (u:Profile{id: $user_id})-[r:POSTED]->(p:Post)
+            where id(p)=$post_id
+            set p.content=$content
+            return u,r,p
+        "#)
+            .param("user_id", author_id)
+            .param("post_id", post_id)
+            .param("content", content);
+
+        Ok(self.neo4j.run(q).await?)
+    }
+
+
     pub async fn create_post(&self, author_id: i64, content: &str) -> Result<()> {
-        let query = query("match (u:Profile{id:$id}) create (u)-[w:Posted{date: $time}]->(p:Post{content: $content}) return p,w,u")
+        let query = query("match (u:Profile{id:$id}) create (u)-[w:POSTED{date: $time}]->(p:Post{content: $content}) return p,w,u")
             .param("id", author_id)
             .param("content", content)
             .param("time", chrono::Utc::now().naive_local());
@@ -32,7 +48,7 @@ impl PostService {
 
     pub async fn get_posts_for_user(&self, user_id: i64) -> Result<Vec<Post>> {
         let q = query(r#"
-            match (p:Post)<-[r:Posted]-(a:Profile{id: $id})
+            match (p:Post)<-[r:POSTED]-(a:Profile{id: $id})
             return p,r,a
             order by r.date desc
         "#)

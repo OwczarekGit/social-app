@@ -21,4 +21,10 @@ export class PostService {
   public getPostsForUser(id: number): Observable<Post[]> {
     return this.http.get<Post[]>("/api/post/" + id)
   }
+
+  public editPost(id: number, content: string): Observable<any> {
+    return this.http.put(`/api/post/edit/${id}`, {
+      content: content
+    })
+  }
 }

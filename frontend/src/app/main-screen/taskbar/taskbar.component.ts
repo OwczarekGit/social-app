@@ -5,6 +5,7 @@ import {ShareImageComponent} from "../../apps/share-image/share-image.component"
 import {WindowService} from "../../service/window.service";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {MessengerComponent} from "../../apps/messenger/messenger.component";
+import {None} from "option-value";
 
 @Component({
   selector: 'app-taskbar',
@@ -16,7 +17,7 @@ export class TaskbarComponent {
   public windowService = inject(WindowService)
 
   public openWritePost() {
-    this.windowService.openApplication(PostWriterComponent, null, W2kWindowFrameComponent)
+    this.windowService.openApplication(PostWriterComponent, None(), W2kWindowFrameComponent)
   }
 
   public openShareImage() {

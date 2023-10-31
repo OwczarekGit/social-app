@@ -18,4 +18,11 @@
       {{post?.content}}
     </p>
   </div>
+
+  <div *ngIf="post?.author_id==1" class="buttons">
+    <app-button caption="Delete"></app-button>
+    <app-button
+      (click)="editPost(post?.id, post?.content)"
+      caption="Edit"></app-button>
+  </div>
 </div>
