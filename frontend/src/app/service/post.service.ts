@@ -12,8 +12,8 @@ export class PostService {
 
   constructor() { }
 
-  public writePost(content: string): Observable<any> {
-    return this.http.post("/api/post/create", {
+  public writePost(content: string): Observable<Post> {
+    return this.http.post<Post>("/api/post/create", {
       content: content
     })
   }
@@ -26,5 +26,9 @@ export class PostService {
     return this.http.put(`/api/post/edit/${id}`, {
       content: content
     })
+  }
+
+  public deletePost(id: number): Observable<any> {
+    return this.http.delete(`/api/post/delete/${id}`)
   }
 }

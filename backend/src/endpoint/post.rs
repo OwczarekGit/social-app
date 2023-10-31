@@ -1,6 +1,6 @@
 use axum::{Router, response::IntoResponse, Json, routing::post};
 use axum::extract::{Path, State};
-use axum::routing::{get, put};
+use axum::routing::{delete, get, put};
 use serde::{Serialize, Deserialize};
 
 use crate::{AppState};
@@ -16,6 +16,7 @@ pub fn routes() -> Router<AppState> {
         .route("/:id", get(get_user_posts))
         .route("/create", post(create_post))
         .route("/edit/:id", put(edit_post))
+        .route("/delete/:id", delete(delete_post))
 }
 
 pub async fn create_post(
@@ -23,8 +24,7 @@ pub async fn create_post(
     State(post_service): State<PostService>,
     Json(request): Json<CreatePostRequest>,
 ) -> Result<impl IntoResponse> {
-    post_service.create_post(user.id, &request.content).await?;
-    Ok(Json(request))
+    Ok(Json(post_service.create_post(user.id, &request.content).await?))
 }
 
 pub async fn get_user_posts(
@@ -70,6 +70,14 @@ pub async fn edit_post(
     Json(request): Json<EditPostRequest>,
 ) -> Result<impl IntoResponse> {
     post_service.edit_post(user.id, id, &request.content).await
+}
+
+pub async fn delete_post(
+    user: ActiveUser,
+    State(post_service): State<PostService>,
+    Path(id): Path<i64>,
+) -> Result<impl IntoResponse> {
+    post_service.delete_post(user.id, id).await
 }
 
 #[derive(Serialize, Deserialize, Debug)]

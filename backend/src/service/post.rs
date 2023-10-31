@@ -1,5 +1,4 @@
 use std::sync::Arc;
-use axum::http::StatusCode;
 use axum_macros::FromRef;
 use chrono::NaiveDateTime;
 use neo4rs::{Graph, Node, query, Relation, Row};
@@ -20,6 +19,7 @@ impl PostService {
     }
 
     // TODO: Mark the post as "edited".
+    // NOTE: Right now the content is replaced, maybe it would be better to store previous versions of the post.
     pub async fn edit_post(&self, author_id: i64, post_id: i64, content: &str) -> Result<()> {
         let q = query(r#"
             match (u:Profile{id: $user_id})-[r:POSTED]->(p:Post)
@@ -34,16 +34,30 @@ impl PostService {
         Ok(self.neo4j.run(q).await?)
     }
 
+    pub async fn delete_post(&self, author_id: i64, post_id: i64) -> Result<()> {
+        let q = query(r#"
+            match (u:Profile{id: $user_id})-[r:POSTED]->(p:Post)
+            where id(p)=$post_id
+            detach delete p
+        "#)
+            .param("user_id", author_id)
+            .param("post_id", post_id);
 
-    pub async fn create_post(&self, author_id: i64, content: &str) -> Result<()> {
-        let query = query("match (u:Profile{id:$id}) create (u)-[w:POSTED{date: $time}]->(p:Post{content: $content}) return p,w,u")
+        Ok(self.neo4j.run(q).await?)
+    }
+
+    pub async fn create_post(&self, author_id: i64, content: &str) -> Result<Post> {
+        let query = query("match (a:Profile{id:$id}) create (a)-[r:POSTED{date: $time}]->(p:Post{content: $content}) return a,r,p")
             .param("id", author_id)
             .param("content", content)
             .param("time", chrono::Utc::now().naive_local());
 
-        self.neo4j.run(query).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
-        Ok(())
+        self.neo4j.execute(query)
+            .await?
+            .next()
+            .await?
+            .ok_or(Error::Neo4jQueryError)?
+            .try_into()
     }
 
     pub async fn get_posts_for_user(&self, user_id: i64) -> Result<Vec<Post>> {

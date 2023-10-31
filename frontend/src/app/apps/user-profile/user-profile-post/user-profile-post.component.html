@@ -19,10 +19,12 @@
     </p>
   </div>
 
-  <div *ngIf="post?.author_id==1" class="buttons">
-    <app-button caption="Delete"></app-button>
+  <div *ngIf="post?.author_id == profile?.user_id" class="buttons">
     <app-button
-      (click)="editPost(post?.id, post?.content)"
+      (click)="deletePost()"
+      caption="Delete"></app-button>
+    <app-button
+      (click)="editPost()"
       caption="Edit"></app-button>
   </div>
 </div>
