@@ -19,6 +19,8 @@ import {
 import {ChangePasswordComponent} from "../../../../apps/change-password/change-password.component";
 import {AdminManageDomainsComponent} from "../../../../admin/admin-manage-domains/admin-manage-domains.component";
 import {ChangeProfilePictureComponent} from "../../../../apps/change-profile-picture/change-profile-picture.component";
+import {ProfileService} from "../../../../service/profile.service";
+import {UserProfileComponent} from "../../../../apps/user-profile/user-profile.component";
 
 @Component({
   selector: 'app-start-menu',
@@ -31,6 +33,7 @@ export class StartMenuComponent {
   public windowService = inject(WindowService)
   public authService = inject(AuthService)
   public notificationService = inject(NotificationService)
+  public profileService = inject(ProfileService)
 
 
   logout() {
@@ -77,6 +80,12 @@ export class StartMenuComponent {
     this.windowService.openApplication(WallpaperPickerComponent, null, W2kWindowFrameComponent)
   }
 
+  openCurrentUserProfile() {
+    this.profileService.getMyProfile().subscribe(
+      {next: p => this.windowService.openApplication(UserProfileComponent, p.user_id, W2kWindowFrameComponent)}
+    )
+  }
+
   // ADMIN APPS
   openAdminManageTags() {
     this.windowService.openApplication(AdminTagEditorComponent, null, W2kWindowFrameComponent)
@@ -89,4 +98,5 @@ export class StartMenuComponent {
   openManageDomains() {
     this.windowService.openApplication(AdminManageDomainsComponent, null, W2kWindowFrameComponent)
   }
+
 }

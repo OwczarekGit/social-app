@@ -21,6 +21,21 @@
 
 .banner {
   background: linear-gradient(to top, #00f, #000);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column-reverse;
+  height: 100%;
+}
+
+.banner div {
+  color: #fff;
+  transform: translateY(-200%) translateX(-1px) rotateZ(-90deg);
+  font-size: 16px;
+  white-space: nowrap;
+
 }
 
 .items {
