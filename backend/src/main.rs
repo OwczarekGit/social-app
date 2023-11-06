@@ -79,7 +79,6 @@ async fn main() {
                 .nest("/chat", endpoint::chat::routes())
                 .nest("/wallpaper", endpoint::wallpaper::routes())
                 .nest("/account", endpoint::account::logged_in_routes())
-                .nest("/domain", endpoint::domain::routes())
                 // All routes that require authentication go above this route_layer.
                 .layer(middleware::from_fn_with_state(state.account_service.clone(), authorization_filter::authorize_by_cookie))
                 .layer(middleware::from_fn_with_state(state.domain_service.clone(), service::domain::extract_image_domain))

@@ -24,11 +24,11 @@ export class DomainService {
   }
 
   public getSystemDomain(): Observable<VariableResponse | null> {
-    return this.http.get<VariableResponse | null>("/api/domain/system")
+    return this.http.get<VariableResponse | null>("/api/admin/domain/system")
   }
 
   public getImageDomain(): Observable<VariableResponse | null> {
-    return this.http.get<VariableResponse | null>("/api/domain/image")
+    return this.http.get<VariableResponse | null>("/api/admin/domain/image")
   }
 
   public setImageDomain(value: string): Observable<any> {
