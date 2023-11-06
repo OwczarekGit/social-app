@@ -1,6 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {WallpaperService} from "./wallpaper.service";
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ import {Observable} from "rxjs";
 export class LoginService {
 
   private http = inject(HttpClient)
+  private wallpaperService = inject(WallpaperService)
 
   constructor() { }
 
@@ -19,6 +21,7 @@ export class LoginService {
   }
 
   public logout(): Observable<any> {
+    this.wallpaperService.setDefaultBackground()
     return this.http.delete("/api/account/logout")
   }
 }

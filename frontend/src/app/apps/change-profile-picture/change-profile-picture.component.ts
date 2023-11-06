@@ -4,7 +4,6 @@ import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-wi
 import {ProfileService} from "../../service/profile.service";
 import {PopupService} from "../../service/popup.service";
 import {Profile} from "../../data/profile";
-import {DomainService} from "../../service/domain.service";
 
 @Component({
   selector: 'app-change-profile-picture',

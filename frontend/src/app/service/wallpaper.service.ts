@@ -1,19 +1,16 @@
 import {inject, Injectable} from '@angular/core';
-import {WindowService} from "./window.service";
 import {Observable} from "rxjs";
 import {Wallpaper} from "../data/wallpaper";
 import {HttpClient} from "@angular/common/http";
-import {DomainService} from "./domain.service";
-import {Maybe} from "option-value";
+import {Maybe, None} from "option-value";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WallpaperService {
 
-  public windowService = inject(WindowService)
-  public domainService = inject(DomainService)
   public http = inject(HttpClient)
+  public backgroundElement = None<HTMLDivElement>()
 
   constructor() {}
 
@@ -24,14 +21,13 @@ export class WallpaperService {
   public restoreWallpaper() {
     this.http.get<Wallpaper | null>("/api/wallpaper/current").subscribe({
       next: v => {
-        this.windowService.vcr
-          .ifPresent(vcr => {
-            let el = (vcr.element.nativeElement as HTMLDivElement)
+        this.backgroundElement
+          .ifPresent(el => {
             Maybe(v)
               .ifPresentOrElse(wallpaper => {
                 let wall = new Wallpaper(wallpaper.id, wallpaper.title, wallpaper.url)
                 el.style.backgroundImage = `url(${wall.url})`
-              }, () => el.style.backgroundImage = ``)
+              }, () => this.setDefaultBackground())
           })
       }
     })
@@ -39,7 +35,7 @@ export class WallpaperService {
 
   public resetWallpaper() {
     this.http.delete("/api/wallpaper").subscribe({
-      next: value => {
+      next: _ => {
         this.restoreWallpaper()
       }
     })
@@ -47,5 +43,11 @@ export class WallpaperService {
 
   public getAllWallpapers(): Observable<Wallpaper[]> {
     return this.http.get<Wallpaper[]>("/api/wallpaper")
+  }
+
+  public setDefaultBackground() {
+    this.backgroundElement.ifPresent(el => {
+      el.style.backgroundImage = ''
+    })
   }
 }

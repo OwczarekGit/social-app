@@ -21,7 +21,6 @@ export class DomainService {
   }
 
   constructor() {
-    this.refreshDomains()
   }
 
   public getSystemDomain(): Observable<VariableResponse | null> {
@@ -44,7 +43,7 @@ export class DomainService {
     })
   }
 
-  refreshDomains() {
+  public refreshDomains() {
     this.getSystemDomain().subscribe({
       next: v => {
         if (v != null)
