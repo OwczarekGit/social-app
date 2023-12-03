@@ -4,7 +4,7 @@ use axum::http::StatusCode;
 use axum_macros::FromRef;
 use image::{DynamicImage, ImageOutputFormat};
 use minio_rsc::Minio;
-use minio_rsc::types::args::ObjectArgs;
+use minio_rsc::client::KeyArgs;
 use neo4rs::{Graph, Node, query, Row};
 use serde::{Deserialize, Serialize};
 
@@ -42,11 +42,11 @@ impl ImageService {
         let mut bytes = Vec::new();
         image.write_to(&mut Cursor::new(&mut bytes), ImageOutputFormat::Png)
             .expect("Should not happen at this point.");
-
-        self.minio.put_object(
-            ObjectArgs::new("images", object_name.clone())
-                .content_type(Some("image/png".to_string())), bytes.into()
-        )
+        
+        let key = KeyArgs::new(object_name.clone())
+            .content_type(Some("image/png".to_string()));
+        
+        self.minio.put_object("images", key, bytes.into())
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 

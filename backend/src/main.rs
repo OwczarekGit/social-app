@@ -92,14 +92,17 @@ async fn main() {
         .fallback_service(static_files);
 
     debug!("Starting server");
-    axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
-        .serve(app.into_make_service())
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080")
+        .await
+        .expect("Failed to bind socket.");
+    
+    axum::serve(listener, app)
         .await
         .unwrap();
 }
 
 pub async fn main_response_mapper(res: Response) -> Response {
-    if let Some(err) = res.extensions().get::<Error>() {
+    if let Some(err) = res.extensions().get::<Arc<Error>>() {
         //TODO: Some of these are probably worth saving.
         debug!("Error: {:?}", err);
     }

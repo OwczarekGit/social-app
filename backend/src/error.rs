@@ -1,7 +1,8 @@
+use std::sync::Arc;
+
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use image::ImageError;
-use minio_rsc::errors::MinioError;
 
 pub type Result<T> = core::result::Result<T, Error>;
 
@@ -73,7 +74,7 @@ impl IntoResponse for Error {
         };
         let mut res = code.into_response();
 
-        res.extensions_mut().insert(self);
+        res.extensions_mut().insert(Arc::new(self));
         res
     }
 }
@@ -166,8 +167,8 @@ impl From<image::ImageError> for Error {
     }
 }
 
-impl From<MinioError> for Error {
-    fn from(value: MinioError) -> Self {
+impl From<minio_rsc::error::Error> for Error {
+    fn from(value: minio_rsc::error::Error) -> Self {
         match value {
             // MinioError::ValueError(_) => {}
             // MinioError::RequestError(_) => {}

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use axum::async_trait;
-use axum::extract::{FromRequestParts, State};
-use axum::http::{Request, StatusCode};
+use axum::extract::{FromRequestParts, State, Request};
+use axum::http::StatusCode;
 use axum::http::request::Parts;
 use axum::middleware::Next;
 use axum::response::IntoResponse;
@@ -9,7 +9,7 @@ use axum_macros::FromRef;
 use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter};
 use tokio::sync::RwLock;
 use crate::entities::{*, prelude::*};
-use crate::{Result};
+use crate::Result;
 
 static SYSTEM_DOMAIN_VAR_NAME: &str  = "system_domain";
 static IMAGE_DOMAIN_VAR_NAME:  &str  = "image_domain";
@@ -87,10 +87,10 @@ impl DomainService {
     }
 }
 
-pub async fn extract_image_domain<B>(
+pub async fn extract_image_domain(
     State(domain_service): State<DomainService>,
-    request: Request<B>,
-    next: Next<B>
+    request: Request,
+    next: Next,
 ) -> Result<impl IntoResponse> {
     let image_domain = domain_service
         .get_image_domain()

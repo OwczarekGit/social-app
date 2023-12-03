@@ -5,7 +5,7 @@ use axum_macros::FromRef;
 use image::{DynamicImage, ImageOutputFormat};
 use image::imageops::FilterType;
 use minio_rsc::Minio;
-use minio_rsc::types::args::ObjectArgs;
+use minio_rsc::client::KeyArgs;
 use neo4rs::{Graph, Node, query, Row};
 use serde::{Deserialize, Serialize};
 
@@ -40,10 +40,14 @@ impl ProfileService {
         let mut bytes = Vec::new();
         scaled.write_to(&mut Cursor::new(&mut bytes), ImageOutputFormat::Png)
             .expect("Should not happen at this point.");
+        
+        let key = KeyArgs::new(object_name.clone())
+            .content_type(Some("image/png".to_string()));
 
         self.minio.put_object(
-            ObjectArgs::new("profiles", object_name.clone())
-                .content_type(Some("image/png".to_string())), bytes.into()
+            "profiles",
+            key,
+            bytes.into()
         ).await?;
 
         let q = query("match (p:Profile{id: $id}) set p.picture_url = $url return p")

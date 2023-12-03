@@ -7,7 +7,7 @@ use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
 use image::io::Reader;
 use serde::{Deserialize, Serialize};
 use tempfile::NamedTempFile;
-use crate::{AppState};
+use crate::AppState;
 use crate::app_state::ActiveUser;
 use crate::service::domain::ImageDomain;
 use crate::service::profile::{Profile, ProfileService};

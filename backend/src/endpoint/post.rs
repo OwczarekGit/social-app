@@ -3,7 +3,7 @@ use axum::extract::{Path, State};
 use axum::routing::{delete, get, put};
 use serde::{Serialize, Deserialize};
 
-use crate::{AppState};
+use crate::AppState;
 use crate::app_state::ActiveUser;
 use crate::service::post::{Post, PostService};
 

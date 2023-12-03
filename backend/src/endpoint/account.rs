@@ -3,7 +3,7 @@ use axum::routing::{delete, put};
 use serde::{Serialize, Deserialize};
 use tower_cookies::{Cookies, Cookie};
 
-use crate::{Result};
+use crate::Result;
 
 use crate::{AppState, service::{account::AccountService, email::EmailService}};
 use crate::app_state::ActiveUser;
@@ -81,16 +81,16 @@ pub async fn change_password(
 }
 
 pub fn make_cookie(name: String, value: String, http: bool) -> Cookie<'static> {
-    Cookie::build(name, value)
+    Cookie::build((name, value))
         .http_only(http)
         .path("/")
-        .finish()
+        .build()
 }
 
 pub fn remove_cookie(name: String) -> Cookie<'static> {
-    Cookie::build(name, "")
+    Cookie::build(name)
         .path("/")
-        .finish()
+        .build()
 }
 
 #[derive(Serialize, Deserialize)]
