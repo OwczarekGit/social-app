@@ -35,30 +35,33 @@ export class UserProfileComponent extends WindowContent<number, W2kWindowFrameCo
 
     this.postEditSub = this.eventService.postEditedSub.subscribe({
       next: p => {
-        this.posts.mutate(old => {
+        this.posts.update(old => {
           let i = old.findIndex(o => o.id == p.id)
           if (i != -1) {
             old[i] = p
           }
+          return [...old]
         })
       }
     })
 
     this.postDeleteSub = this.eventService.postDeletedSub.subscribe({
       next: p => {
-        this.posts.mutate(old => {
+        this.posts.update(old => {
           let i = old.findIndex(o => o.id == p.id)
           if (i != -1) {
             old.splice(i, 1)
           }
+          return [...old]
         })
       }
     })
 
     this.postCreateSub = this.eventService.postCreatedSub.subscribe({
       next: p => {
-        this.posts.mutate(old => {
+        this.posts.update(old => {
           old.unshift(p)
+          return [...old]
         })
       }
     })

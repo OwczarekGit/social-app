@@ -79,8 +79,9 @@ export class AdminTagEditorComponent extends WindowContent<null, W2kWindowFrameC
     this.searchString = ''
     this.tagService.deleteTag($event.id).subscribe({
       next: _ => {
-        this.allTags.mutate(t => {
+        this.allTags.update(t => {
           t.splice(t.findIndex(tag => tag.id == this.nowEditingTag?.id),1)
+          return [...t]
         })
 
         this.nowEditingTag = undefined
