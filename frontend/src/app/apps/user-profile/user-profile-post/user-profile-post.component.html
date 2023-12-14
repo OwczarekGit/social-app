@@ -14,9 +14,7 @@
   <hr>
 
   <div class="content">
-    <p class="font-tahoma">
-      {{post?.content}}
-    </p>
+    <p class="font-tahoma">{{post?.content}}</p>
   </div>
 
   <div *ngIf="post?.author_id == profile?.user_id" class="buttons">
