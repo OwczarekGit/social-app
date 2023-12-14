@@ -96,19 +96,19 @@ impl TryFrom<Row> for Post {
     type Error = Error;
 
     fn try_from(value: Row) -> Result<Self> {
-        let author: Node = value.get("a").ok_or(Error::Neo4jNodeNotFound)?;
-        let post: Node = value.get("p").ok_or(Error::Neo4jNodeNotFound)?;
-        let relation: Relation = value.get("r").ok_or(Error::Neo4jNodeNotFound)?;
+        let author: Node = value.get("a").map_err(|_| Error::Neo4jNodeNotFound)?;
+        let post: Node = value.get("p").map_err(|_| Error::Neo4jNodeNotFound)?;
+        let relation: Relation = value.get("r").map_err(|_| Error::Neo4jNodeNotFound)?;
 
         Ok(
             Self {
                 id: post.id(),
-                author_id: author.get("id").ok_or(Error::Neo4jInvalidNode(author.id()))?,
+                author_id: author.get("id").map_err(|_| Error::Neo4jInvalidNode(author.id()))?,
                 author_username: author.get("username").unwrap_or("".to_string()),
                 author_picture_url: author.get("picture_url").unwrap_or("".to_string()),
 
-                content: post.get("content").ok_or(Error::Neo4jInvalidNode(post.id()))?,
-                date: relation.get("date").ok_or(Error::Neo4jInvalidNode(relation.id()))?
+                content: post.get("content").map_err(|_| Error::Neo4jInvalidNode(post.id()))?,
+                date: relation.get("date").map_err(|_| Error::Neo4jInvalidNode(relation.id()))?
             }
         )
     }

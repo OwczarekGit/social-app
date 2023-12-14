@@ -103,7 +103,7 @@ impl TryFrom<Row> for DetailedTag {
     type Error = StatusCode;
 
     fn try_from(value: Row) -> Result<Self, Self::Error> {
-        let n: Node = value.get("t").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+        let n: Node = value.get("t").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
         let c: i64 = value.get("r").unwrap_or(0);
 
         Ok(Self {

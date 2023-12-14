@@ -87,11 +87,11 @@ impl TryFrom<Row> for Profile {
     type Error = StatusCode;
 
     fn try_from(value: Row) -> Result<Self, Self::Error> {
-        let p: Node = value.get("p").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+        let p: Node = value.get("p").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(Self {
-            user_id: p.get("id").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
-            username: p.get("username").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?,
+            user_id: p.get("id").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?,
+            username: p.get("username").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?,
             picture_url: p.get("picture_url").unwrap_or("".to_string()),
         })
     }

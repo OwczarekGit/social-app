@@ -71,9 +71,9 @@ impl TryFrom<Row> for FriendMessage {
     type Error = Error;
 
     fn try_from(value: Row) -> std::result::Result<Self, Self::Error> {
-        let user1: Node = value.get("p").ok_or(Error::FriendMessageMissingUserNode)?;
-        let user2: Node = value.get("f").ok_or(Error::FriendMessageMissingUserNode)?;
-        let message: Relation = value.get("m").ok_or(Error::FriendMessageMissingMessageBody)?;
+        let user1: Node = value.get("p").map_err(|_| Error::FriendMessageMissingUserNode)?;
+        let user2: Node = value.get("f").map_err(|_| Error::FriendMessageMissingUserNode)?;
+        let message: Relation = value.get("m").map_err(|_| Error::FriendMessageMissingMessageBody)?;
 
         let author = if user1.id() == message.start_node_id() {
             &user1
@@ -83,10 +83,10 @@ impl TryFrom<Row> for FriendMessage {
 
         Ok(Self {
             id: message.id(),
-            user_id: author.get("id").ok_or(Error::Neo4jInvalidNode(author.id()))?,
-            username: author.get("username").ok_or(Error::Neo4jInvalidNode(author.id()))?,
-            date: message.get("date").ok_or(Error::Neo4jInvalidNode(message.id()))?,
-            message: message.get("message").ok_or(Error::Neo4jInvalidNode(message.id()))?
+            user_id: author.get("id").map_err(|_| Error::Neo4jInvalidNode(author.id()))?,
+            username: author.get("username").map_err(|_| Error::Neo4jInvalidNode(author.id()))?,
+            date: message.get("date").map_err(|_| Error::Neo4jInvalidNode(message.id()))?,
+            message: message.get("message").map_err(|_| Error::Neo4jInvalidNode(message.id()))?
         })
     }
 }

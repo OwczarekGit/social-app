@@ -53,10 +53,10 @@ impl FriendService {
 
         let mut res = vec![];
         while let Ok(Some(x)) = results.next().await {
-            let n: Node = x.get("p2").ok_or(Error::Neo4jNodeNotFound)?;
+            let n: Node = x.get("p2").map_err(|_| Error::Neo4jNodeNotFound)?;
 
-            let id: i64 = n.get("id").ok_or(Error::Neo4jInvalidNode(n.id()))?;
-            let username: String = n.get("username").ok_or(Error::Neo4jInvalidNode(n.id()))?;
+            let id: i64 = n.get("id").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
+            let username: String = n.get("username").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
             res.push(SearchNonFriendsResult {
                 user_id: id,
                 username
@@ -74,10 +74,10 @@ impl FriendService {
 
         let mut requests = vec![];
         while let Ok(Some(row)) = data.next().await {
-            let n: Node = row.get("p").ok_or(Error::Neo4jNodeNotFound)?;
+            let n: Node = row.get("p").map_err(|_| Error::Neo4jNodeNotFound)?;
 
-            let id: i64 = n.get("id").ok_or(Error::Neo4jInvalidNode(n.id()))?;
-            let username: String = n.get("username").ok_or(Error::Neo4jInvalidNode(n.id()))?;
+            let id: i64 = n.get("id").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
+            let username: String = n.get("username").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
 
             requests.push(FriendRequest{
                 user_id: id,
@@ -113,7 +113,7 @@ impl FriendService {
             .await?
             .ok_or(Error::Neo4jNodeNotFound)?
             .get::<bool>("result")
-            .ok_or(Error::Neo4jQueryError)?;
+            .map_err(|_| Error::Neo4jQueryError)?;
 
         if is_already_friend {
             return Err(Error::RelationErrorIsAlreadyFriend(user_id, target_id));
@@ -159,11 +159,11 @@ impl TryFrom<Row> for Profile {
     type Error = Error;
 
     fn try_from(row: Row) -> Result<Self> {
-        let n: Node = row.get("p").ok_or(Error::Neo4jNodeNotFound)?;
+        let n: Node = row.get("p").map_err(|_| Error::Neo4jNodeNotFound)?;
 
         Ok(Self {
-            user_id: n.get("id").ok_or(Error::Neo4jInvalidNode(n.id()))?,
-            username: n.get("username").ok_or(Error::Neo4jInvalidNode(n.id()))?,
+            user_id: n.get("id").map_err(|_| Error::Neo4jInvalidNode(n.id()))?,
+            username: n.get("username").map_err(|_| Error::Neo4jInvalidNode(n.id()))?,
             picture_url: n.get("picture_url").unwrap_or("".to_string())
         })
     }

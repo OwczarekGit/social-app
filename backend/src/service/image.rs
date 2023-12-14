@@ -62,7 +62,7 @@ impl ImageService {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
             .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
             .get::<Node>("i")
-            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
             .id()
             ;
 
@@ -146,10 +146,10 @@ impl TryFrom<Row> for Tag {
 
     fn try_from(value: Row) -> Result<Self, Self::Error> {
         let t = value.get::<Node>("t")
-            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(Self {
-            name: t.get("name").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
+            name: t.get("name").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         })
     }
 }

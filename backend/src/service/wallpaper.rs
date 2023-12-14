@@ -95,12 +95,12 @@ impl TryFrom<Row> for Image {
 
     fn try_from(value: Row) -> Result<Self> {
         let t = value.get::<Node>("i")
-            .ok_or(Error::Neo4jNodeNotFound)?;
+            .map_err(|_| Error::Neo4jNodeNotFound)?;
 
         Ok(Self {
             id: t.id(),
             title: t.get("title").unwrap_or("".to_string()),
-            url: t.get("url").ok_or(Error::Neo4jInvalidNode(t.id()))?
+            url: t.get("url").map_err(|_| Error::Neo4jInvalidNode(t.id()))?
         })
     }
 }
