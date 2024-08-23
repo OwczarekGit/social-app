@@ -1,20 +1,22 @@
-use std::env;
-use minio_rsc::Minio;
 use minio_rsc::provider::StaticProvider;
+use minio_rsc::Minio;
 use neo4rs::{ConfigBuilder, Graph};
 use redis::aio::ConnectionManager;
 use sea_orm::{Database, DatabaseConnection};
+use std::env;
 
 pub async fn redis_connection() -> Result<ConnectionManager, ()> {
     let redis_connection_string = get_arg("REDIS_URL");
     let client = redis::Client::open(redis_connection_string).map_err(|_| ())?;
-    let manager = ConnectionManager:: new(client).await.map_err(|_| ())?;
+    let manager = ConnectionManager::new(client).await.map_err(|_| ())?;
     Ok(manager)
 }
 
 pub async fn postgres_connection() -> Result<DatabaseConnection, ()> {
     let postgres_connection_string = get_arg("DATABASE_URL");
-    let db = Database::connect(postgres_connection_string).await.map_err(|_|())?;
+    let db = Database::connect(postgres_connection_string)
+        .await
+        .map_err(|_| ())?;
     Ok(db)
 }
 
@@ -31,9 +33,7 @@ pub async fn neo4j_connection() -> Result<Graph, ()> {
         .build()
         .expect("To create config.");
 
-    Graph::connect(graph)
-        .await
-        .map_err(|_| ())
+    Graph::connect(graph).await.map_err(|_| ())
 }
 
 pub async fn minio_connection() -> Result<Minio, ()> {

@@ -6,27 +6,35 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "0.7.2", features = ["multipart"] }
-axum-macros = "0.4.0"
-axum_typed_multipart = "0.11.0"
-bcrypt = "0.15.0"
-chrono = { version = "0.4.31", features = ["serde"] }
-clap = { version = "4.4.11", features = ["derive"] }
+axum = { version = "0.7.5", features = ["multipart"] }
+axum-macros = "0.4.1"
+axum_typed_multipart = "0.12.1"
+bcrypt = "0.15.1"
+chrono = { version = "0.4.38", features = ["serde"] }
+clap = { version = "4.5.16", features = ["derive"] }
 dotenvy = "0.15.7"
-futures = "0.3.29"
-image = "0.24.7"
-minio-rsc = { version = "0.2.0", features = ["tokio", "fs-tokio"] }
-neo4rs = "0.7.0"
-redis = { version = "0.24.0", features = ["tokio-comp", "tokio-native-tls-comp", "aio", "connection-manager"] }
-sea-orm = { version = "0.12.9", features = ["sqlx-postgres", "runtime-tokio-native-tls"] }
-serde = { version = "1.0.193", features = ["derive"] }
-serde_json = "1.0.108"
-tempfile = "3.8.1"
-tokio = { version = "1.35.0", features = ["full"] }
-tokio-stream = { version = "0.1.14", features = ["full"] }
-tower = "0.4.13"
+futures = "0.3.30"
+image = "0.25.2"
+minio-rsc = { version = "0.2.3", features = ["tokio", "fs-tokio"] }
+neo4rs = "0.8.0"
+redis = { version = "0.26.1", features = [
+    "tokio-comp",
+    "tokio-native-tls-comp",
+    "aio",
+    "connection-manager",
+] }
+sea-orm = { version = "0.12.9", features = [
+    "sqlx-postgres",
+    "runtime-tokio-native-tls",
+] }
+serde = { version = "1.0.208", features = ["derive"] }
+serde_json = "1.0.125"
+tempfile = "3.12.0"
+tokio = { version = "1.39.3", features = ["full"] }
+tokio-stream = { version = "0.1.15", features = ["full"] }
+tower = "0.5.0"
 tower-cookies = "0.10.0"
-tower-http = { version = "0.5.0", features = ["full"] }
+tower-http = { version = "0.5.2", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-uuid = { version = "1.6.1", features = ["v4"] }
+uuid = { version = "1.10.0", features = ["v4", "v7"] }

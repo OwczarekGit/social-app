@@ -1,18 +1,17 @@
-use std::io::{Cursor};
-use std::sync::Arc;
 use axum::http::StatusCode;
 use axum_macros::FromRef;
-use image::{DynamicImage, ImageOutputFormat};
-use minio_rsc::Minio;
+use image::{DynamicImage, ImageFormat};
 use minio_rsc::client::KeyArgs;
-use neo4rs::{Graph, Node, query, Row};
+use minio_rsc::Minio;
+use neo4rs::{query, Graph, Node, Row};
 use serde::{Deserialize, Serialize};
-
+use std::io::Cursor;
+use std::sync::Arc;
 
 #[derive(Clone, FromRef)]
 pub struct ImageService {
     neo4j: Arc<Graph>,
-    minio: Minio
+    minio: Minio,
 }
 
 impl ImageService {
@@ -21,7 +20,9 @@ impl ImageService {
     }
 
     pub async fn get_all_tags(&self) -> crate::Result<Vec<Tag>> {
-        let mut tags = self.neo4j.execute(query("match (t:Tag) return t order by t.name"))
+        let mut tags = self
+            .neo4j
+            .execute(query("match (t:Tag) return t order by t.name"))
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -36,17 +37,24 @@ impl ImageService {
     }
 
     //FIXME: Thumbnail sized images.
-    pub async fn upload_image(&self, user_id: i64, title: &str, mut tags: Vec<String>, image: DynamicImage) -> crate::Result<()> {
+    pub async fn upload_image(
+        &self,
+        user_id: i64,
+        title: &str,
+        mut tags: Vec<String>,
+        image: DynamicImage,
+    ) -> crate::Result<()> {
         let object_name = uuid::Uuid::new_v4().to_string() + ".png";
 
         let mut bytes = Vec::new();
-        image.write_to(&mut Cursor::new(&mut bytes), ImageOutputFormat::Png)
+        image
+            .write_to(&mut Cursor::new(&mut bytes), ImageFormat::Png)
             .expect("Should not happen at this point.");
-        
-        let key = KeyArgs::new(object_name.clone())
-            .content_type(Some("image/png".to_string()));
-        
-        self.minio.put_object("images", key, bytes.into())
+
+        let key = KeyArgs::new(object_name.clone()).content_type(Some("image/png".to_string()));
+
+        self.minio
+            .put_object("images", key, bytes.into())
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -54,7 +62,9 @@ impl ImageService {
             .param("title", title)
             .param("url", format!("/images/{object_name}"));
 
-        let image_node_id = self.neo4j.execute(create_image_node_query)
+        let image_node_id = self
+            .neo4j
+            .execute(create_image_node_query)
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
             .next()
@@ -63,23 +73,25 @@ impl ImageService {
             .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?
             .get::<Node>("i")
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-            .id()
-            ;
+            .id();
 
-        let add_author_query = query(r#"
+        let add_author_query = query(
+            r#"
             match (i:Image), (p:Profile{id: $user_id})
             where id(i) = $id
             create (p)-[r:SHARED{date: $date}]->(i)
-            return p,i"#)
-            .param("id", image_node_id)
-            .param("user_id", user_id)
-            .param("date", chrono::Utc::now().naive_local());
+            return p,i"#,
+        )
+        .param("id", image_node_id)
+        .param("user_id", user_id)
+        .param("date", chrono::Utc::now().naive_local());
 
-        self.neo4j.run(add_author_query).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        self.neo4j
+            .run(add_author_query)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-        tags.dedup_by(|a,b| {
-            a.to_lowercase().trim() == b.to_lowercase().trim()
-        });
+        tags.dedup_by(|a, b| a.to_lowercase().trim() == b.to_lowercase().trim());
         self.connect_image_to_tags(image_node_id, tags).await?;
 
         Ok(())
@@ -94,34 +106,49 @@ impl ImageService {
     }
 
     async fn tag_image(&self, image_id: i64, name: &str) -> crate::Result<()> {
-        let tag_image_query = query(r#"
+        let tag_image_query = query(
+            r#"
             match (t:Tag), (i:Image)
             where toLower(t.name) = toLower($name)
             and id(i) = $id
             create (i)-[:TAGGED_AS]->(t)
             return t,i
-        "#)
-            .param("name", name.trim())
-            .param("id", image_id);
+        "#,
+        )
+        .param("name", name.trim())
+        .param("id", image_id);
 
-
-        if self.tag_node_exists(name).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)? {
-            self.neo4j.run(tag_image_query).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-        } else {
-            self.neo4j.run(query("create (t:Tag{name: $name})").param("name", name.trim()))
+        if self
+            .tag_node_exists(name)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        {
+            self.neo4j
+                .run(tag_image_query)
                 .await
                 .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-            self.neo4j.run(tag_image_query).await.map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        } else {
+            self.neo4j
+                .run(query("create (t:Tag{name: $name})").param("name", name.trim()))
+                .await
+                .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+            self.neo4j
+                .run(tag_image_query)
+                .await
+                .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
         }
 
         Ok(())
     }
 
     async fn tag_node_exists(&self, name: &str) -> crate::Result<bool> {
-        let q = query("match (t:Tag) where toLower(t.name) = toLower($name) return true AS x limit 1")
-            .param("name", name.trim());
+        let q =
+            query("match (t:Tag) where toLower(t.name) = toLower($name) return true AS x limit 1")
+                .param("name", name.trim());
 
-        let res = self.neo4j.execute(q)
+        let res = self
+            .neo4j
+            .execute(q)
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
             .next()
@@ -145,11 +172,14 @@ impl TryFrom<Row> for Tag {
     type Error = StatusCode;
 
     fn try_from(value: Row) -> Result<Self, Self::Error> {
-        let t = value.get::<Node>("t")
+        let t = value
+            .get::<Node>("t")
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(Self {
-            name: t.get("name").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+            name: t
+                .get("name")
+                .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?,
         })
     }
 }
