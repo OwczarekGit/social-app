@@ -1,9 +1,11 @@
+use crate::SysRes;
 use axum_macros::FromRef;
-use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter};
+use sea_orm::{
+    ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
+};
 use serde::{Deserialize, Serialize};
-use crate::{Result};
 
-use crate::entities::{*, prelude::*};
+use crate::entities::{prelude::*, *};
 
 #[derive(Clone, FromRef)]
 pub struct ActivationService {
@@ -17,17 +19,15 @@ impl ActivationService {
 }
 
 impl ActivationService {
-    pub async fn get_current_activation_mail_template(&self) -> Result<Option<ActivationEmail>> {
-        Ok(
-            Variables::find()
-                .filter(variables::Column::Key.eq("activation_email"))
-                .one(&self.postgres)
-                .await?
-                .map(|v| ActivationEmail { content: v.value })
-        )
+    pub async fn get_current_activation_mail_template(&self) -> SysRes<Option<ActivationEmail>> {
+        Ok(Variables::find()
+            .filter(variables::Column::Key.eq("activation_email"))
+            .one(&self.postgres)
+            .await?
+            .map(|v| ActivationEmail { content: v.value }))
     }
 
-    pub async fn set_current_activation_mail_template(&self, content: &str) -> Result<()> {
+    pub async fn set_current_activation_mail_template(&self, content: &str) -> SysRes<()> {
         let res = Variables::find()
             .filter(variables::Column::Key.eq("activation_email"))
             .one(&self.postgres)
@@ -53,5 +53,5 @@ impl ActivationService {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ActivationEmail {
-    pub content: String
+    pub content: String,
 }

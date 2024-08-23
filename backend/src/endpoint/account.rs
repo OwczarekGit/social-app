@@ -1,12 +1,21 @@
-use axum::{response::IntoResponse, Json, Router, routing::post, extract::{State, Query}, http::StatusCode};
 use axum::routing::{delete, put};
-use serde::{Serialize, Deserialize};
-use tower_cookies::{Cookies, Cookie};
+use axum::{
+    extract::{Query, State},
+    http::StatusCode,
+    response::IntoResponse,
+    routing::post,
+    Json, Router,
+};
+use dto::account::*;
+use tower_cookies::{Cookie, Cookies};
 
-use crate::Result;
+use crate::SysRes;
 
-use crate::{AppState, service::{account::AccountService, email::EmailService}};
 use crate::app_state::ActiveUser;
+use crate::{
+    service::{account::AccountService, email::EmailService},
+    AppState,
+};
 
 pub static SESSION_COOKIE_NAME: &str = "JSESSIONID";
 
@@ -18,14 +27,15 @@ pub fn routes() -> Router<AppState> {
         .route("/logout", delete(logout))
 }
 
-
 pub async fn register_account(
     State(mut account_service): State<AccountService>,
     State(email_service): State<EmailService>,
     Json(request): Json<RegistrationRequest>,
-) -> Result<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     //TODO: Verify that email is a valid email address.
-    let (email, key) = account_service.register_account(&request.username, &request.email, &request.password).await?;
+    let (email, key) = account_service
+        .register_account(&request.username, &request.email, &request.password)
+        .await?;
     email_service.send_activation_mail(&email, &key);
     Ok(())
 }
@@ -33,8 +43,10 @@ pub async fn register_account(
 pub async fn activate_account(
     State(mut account_service): State<AccountService>,
     Query(params): Query<AccountActivationParams>,
-) -> Result<impl IntoResponse> {
-    account_service.activate_account(&params.email, &params.key).await?;
+) -> SysRes<impl IntoResponse> {
+    account_service
+        .activate_account(&params.email, &params.key)
+        .await?;
     Ok(StatusCode::CREATED)
 }
 
@@ -42,8 +54,10 @@ pub async fn login(
     State(mut account_service): State<AccountService>,
     cookies: Cookies,
     Json(request): Json<LoginRequest>,
-) -> Result<impl IntoResponse> {
-    let (key, role) = account_service.login(&request.email, &request.password).await?;
+) -> SysRes<impl IntoResponse> {
+    let (key, role) = account_service
+        .login(&request.email, &request.password)
+        .await?;
 
     cookies.add(make_cookie(SESSION_COOKIE_NAME.to_string(), key, true));
     cookies.add(make_cookie("AUTH".to_owned(), "".to_string(), false));
@@ -68,16 +82,17 @@ pub async fn logout(
 }
 
 pub fn logged_in_routes() -> Router<AppState> {
-    Router::new()
-        .route("/password", put(change_password))
+    Router::new().route("/password", put(change_password))
 }
 
 pub async fn change_password(
     user: ActiveUser,
     State(account_service): State<AccountService>,
     Json(request): Json<ChangePasswordRequest>,
-) -> Result<impl IntoResponse> {
-    account_service.change_password(user.id, &request.old_password, &request.new_password).await
+) -> SysRes<impl IntoResponse> {
+    account_service
+        .change_password(user.id, &request.old_password, &request.new_password)
+        .await
 }
 
 pub fn make_cookie(name: String, value: String, http: bool) -> Cookie<'static> {
@@ -88,32 +103,5 @@ pub fn make_cookie(name: String, value: String, http: bool) -> Cookie<'static> {
 }
 
 pub fn remove_cookie(name: String) -> Cookie<'static> {
-    Cookie::build(name)
-        .path("/")
-        .build()
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct LoginRequest {
-    pub email: String,
-    pub password: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct RegistrationRequest {
-    pub username: String,
-    pub email: String,
-    pub password: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct AccountActivationParams {
-    email: String,
-    key: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct ChangePasswordRequest {
-    old_password: String,
-    new_password: String,
+    Cookie::build(name).path("/").build()
 }

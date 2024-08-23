@@ -1,11 +1,11 @@
 use crate::service::activation::ActivationService;
 use crate::AppState;
-use crate::Result;
+use crate::SysRes;
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Json, Router};
-use serde::{Deserialize, Serialize};
+use dto::activation::SetActivationEmailTemplateRequest;
 
 pub fn admin_routes() -> Router<AppState> {
     Router::new().route(
@@ -16,7 +16,7 @@ pub fn admin_routes() -> Router<AppState> {
 
 pub async fn get_current_activation_email_template(
     State(activation_service): State<ActivationService>,
-) -> Result<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     Ok(Json(
         activation_service
             .get_current_activation_mail_template()
@@ -27,15 +27,10 @@ pub async fn get_current_activation_email_template(
 pub async fn set_current_activation_email_template(
     State(activation_service): State<ActivationService>,
     Json(request): Json<SetActivationEmailTemplateRequest>,
-) -> Result<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     Ok(Json(
         activation_service
             .set_current_activation_mail_template(&request.content)
             .await?,
     ))
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SetActivationEmailTemplateRequest {
-    content: String,
 }

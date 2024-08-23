@@ -4,7 +4,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use image::ImageError;
 
-pub type Result<T> = core::result::Result<T, Error>;
+pub type SysRes<T> = core::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
@@ -67,7 +67,7 @@ impl IntoResponse for Error {
             Error::UnauthorizedForUserOperations => StatusCode::UNAUTHORIZED,
             Error::EmailTaken => StatusCode::BAD_REQUEST,
             Error::EmailTakenPendingActivation => StatusCode::BAD_REQUEST,
-            Error::InvalidSendMessageToFriendRequest(_,_) => StatusCode::BAD_REQUEST,
+            Error::InvalidSendMessageToFriendRequest(_, _) => StatusCode::BAD_REQUEST,
             Error::AccountForUpdatePasswordWrongPasswordProvided(_) => StatusCode::BAD_REQUEST,
             Error::AccountActivationWrongActivationKey => StatusCode::BAD_REQUEST,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
@@ -79,7 +79,7 @@ impl IntoResponse for Error {
     }
 }
 
-impl From<redis::RedisError> for Error{
+impl From<redis::RedisError> for Error {
     fn from(_: redis::RedisError) -> Self {
         Self::RedisError
     }
@@ -116,7 +116,7 @@ impl From<sea_orm::DbErr> for Error {
             // DbErr::Migration(_) => {}
             // DbErr::RecordNotInserted => {}
             // DbErr::RecordNotUpdated => {}
-            _ => Self::UnhandledError
+            _ => Self::UnhandledError,
         }
     }
 }
@@ -125,23 +125,23 @@ impl From<neo4rs::Error> for Error {
     fn from(value: neo4rs::Error) -> Self {
         match value {
             neo4rs::Error::IOError { .. } => Self::Neo4jIOError,
-        //     neo4rs::Error::UrlParseError(_) => {}
-        //     neo4rs::Error::UnsupportedScheme(_) => {}
-        //     neo4rs::Error::InvalidDnsName(_) => {}
-        //     neo4rs::Error::ConnectionError => {}
-        //     neo4rs::Error::StringTooLong => {}
-        //     neo4rs::Error::MapTooBig => {}
-        //     neo4rs::Error::BytesTooBig => {}
-        //     neo4rs::Error::ListTooLong => {}
-        //     neo4rs::Error::InvalidConfig => {}
-        //     neo4rs::Error::UnsupportedVersion(_) => {}
-        //     neo4rs::Error::UnexpectedMessage(_) => {}
-        //     neo4rs::Error::UnknownType(_) => {}
-        //     neo4rs::Error::UnknownMessage(_) => {}
-        //     neo4rs::Error::ConversionError => {}
-        //     neo4rs::Error::AuthenticationError(_) => {}
-        //     neo4rs::Error::InvalidTypeMarker(_) => {}
-        //     neo4rs::Error::DeserializationError(_) => {}
+            //     neo4rs::Error::UrlParseError(_) => {}
+            //     neo4rs::Error::UnsupportedScheme(_) => {}
+            //     neo4rs::Error::InvalidDnsName(_) => {}
+            //     neo4rs::Error::ConnectionError => {}
+            //     neo4rs::Error::StringTooLong => {}
+            //     neo4rs::Error::MapTooBig => {}
+            //     neo4rs::Error::BytesTooBig => {}
+            //     neo4rs::Error::ListTooLong => {}
+            //     neo4rs::Error::InvalidConfig => {}
+            //     neo4rs::Error::UnsupportedVersion(_) => {}
+            //     neo4rs::Error::UnexpectedMessage(_) => {}
+            //     neo4rs::Error::UnknownType(_) => {}
+            //     neo4rs::Error::UnknownMessage(_) => {}
+            //     neo4rs::Error::ConversionError => {}
+            //     neo4rs::Error::AuthenticationError(_) => {}
+            //     neo4rs::Error::InvalidTypeMarker(_) => {}
+            //     neo4rs::Error::DeserializationError(_) => {}
             _ => Self::UnhandledError,
         }
     }
@@ -162,7 +162,7 @@ impl From<image::ImageError> for Error {
             // ImageError::Limits(_) => {}
             // ImageError::Unsupported(_) => {}
             // ImageError::IoError(_) => {}
-            _ => Self::UnhandlerImageProcessingError
+            _ => Self::UnhandlerImageProcessingError,
         }
     }
 }
@@ -176,7 +176,7 @@ impl From<minio_rsc::error::Error> for Error {
             // MinioError::S3Error(_) => {}
             // MinioError::HttpError => {}
             // MinioError::IoError(_) => {}
-            _ => Self::UnhandledMinioError
+            _ => Self::UnhandledMinioError,
         }
     }
 }

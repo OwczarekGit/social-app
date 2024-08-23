@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use crate::app_state::{ActiveUser, ActiveUserRole};
-use crate::{Error, Result};
+use crate::{Error, SysRes};
 use axum::http::StatusCode;
 use axum_macros::FromRef;
 use neo4rs::query;
@@ -40,7 +40,7 @@ impl AccountService {
         }
     }
 
-    pub async fn verify_session(&mut self, session_key: &str) -> Result<ActiveUser> {
+    pub async fn verify_session(&mut self, session_key: &str) -> SysRes<ActiveUser> {
         let redis = &mut self.redis;
 
         let id = cmd("hget")
@@ -60,7 +60,7 @@ impl AccountService {
         Ok(ActiveUser::from(user))
     }
 
-    pub async fn login(&mut self, email: &str, password: &str) -> Result<(String, ActiveUserRole)> {
+    pub async fn login(&mut self, email: &str, password: &str) -> SysRes<(String, ActiveUserRole)> {
         let redis = &mut self.redis;
 
         let account = Account::find()
@@ -105,7 +105,7 @@ impl AccountService {
         user_id: i64,
         old_password: &str,
         new_password: &str,
-    ) -> Result<()> {
+    ) -> SysRes<()> {
         let account = Account::find_by_id(user_id)
             .one(&self.postgres)
             .await?
@@ -125,7 +125,7 @@ impl AccountService {
         Ok(())
     }
 
-    pub async fn activate_account(&mut self, email: &str, key: &str) -> Result<()> {
+    pub async fn activate_account(&mut self, email: &str, key: &str) -> SysRes<()> {
         let redis = &mut self.redis;
 
         let result = cmd("hgetall")
@@ -178,7 +178,7 @@ impl AccountService {
         username: &str,
         email: &str,
         password: &str,
-    ) -> Result<(String, String)> {
+    ) -> SysRes<(String, String)> {
         let redis = &mut self.redis;
 
         let is_taken = Account::find()
@@ -236,7 +236,7 @@ impl AccountService {
         username: &str,
         email: &str,
         password: &str,
-    ) -> Result<()> {
+    ) -> SysRes<()> {
         // FIXME: Make sure that the account that you want to create is not taken already.
         let model = account::ActiveModel {
             email: ActiveValue::Set(email.to_string()),

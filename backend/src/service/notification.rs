@@ -1,21 +1,21 @@
-use std::collections::HashMap;
-use std::convert::Infallible;
-use std::sync::Arc;
 use axum::http::StatusCode;
 use axum::response::sse::Event;
 use axum_macros::FromRef;
-use neo4rs::Graph;
-use futures::channel::mpsc::{UnboundedSender, UnboundedReceiver};
+use dto::notification::{CompleteNotification, NotificationData};
 use futures::channel::mpsc::unbounded;
+use futures::channel::mpsc::{UnboundedReceiver, UnboundedSender};
 use futures::SinkExt;
+use neo4rs::Graph;
 use serde::Serialize;
+use std::collections::HashMap;
+use std::convert::Infallible;
+use std::sync::Arc;
 use tokio::sync::RwLock;
 
+use crate::entities::{prelude::*, *};
+use sea_orm::prelude::Json;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ColumnTrait, EntityTrait, ModelTrait, QueryFilter, QueryOrder};
-use sea_orm::prelude::Json;
-use crate::endpoint::notification::{CompleteNotification, NotificationData};
-use crate::entities::{prelude::*, *};
 
 type NotificationChannels = Arc<RwLock<HashMap<i64, UnboundedSender<Result<Event, Infallible>>>>>;
 
@@ -27,7 +27,11 @@ pub struct NotificationService {
 }
 
 impl NotificationService {
-    pub async fn dismiss_notification(&self, user_id: i64, notification_id: i64) -> Result<(), StatusCode> {
+    pub async fn dismiss_notification(
+        &self,
+        user_id: i64,
+        notification_id: i64,
+    ) -> Result<(), StatusCode> {
         let _ = Notification::find()
             .filter(notification::Column::Id.eq(notification_id))
             .filter(notification::Column::AccountId.eq(user_id))
@@ -37,12 +41,15 @@ impl NotificationService {
             .ok_or(StatusCode::BAD_REQUEST)?
             .delete(&self.postgres)
             .await
-            .map_err(|_|StatusCode::INTERNAL_SERVER_ERROR)?;
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(())
     }
 
-    pub async fn get_remaining_notifications(&self, user_id: i64) -> Result<Vec<CompleteNotification>, StatusCode> {
+    pub async fn get_remaining_notifications(
+        &self,
+        user_id: i64,
+    ) -> Result<Vec<CompleteNotification>, StatusCode> {
         let notifications = Notification::find()
             .filter(notification::Column::AccountId.eq(user_id))
             .order_by_desc(notification::Column::Date)
@@ -55,7 +62,7 @@ impl NotificationService {
             let not = CompleteNotification {
                 id: value.id,
                 date: value.date,
-                notification_data: value.content
+                notification_data: value.content,
             };
             results.push(not);
         }
@@ -63,7 +70,11 @@ impl NotificationService {
         Ok(results)
     }
 
-    pub async fn send_notification<T: Serialize>(&self, user_id: i64, notification: NotificationData<T>) -> Result<i64, StatusCode> {
+    pub async fn send_notification<T: Serialize>(
+        &self,
+        user_id: i64,
+        notification: NotificationData<T>,
+    ) -> Result<i64, StatusCode> {
         let json = serde_json::to_string(&notification).unwrap();
 
         let model = notification::ActiveModel {
@@ -76,13 +87,12 @@ impl NotificationService {
         let ret = Notification::insert(model)
             .exec_with_returning(&self.postgres)
             .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-            ;
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         let complete = CompleteNotification {
             id: ret.id,
             date: ret.date,
-            notification_data: ret.content
+            notification_data: ret.content,
         };
 
         let c = self.channels.read().await;
@@ -97,7 +107,10 @@ impl NotificationService {
 }
 
 impl NotificationService {
-    pub async fn subscribe_to_notifications(&mut self, user_id: i64) -> UnboundedReceiver<Result<Event, Infallible>> {
+    pub async fn subscribe_to_notifications(
+        &mut self,
+        user_id: i64,
+    ) -> UnboundedReceiver<Result<Event, Infallible>> {
         let (tx, rx) = unbounded();
         self.channels.write().await.insert(user_id, tx);
 
@@ -107,6 +120,10 @@ impl NotificationService {
 
 impl NotificationService {
     pub fn new(neo4j: Arc<Graph>, postgres: sea_orm::DatabaseConnection) -> Self {
-        Self {neo4j, channels: Arc::new(RwLock::new(HashMap::new())), postgres}
+        Self {
+            neo4j,
+            channels: Arc::new(RwLock::new(HashMap::new())),
+            postgres,
+        }
     }
 }

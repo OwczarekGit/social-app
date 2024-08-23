@@ -38,7 +38,7 @@ impl ProfileService {
         &self,
         user_id: i64,
         picture: DynamicImage,
-    ) -> crate::Result<()> {
+    ) -> crate::SysRes<()> {
         let object_name = format!("{}.png", user_id);
         let scaled = picture.resize_to_fill(
             PROFILE_PICTURE_SIZE,

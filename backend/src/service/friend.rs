@@ -1,8 +1,8 @@
-use std::sync::Arc;
+use crate::{Error, SysRes};
 use axum_macros::FromRef;
 use neo4rs::{query, Graph, Node, Row};
 use serde::{Deserialize, Serialize};
-use crate::{Result, Error};
+use std::sync::Arc;
 
 #[derive(Clone, FromRef)]
 pub struct FriendService {
@@ -10,24 +10,23 @@ pub struct FriendService {
 }
 
 impl FriendService {
-
-    pub async fn remove_friend(&self, user_id: i64, other_id: i64) -> Result<()> {
-        self.neo4j.run(
-            query("match (n:Profile{id: $id})-[r:FRIEND]-(o:Profile{id: $other_id}) delete r")
-                .param("id", user_id)
-                .param("other_id", other_id)
-        ).await?;
+    pub async fn remove_friend(&self, user_id: i64, other_id: i64) -> SysRes<()> {
+        self.neo4j
+            .run(
+                query("match (n:Profile{id: $id})-[r:FRIEND]-(o:Profile{id: $other_id}) delete r")
+                    .param("id", user_id)
+                    .param("other_id", other_id),
+            )
+            .await?;
 
         Ok(())
     }
 
-    pub async fn get_friend_list(&self, user_id: i64) -> Result<Vec<Profile>> {
-        let q = query("match (m:Profile{id: $id})-[:FRIEND]-(p:Profile) return p")
-            .param("id", user_id);
+    pub async fn get_friend_list(&self, user_id: i64) -> SysRes<Vec<Profile>> {
+        let q =
+            query("match (m:Profile{id: $id})-[:FRIEND]-(p:Profile) return p").param("id", user_id);
 
-        let mut results = self.neo4j.execute(q)
-            .await?;
-
+        let mut results = self.neo4j.execute(q).await?;
 
         let mut res = vec![];
         while let Some(row) = results.next().await? {
@@ -39,36 +38,44 @@ impl FriendService {
         Ok(res)
     }
 
-    pub async fn search_for_non_friends(&self, user_id: i64, phrase: &str) -> Result<Vec<SearchNonFriendsResult>> {
-        let search_query = query(r#"
+    pub async fn search_for_non_friends(
+        &self,
+        user_id: i64,
+        phrase: &str,
+    ) -> SysRes<Vec<SearchNonFriendsResult>> {
+        let search_query = query(
+            r#"
             match (p:Profile{id: $id}), (p2:Profile)
             where (not (p)-[:FRIEND]-(p2) and not (p)-[:REQUESTED_FRIENDSHIP]-(p2))
             and (p2.id <> $id and toLower(p2.username) contains toLower($phrase))
-            return p2"#)
-            .param("id", user_id)
-            .param("phrase", phrase);
+            return p2"#,
+        )
+        .param("id", user_id)
+        .param("phrase", phrase);
 
-        let mut results = self.neo4j.execute(search_query)
-            .await?;
+        let mut results = self.neo4j.execute(search_query).await?;
 
         let mut res = vec![];
         while let Ok(Some(x)) = results.next().await {
             let n: Node = x.get("p2").map_err(|_| Error::Neo4jNodeNotFound)?;
 
             let id: i64 = n.get("id").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
-            let username: String = n.get("username").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
+            let username: String = n
+                .get("username")
+                .map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
             res.push(SearchNonFriendsResult {
                 user_id: id,
-                username
+                username,
             });
         }
 
         Ok(res)
     }
 
-    pub async fn get_pending_friend_requests(&self, user_id: i64) -> Result<Vec<FriendRequest>> {
-        let query = query("match (p:Profile)-[:REQUESTED_FRIENDSHIP]->(:Profile{id: $id}) return p")
-            .param("id", user_id);
+    pub async fn get_pending_friend_requests(&self, user_id: i64) -> SysRes<Vec<FriendRequest>> {
+        let query =
+            query("match (p:Profile)-[:REQUESTED_FRIENDSHIP]->(:Profile{id: $id}) return p")
+                .param("id", user_id);
 
         let mut data = self.neo4j.execute(query).await?;
 
@@ -77,18 +84,20 @@ impl FriendService {
             let n: Node = row.get("p").map_err(|_| Error::Neo4jNodeNotFound)?;
 
             let id: i64 = n.get("id").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
-            let username: String = n.get("username").map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
+            let username: String = n
+                .get("username")
+                .map_err(|_| Error::Neo4jInvalidNode(n.id()))?;
 
-            requests.push(FriendRequest{
+            requests.push(FriendRequest {
                 user_id: id,
-                username
+                username,
             });
         }
 
         Ok(requests)
     }
 
-    pub async fn accept_friend_request(&self, user_id: i64, requester_id: i64) -> Result<()> {
+    pub async fn accept_friend_request(&self, user_id: i64, requester_id: i64) -> SysRes<()> {
         let query = query("match (p1:Profile {id: $requester_id})-[r:REQUESTED_FRIENDSHIP]-(p2:Profile {id: $user_id}) delete r merge (p1)-[:FRIEND]->(p2)")
             .param("requester_id", requester_id)
             .param("user_id", user_id);
@@ -97,17 +106,21 @@ impl FriendService {
         Ok(())
     }
 
-    pub async fn send_friend_request(&self, user_id: i64, target_id: i64) -> Result<()> {
-        let is_already_friend_query = query(r#"
+    pub async fn send_friend_request(&self, user_id: i64, target_id: i64) -> SysRes<()> {
+        let is_already_friend_query = query(
+            r#"
                 return exists
                 ((:Profile{id: $user_id})-[:FRIEND]-(:Profile{id: $target_id})) or
                 ((:Profile{id: $user_id})-[:REQUESTED_FRIENDSHIP]-(:Profile{id: $target_id}))
                 as result
-            "#)
-            .param("user_id", user_id)
-            .param("target_id", target_id);
+            "#,
+        )
+        .param("user_id", user_id)
+        .param("target_id", target_id);
 
-        let is_already_friend = self.neo4j.execute(is_already_friend_query)
+        let is_already_friend = self
+            .neo4j
+            .execute(is_already_friend_query)
             .await?
             .next()
             .await?
@@ -123,8 +136,7 @@ impl FriendService {
             .param("id", user_id)
             .param("target", target_id);
 
-        self.neo4j.run(create_request_query)
-            .await?;
+        self.neo4j.run(create_request_query).await?;
 
         Ok(())
     }
@@ -132,7 +144,7 @@ impl FriendService {
 
 impl FriendService {
     pub fn new(neo4j: Arc<Graph>) -> Self {
-        Self {neo4j}
+        Self { neo4j }
     }
 }
 
@@ -158,13 +170,15 @@ pub struct Profile {
 impl TryFrom<Row> for Profile {
     type Error = Error;
 
-    fn try_from(row: Row) -> Result<Self> {
+    fn try_from(row: Row) -> SysRes<Self> {
         let n: Node = row.get("p").map_err(|_| Error::Neo4jNodeNotFound)?;
 
         Ok(Self {
             user_id: n.get("id").map_err(|_| Error::Neo4jInvalidNode(n.id()))?,
-            username: n.get("username").map_err(|_| Error::Neo4jInvalidNode(n.id()))?,
-            picture_url: n.get("picture_url").unwrap_or("".to_string())
+            username: n
+                .get("username")
+                .map_err(|_| Error::Neo4jInvalidNode(n.id()))?,
+            picture_url: n.get("picture_url").unwrap_or("".to_string()),
         })
     }
 }

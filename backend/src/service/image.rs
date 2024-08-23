@@ -19,7 +19,7 @@ impl ImageService {
         Self { neo4j, minio }
     }
 
-    pub async fn get_all_tags(&self) -> crate::Result<Vec<Tag>> {
+    pub async fn get_all_tags(&self) -> crate::SysRes<Vec<Tag>> {
         let mut tags = self
             .neo4j
             .execute(query("match (t:Tag) return t order by t.name"))
@@ -43,7 +43,7 @@ impl ImageService {
         title: &str,
         mut tags: Vec<String>,
         image: DynamicImage,
-    ) -> crate::Result<()> {
+    ) -> crate::SysRes<()> {
         let object_name = uuid::Uuid::new_v4().to_string() + ".png";
 
         let mut bytes = Vec::new();
@@ -97,7 +97,7 @@ impl ImageService {
         Ok(())
     }
 
-    async fn connect_image_to_tags(&self, image_id: i64, tags: Vec<String>) -> crate::Result<()> {
+    async fn connect_image_to_tags(&self, image_id: i64, tags: Vec<String>) -> crate::SysRes<()> {
         for tag in tags {
             self.tag_image(image_id, &tag).await?;
         }
@@ -105,7 +105,7 @@ impl ImageService {
         Ok(())
     }
 
-    async fn tag_image(&self, image_id: i64, name: &str) -> crate::Result<()> {
+    async fn tag_image(&self, image_id: i64, name: &str) -> crate::SysRes<()> {
         let tag_image_query = query(
             r#"
             match (t:Tag), (i:Image)
@@ -141,7 +141,7 @@ impl ImageService {
         Ok(())
     }
 
-    async fn tag_node_exists(&self, name: &str) -> crate::Result<bool> {
+    async fn tag_node_exists(&self, name: &str) -> crate::SysRes<bool> {
         let q =
             query("match (t:Tag) where toLower(t.name) = toLower($name) return true AS x limit 1")
                 .param("name", name.trim());

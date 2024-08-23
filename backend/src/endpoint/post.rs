@@ -1,14 +1,14 @@
-use axum::{Router, response::IntoResponse, Json, routing::post};
 use axum::extract::{Path, State};
 use axum::routing::{delete, get, put};
-use serde::{Serialize, Deserialize};
+use axum::{response::IntoResponse, routing::post, Json, Router};
+use dto::post::*;
 
-use crate::AppState;
 use crate::app_state::ActiveUser;
 use crate::service::post::{Post, PostService};
+use crate::AppState;
 
-use crate::Result;
 use crate::service::domain::ImageDomain;
+use crate::SysRes;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -23,44 +23,46 @@ pub async fn create_post(
     user: ActiveUser,
     State(post_service): State<PostService>,
     Json(request): Json<CreatePostRequest>,
-) -> Result<impl IntoResponse> {
-    Ok(Json(post_service.create_post(user.id, &request.content).await?))
+) -> SysRes<impl IntoResponse> {
+    Ok(Json(
+        post_service.create_post(user.id, &request.content).await?,
+    ))
 }
 
 pub async fn get_user_posts(
     image_domain: ImageDomain,
     State(post_service): State<PostService>,
     Path(id): Path<i64>,
-) -> Result<impl IntoResponse> {
-    Ok(
-        Json(
-            post_service.get_posts_for_user(id)
-                .await?
-                .into_iter()
-                .map(|p| Post {
-                    author_picture_url: format!("{}{}", image_domain.0, p.author_picture_url),
-                    ..p
-                }).collect::<Vec<_>>()
-        )
-    )
+) -> SysRes<impl IntoResponse> {
+    Ok(Json(
+        post_service
+            .get_posts_for_user(id)
+            .await?
+            .into_iter()
+            .map(|p| Post {
+                author_picture_url: format!("{}{}", image_domain.0, p.author_picture_url),
+                ..p
+            })
+            .collect::<Vec<_>>(),
+    ))
 }
 
 pub async fn get_my_posts(
     image_domain: ImageDomain,
     user: ActiveUser,
     State(post_service): State<PostService>,
-) -> Result<impl IntoResponse> {
-    Ok(
-        Json(
-            post_service.get_posts_for_user(user.id)
-                .await?
-                .into_iter()
-                .map(|p| Post {
-                    author_picture_url: format!("{}{}", image_domain.0, p.author_picture_url),
-                    ..p
-                }).collect::<Vec<_>>()
-        )
-    )
+) -> SysRes<impl IntoResponse> {
+    Ok(Json(
+        post_service
+            .get_posts_for_user(user.id)
+            .await?
+            .into_iter()
+            .map(|p| Post {
+                author_picture_url: format!("{}{}", image_domain.0, p.author_picture_url),
+                ..p
+            })
+            .collect::<Vec<_>>(),
+    ))
 }
 
 pub async fn edit_post(
@@ -68,7 +70,7 @@ pub async fn edit_post(
     State(post_service): State<PostService>,
     Path(id): Path<i64>,
     Json(request): Json<EditPostRequest>,
-) -> Result<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     post_service.edit_post(user.id, id, &request.content).await
 }
 
@@ -76,16 +78,6 @@ pub async fn delete_post(
     user: ActiveUser,
     State(post_service): State<PostService>,
     Path(id): Path<i64>,
-) -> Result<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     post_service.delete_post(user.id, id).await
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct CreatePostRequest {
-    content: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct EditPostRequest {
-    content: String,
 }

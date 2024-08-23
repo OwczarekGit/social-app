@@ -1,15 +1,14 @@
+use crate::service::tag::TagService;
+use crate::AppState;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::{Json, Router};
 use axum::routing::{get, post, put};
-use serde::{Deserialize, Serialize};
-use crate::AppState;
-use crate::service::tag::TagService;
+use axum::{Json, Router};
+use dto::tag::*;
 
 pub fn public_routes() -> Router<AppState> {
-    Router::new()
-        .route("/", get(get_all_tags_with_usage))
+    Router::new().route("/", get(get_all_tags_with_usage))
 }
 
 pub async fn get_all_tags_with_usage(
@@ -48,14 +47,4 @@ pub async fn create_tag(
     }
 
     Ok(Json(tag_service.create_tag(&request.name).await?))
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct UpdateTagRequest {
-    name: String
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct CreateTagRequest {
-    name: String
 }
