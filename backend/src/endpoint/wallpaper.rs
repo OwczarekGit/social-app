@@ -1,3 +1,4 @@
+use crate::image_domain::ImageDomain;
 use crate::service::wallpaper::{Image, WallpaperService};
 use crate::AppState;
 use axum::extract::{Path, State};
@@ -5,8 +6,7 @@ use axum::response::IntoResponse;
 use axum::routing::{delete, get, post};
 use axum::{Json, Router};
 
-use crate::app_state::ActiveUser;
-use crate::service::domain::ImageDomain;
+use crate::active_user::ActiveUser;
 use crate::SysRes;
 
 pub fn routes() -> Router<AppState> {

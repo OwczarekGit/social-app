@@ -1,11 +1,5 @@
 use crate::entities::{prelude::*, *};
 use crate::SysRes;
-use axum::async_trait;
-use axum::extract::{FromRequestParts, Request, State};
-use axum::http::request::Parts;
-use axum::http::StatusCode;
-use axum::middleware::Next;
-use axum::response::IntoResponse;
 use axum_macros::FromRef;
 use sea_orm::{
     ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
@@ -83,41 +77,5 @@ impl DomainService {
         model.save(pg).await?;
 
         Ok(())
-    }
-}
-
-pub async fn extract_image_domain(
-    State(domain_service): State<DomainService>,
-    request: Request,
-    next: Next,
-) -> SysRes<impl IntoResponse> {
-    let image_domain = domain_service
-        .get_image_domain()
-        .await
-        .unwrap_or(Some("".to_string()))
-        .unwrap_or("".to_string());
-
-    let mut response = request;
-    response.extensions_mut().insert(ImageDomain(image_domain));
-
-    Ok(next.run(response).await)
-}
-
-#[derive(Debug, Clone)]
-pub struct ImageDomain(pub String);
-
-#[async_trait]
-impl<S> FromRequestParts<S> for ImageDomain {
-    type Rejection = StatusCode;
-
-    async fn from_request_parts(
-        parts: &mut Parts,
-        _state: &S,
-    ) -> std::result::Result<Self, Self::Rejection> {
-        if let Some(domain) = parts.extensions.get::<ImageDomain>() {
-            Ok(domain.clone())
-        } else {
-            Err(StatusCode::INTERNAL_SERVER_ERROR)
-        }
     }
 }

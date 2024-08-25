@@ -4,7 +4,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use image::ImageError;
 
-pub type SysRes<T> = core::result::Result<T, Error>;
+pub type SysRes<T> = std::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
@@ -40,6 +40,7 @@ pub enum Error {
     BadRequest,
     NotFound,
     IOError,
+    CookiesMissing,
 
     // Chat errors
     InvalidSendMessageToFriendRequest(i64, i64),
@@ -56,6 +57,7 @@ pub enum Error {
     // Minio errors
     UnhandledMinioError,
     UnauthorizedForEditingPost(i64, i64),
+    AppStateMissing,
 }
 
 impl IntoResponse for Error {

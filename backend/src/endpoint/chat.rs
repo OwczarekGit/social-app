@@ -1,4 +1,4 @@
-use crate::app_state::ActiveUser;
+use crate::active_user::ActiveUser;
 use crate::AppState;
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;

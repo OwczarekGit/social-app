@@ -3,11 +3,11 @@ use axum::routing::{delete, get, put};
 use axum::{response::IntoResponse, routing::post, Json, Router};
 use dto::post::*;
 
-use crate::app_state::ActiveUser;
+use crate::active_user::ActiveUser;
+use crate::image_domain::ImageDomain;
 use crate::service::post::{Post, PostService};
 use crate::AppState;
 
-use crate::service::domain::ImageDomain;
 use crate::SysRes;
 
 pub fn routes() -> Router<AppState> {

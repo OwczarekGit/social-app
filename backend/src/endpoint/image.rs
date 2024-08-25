@@ -7,7 +7,7 @@ use dto::image::ImageUploadRequest;
 use image::ImageReader;
 use std::io::{Cursor, Read};
 
-use crate::app_state::ActiveUser;
+use crate::active_user::ActiveUser;
 use crate::service::image::ImageService;
 use crate::AppState;
 

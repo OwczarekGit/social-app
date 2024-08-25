@@ -11,7 +11,7 @@ use tower_cookies::{Cookie, Cookies};
 
 use crate::SysRes;
 
-use crate::app_state::ActiveUser;
+use crate::active_user::ActiveUser;
 use crate::{
     service::{account::AccountService, email::EmailService},
     AppState,

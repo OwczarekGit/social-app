@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use crate::app_state::{ActiveUser, ActiveUserRole};
+use crate::active_user::{ActiveUser, ActiveUserRole};
 use crate::{Error, SysRes};
 use axum::http::StatusCode;
 use axum_macros::FromRef;

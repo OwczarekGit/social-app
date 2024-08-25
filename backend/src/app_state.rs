@@ -1,16 +1,3 @@
-use std::sync::Arc;
-use axum::async_trait;
-use axum::extract::FromRequestParts;
-use axum::http::request::Parts;
-use axum::http::StatusCode;
-use axum_macros::FromRef;
-use minio_rsc::Minio;
-use neo4rs::Graph;
-use redis::aio::ConnectionManager;
-use sea_orm::DatabaseConnection;
-use serde::{Deserialize, Serialize};
-use crate::entities;
-use crate::entities::sea_orm_active_enums::AccountType;
 use crate::service::account::AccountService;
 use crate::service::activation::ActivationService;
 use crate::service::chat::ChatService;
@@ -23,6 +10,15 @@ use crate::service::post::PostService;
 use crate::service::profile::ProfileService;
 use crate::service::tag::TagService;
 use crate::service::wallpaper::WallpaperService;
+use axum::extract::FromRequestParts;
+use axum::http::request::Parts;
+use axum::{async_trait, extract::FromRef};
+use axum_macros::FromRef;
+use minio_rsc::Minio;
+use neo4rs::Graph;
+use redis::aio::ConnectionManager;
+use sea_orm::DatabaseConnection;
+use std::sync::Arc;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -42,18 +38,28 @@ pub struct AppState {
 
 impl AppState {
     pub async fn new(
-        redis_connection:ConnectionManager,
+        redis_connection: ConnectionManager,
         postgres_connection: DatabaseConnection,
         neo4j_connection: Arc<Graph>,
         minio_connection: Minio,
     ) -> Self {
         Self {
-            account_service: AccountService::new(redis_connection, postgres_connection.clone(), neo4j_connection.clone()),
+            account_service: AccountService::new(
+                redis_connection,
+                postgres_connection.clone(),
+                neo4j_connection.clone(),
+            ),
             email_service: EmailService::new(),
             post_service: PostService::new(neo4j_connection.clone()),
-            notification_service: NotificationService::new(neo4j_connection.clone(), postgres_connection.clone()),
+            notification_service: NotificationService::new(
+                neo4j_connection.clone(),
+                postgres_connection.clone(),
+            ),
             friend_service: FriendService::new(neo4j_connection.clone()),
-            profile_service: ProfileService::new(neo4j_connection.clone(), minio_connection.clone()),
+            profile_service: ProfileService::new(
+                neo4j_connection.clone(),
+                minio_connection.clone(),
+            ),
             image_service: ImageService::new(neo4j_connection.clone(), minio_connection.clone()),
             tag_service: TagService::new(neo4j_connection.clone()),
             chat_service: ChatService::new(neo4j_connection.clone()),
@@ -64,53 +70,15 @@ impl AppState {
     }
 }
 
-
-// TODO: Custom extractor for that could be nice.
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ActiveUser {
-    pub id: i64,
-    pub role: ActiveUserRole
-}
-
 #[async_trait]
-impl<S> FromRequestParts<S> for ActiveUser {
-    type Rejection = StatusCode;
+impl<S> FromRequestParts<S> for AppState
+where
+    Self: FromRef<S>,
+    S: Send + Sync,
+{
+    type Rejection = crate::Error;
 
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        if let Some(user) = parts.extensions.get::<ActiveUser>() {
-            Ok(user.clone())
-        } else {
-            Err(StatusCode::UNAUTHORIZED)
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
-pub enum ActiveUserRole {
-    User,
-    Moderator,
-    Admin,
-}
-
-impl From<entities::account::Model> for ActiveUser {
-    fn from(value: entities::account::Model) -> Self {
-        Self {
-            id: value.id,
-            role: match value.r#type {
-                AccountType::Admin => ActiveUserRole::Admin,
-                AccountType::Moderator => ActiveUserRole::Moderator,
-                AccountType::User => ActiveUserRole::User
-            }
-        }
-    }
-}
-
-impl ToString for ActiveUserRole {
-    fn to_string(&self) -> String {
-        match self {
-            ActiveUserRole::User => "User".to_string(),
-            ActiveUserRole::Moderator => "Moderator".to_string(),
-            ActiveUserRole::Admin => "Admin".to_string()
-        }
+    async fn from_request_parts(_parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        Ok(Self::from_ref(state))
     }
 }

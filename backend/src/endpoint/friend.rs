@@ -1,3 +1,4 @@
+use crate::image_domain::ImageDomain;
 use crate::service::friend::{FriendService, Profile};
 use crate::service::notification::NotificationService;
 use crate::AppState;
@@ -8,8 +9,7 @@ use axum::{Json, Router};
 use dto::friend::*;
 use dto::notification::{NotificationData, NotificationType};
 
-use crate::app_state::ActiveUser;
-use crate::service::domain::ImageDomain;
+use crate::active_user::ActiveUser;
 use crate::{Error, SysRes};
 
 pub fn routes() -> Router<AppState> {

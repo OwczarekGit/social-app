@@ -1,5 +1,5 @@
-use crate::app_state::ActiveUser;
-use crate::service::domain::ImageDomain;
+use crate::active_user::ActiveUser;
+use crate::image_domain::ImageDomain;
 use crate::service::profile::{Profile, ProfileService};
 use crate::AppState;
 use axum::extract::{Path, State};

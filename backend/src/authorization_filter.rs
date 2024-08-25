@@ -1,4 +1,4 @@
-use crate::app_state::{ActiveUser, ActiveUserRole};
+use crate::active_user::{ActiveUser, ActiveUserRole};
 use crate::service::account::AccountService;
 use crate::{endpoint, Error, SysRes};
 use axum::extract::Request;

@@ -2,17 +2,15 @@ use std::sync::Arc;
 
 pub use self::error::{Error, SysRes};
 use crate::app_state::AppState;
-use axum::extract::DefaultBodyLimit;
 use axum::response::Response;
-use axum::{middleware, Router};
 use clap::Parser;
 use config::get_arg;
-use tower_cookies::CookieManagerLayer;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeFile;
 use tracing::{debug, warn};
 use tracing_subscriber::EnvFilter;
 
+mod active_user;
 mod app_state;
 mod arguments;
 mod authorization_filter;
@@ -20,10 +18,11 @@ mod config;
 mod endpoint;
 mod entities;
 mod error;
+mod image_domain;
 mod service;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> SysRes<()> {
     dotenvy::dotenv().ok();
     let args = arguments::Arguments::parse();
 
@@ -66,57 +65,61 @@ async fn main() {
                         "Admin account: {} has been created. Shutting down.",
                         &admin.email
                     );
-                    return;
+                    return Ok(());
                 }
             }
         }
     }
 
-    let app = Router::<AppState>::new()
-        .nest(
-            "/api",
-            Router::<AppState>::new()
-                .nest("/admin/activation", endpoint::activation::admin_routes())
-                .nest("/admin/domain", endpoint::domain::admin_routes())
-                .nest("/admin/tag", endpoint::tag::admin_routes())
-                // All routes above can only be accessed by admin.
-                .layer(middleware::from_fn_with_state(
-                    state.clone(),
-                    authorization_filter::authorize_admin,
-                ))
-                .nest("/tag", endpoint::tag::public_routes())
-                .nest("/post", endpoint::post::routes())
-                .nest("/notification", endpoint::notification::routes())
-                .nest("/friend", endpoint::friend::routes())
-                .nest("/profile", endpoint::profile::routes())
-                .nest("/image", endpoint::image::routes())
-                .nest("/chat", endpoint::chat::routes())
-                .nest("/wallpaper", endpoint::wallpaper::routes())
-                .nest("/account", endpoint::account::logged_in_routes())
-                // All routes that require authentication go above this route_layer.
-                .layer(middleware::from_fn_with_state(
-                    state.account_service.clone(),
-                    authorization_filter::authorize_by_cookie,
-                ))
-                .layer(middleware::from_fn_with_state(
-                    state.domain_service.clone(),
-                    service::domain::extract_image_domain,
-                ))
-                .nest("/account", endpoint::account::routes()),
-        )
-        .layer(middleware::map_response(main_response_mapper))
-        .layer(CookieManagerLayer::new())
-        .layer(cors)
-        .layer(DefaultBodyLimit::max(1024 * 1024 * 1024))
-        .with_state(state)
-        .fallback_service(static_files);
+    // let app = Router::<AppState>::new()
+    //     .nest(
+    //         "/api",
+    //         Router::<AppState>::new()
+    //             .nest("/admin/activation", endpoint::activation::admin_routes())
+    //             .nest("/admin/domain", endpoint::domain::admin_routes())
+    //             .nest("/admin/tag", endpoint::tag::admin_routes())
+    //             // All routes above can only be accessed by admin.
+    //             .layer(middleware::from_fn_with_state(
+    //                 state.clone(),
+    //                 authorization_filter::authorize_admin,
+    //             ))
+    //             .nest("/tag", endpoint::tag::public_routes())
+    //             .nest("/post", endpoint::post::routes())
+    //             .nest("/notification", endpoint::notification::routes())
+    //             .nest("/friend", endpoint::friend::routes())
+    //             .nest("/profile", endpoint::profile::routes())
+    //             .nest("/image", endpoint::image::routes())
+    //             .nest("/chat", endpoint::chat::routes())
+    //             .nest("/wallpaper", endpoint::wallpaper::routes())
+    //             .nest("/account", endpoint::account::logged_in_routes())
+    //             // All routes that require authentication go above this route_layer.
+    //             .layer(middleware::from_fn_with_state(
+    //                 state.account_service.clone(),
+    //                 authorization_filter::authorize_by_cookie,
+    //             ))
+    //             .layer(middleware::from_fn_with_state(
+    //                 state.domain_service.clone(),
+    //                 service::domain::extract_image_domain,
+    //             ))
+    //             .nest("/account", endpoint::account::routes()),
+    //     )
+    //     .layer(middleware::map_response(main_response_mapper))
+    //     .layer(CookieManagerLayer::new())
+    //     .layer(cors)
+    //     .layer(DefaultBodyLimit::max(1024 * 1024 * 1024))
+    //     .with_state(state)
+    //     .fallback_service(static_files);
 
     debug!("Starting server");
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", get_arg::<u16>("PORT")))
         .await
         .expect("Failed to bind socket.");
 
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, endpoint::routes(state))
+        .await
+        .unwrap();
+
+    Ok(())
 }
 
 pub async fn main_response_mapper(res: Response) -> Response {
