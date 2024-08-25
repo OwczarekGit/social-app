@@ -4,12 +4,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { InputComponent } from './ui-elements/input/input.component';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RegistrationFormComponent } from './forms/registration-form/registration-form.component';
 import { ButtonComponent } from './ui-elements/button/button.component';
 import { TitleButtonComponent } from './ui-elements/w2k-window-frame/title-button/title-button.component';
 import { LoginScreenComponent } from './login-screen/login-screen.component';
-import {HttpClientModule} from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { PopupComponent } from './apps/popup/popup.component';
 import { LoginFormComponent } from './forms/login-form/login-form.component';
 import { MainScreenComponent } from './main-screen/main-screen.component';
@@ -102,14 +102,9 @@ import { UserProfilePostComponent } from './apps/user-profile/user-profile-post/
     UserProfileBannerComponent,
     UserProfilePostComponent,
   ],
-  imports: [
-    BrowserModule,
+  bootstrap: [AppComponent], imports: [BrowserModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    ReactiveFormsModule], providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule { }

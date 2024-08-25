@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {Wallpaper} from "../data/wallpaper";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {Maybe, None} from "option-value";
 
 @Injectable({

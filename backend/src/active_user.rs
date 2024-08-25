@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use axum::{
     async_trait,
     extract::{FromRef, FromRequestParts},
@@ -14,7 +16,6 @@ use crate::{
     Error,
 };
 
-// FIXME: Admin User!!!
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ActiveUser {
     pub id: i64,
@@ -55,6 +56,82 @@ pub enum ActiveUserRole {
     Admin,
 }
 
+impl ToString for ActiveUserRole {
+    fn to_string(&self) -> String {
+        match self {
+            ActiveUserRole::User => "User".to_string(),
+            ActiveUserRole::Moderator => "Moderator".to_string(),
+            ActiveUserRole::Admin => "Admin".to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdminUser(pub ActiveUser);
+
+#[async_trait]
+impl<S> FromRequestParts<S> for AdminUser
+where
+    AppState: FromRef<S>,
+    S: Send + Sync,
+{
+    type Rejection = crate::Error;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let user = parts
+            .extract_with_state::<ActiveUser, _>(state)
+            .await
+            .map_err(|_| Error::Unauthorized)?;
+
+        if user.role == ActiveUserRole::Admin {
+            Ok(AdminUser(user.clone()))
+        } else {
+            Err(Error::UnauthorizedForAdminOperations(user.id))
+        }
+    }
+}
+
+impl Deref for AdminUser {
+    type Target = ActiveUser;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ModeratorUser(pub ActiveUser);
+
+#[async_trait]
+impl<S> FromRequestParts<S> for ModeratorUser
+where
+    AppState: FromRef<S>,
+    S: Send + Sync,
+{
+    type Rejection = crate::Error;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let user = parts
+            .extract_with_state::<ActiveUser, _>(state)
+            .await
+            .map_err(|_| Error::Unauthorized)?;
+
+        if user.role > ActiveUserRole::User {
+            Ok(ModeratorUser(user.clone()))
+        } else {
+            Err(Error::UnauthorizedForModeratorOperations(user.id))
+        }
+    }
+}
+
+impl Deref for ModeratorUser {
+    type Target = ActiveUser;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
 impl From<entities::account::Model> for ActiveUser {
     fn from(value: entities::account::Model) -> Self {
         Self {
@@ -64,16 +141,6 @@ impl From<entities::account::Model> for ActiveUser {
                 AccountType::Moderator => ActiveUserRole::Moderator,
                 AccountType::User => ActiveUserRole::User,
             },
-        }
-    }
-}
-
-impl ToString for ActiveUserRole {
-    fn to_string(&self) -> String {
-        match self {
-            ActiveUserRole::User => "User".to_string(),
-            ActiveUserRole::Moderator => "Moderator".to_string(),
-            ActiveUserRole::Admin => "Admin".to_string(),
         }
     }
 }

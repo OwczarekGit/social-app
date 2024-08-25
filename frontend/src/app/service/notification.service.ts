@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {Notification} from "../data/notification";
 import {SoundService} from "./sound.service";
 import {Subject} from "rxjs";

@@ -1,3 +1,4 @@
+use crate::active_user::AdminUser;
 use crate::service::tag::TagService;
 use crate::AppState;
 use axum::extract::{Path, State};
@@ -24,6 +25,7 @@ pub fn admin_routes() -> Router<AppState> {
 }
 
 pub async fn update_tag(
+    _: AdminUser,
     Path(id): Path<i64>,
     State(tag_service): State<TagService>,
     Json(request): Json<UpdateTagRequest>,
@@ -32,6 +34,7 @@ pub async fn update_tag(
 }
 
 pub async fn delete_tag(
+    _: AdminUser,
     State(tag_service): State<TagService>,
     Path(id): Path<i64>,
 ) -> Result<(), StatusCode> {
@@ -39,6 +42,7 @@ pub async fn delete_tag(
 }
 
 pub async fn create_tag(
+    _: AdminUser,
     State(tag_service): State<TagService>,
     Json(request): Json<CreateTagRequest>,
 ) -> Result<impl IntoResponse, StatusCode> {

@@ -1,3 +1,4 @@
+use crate::active_user::AdminUser;
 use crate::app_state::AppState;
 use crate::service::domain::DomainService;
 use crate::SysRes;
@@ -14,6 +15,7 @@ pub fn admin_routes() -> Router<AppState> {
 }
 
 pub async fn get_image_domain(
+    _: AdminUser,
     State(domain_service): State<DomainService>,
 ) -> SysRes<impl IntoResponse> {
     Ok(Json(
@@ -25,6 +27,7 @@ pub async fn get_image_domain(
 }
 
 pub async fn get_system_domain(
+    _: AdminUser,
     State(domain_service): State<DomainService>,
 ) -> SysRes<impl IntoResponse> {
     Ok(Json(
@@ -36,6 +39,7 @@ pub async fn get_system_domain(
 }
 
 pub async fn set_system_domain(
+    _: AdminUser,
     State(domain_service): State<DomainService>,
     Json(request): Json<SetVariableRequest>,
 ) -> SysRes<()> {
@@ -43,6 +47,7 @@ pub async fn set_system_domain(
 }
 
 pub async fn set_image_domain(
+    _: AdminUser,
     State(mut domain_service): State<DomainService>,
     Json(request): Json<SetVariableRequest>,
 ) -> SysRes<()> {

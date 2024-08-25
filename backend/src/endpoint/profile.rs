@@ -2,6 +2,7 @@ use crate::active_user::ActiveUser;
 use crate::image_domain::ImageDomain;
 use crate::service::profile::{Profile, ProfileService};
 use crate::AppState;
+use crate::SysRes;
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::routing::{get, put};
@@ -23,7 +24,7 @@ pub async fn change_username(
     user: ActiveUser,
     State(profile_service): State<ProfileService>,
     Json(request): Json<ChangeUsernameRequest>,
-) -> crate::SysRes<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     Ok(profile_service
         .change_username(user.id, &request.username)
         .await)
@@ -33,7 +34,7 @@ pub async fn get_my_profile(
     image_domain: ImageDomain,
     user: ActiveUser,
     State(profile_service): State<ProfileService>,
-) -> crate::SysRes<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     Ok(Json(profile_service.get_profile(user.id).await.map(
         |p| Profile {
             picture_url: format!("{}{}", image_domain.0, p.picture_url),
@@ -46,7 +47,7 @@ pub async fn get_profile(
     image_domain: ImageDomain,
     State(profile_service): State<ProfileService>,
     Path(id): Path<i64>,
-) -> crate::SysRes<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     Ok(Json(profile_service.get_profile(id).await.map(|p| {
         Profile {
             picture_url: format!("{}{}", image_domain.0, p.picture_url),
@@ -59,7 +60,7 @@ pub async fn set_profile_picture(
     user: ActiveUser,
     State(profile_service): State<ProfileService>,
     TypedMultipart(request): TypedMultipart<ChangeProfilePictureRequest>,
-) -> crate::SysRes<impl IntoResponse> {
+) -> SysRes<impl IntoResponse> {
     let mut image_bytes = vec![];
     request
         .image

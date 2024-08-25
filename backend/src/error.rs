@@ -2,7 +2,16 @@ use std::sync::Arc;
 
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
-use image::ImageError;
+
+macro_rules! map_err {
+    ($from:ty, $to:ident) => {
+        impl From<$from> for Error {
+            fn from(value: $from) -> Self {
+                Self::$to(value)
+            }
+        }
+    };
+}
 
 pub type SysRes<T> = std::result::Result<T, Error>;
 
@@ -28,19 +37,23 @@ pub enum Error {
     DatabaseConnectionError,
     DatabaseOperationError,
     DatabaseQueryError,
-    RedisError,
     JsonParseError,
     Neo4jIOError,
     Neo4jNodeNotFound,
     Neo4jInvalidNode(i64),
     Neo4jQueryError,
+    SeaOrm(sea_orm::DbErr),
+    Redis(redis::RedisError),
+    Neo4rs(neo4rs::Error),
+    Neo4rsDe(neo4rs::DeError),
 
     // Generic errors
     InternalServerError,
     BadRequest,
     NotFound,
-    IOError,
+    Io(std::io::Error),
     CookiesMissing,
+    ParseInt(std::num::ParseIntError),
 
     // Chat errors
     InvalidSendMessageToFriendRequest(i64, i64),
@@ -53,12 +66,27 @@ pub enum Error {
 
     // Image errors
     UnhandlerImageProcessingError,
+    Image(image::ImageError),
 
     // Minio errors
+    Minio(minio_rsc::error::Error),
     UnhandledMinioError,
     UnauthorizedForEditingPost(i64, i64),
     AppStateMissing,
+    UnauthorizedForModeratorOperations(i64),
+    ImageCreationFailed,
+    ProfileFetchError(i64),
+    Neo4rsMissingParam(String),
 }
+
+map_err!(redis::RedisError, Redis);
+map_err!(neo4rs::Error, Neo4rs);
+map_err!(neo4rs::DeError, Neo4rsDe);
+map_err!(std::io::Error, Io);
+map_err!(image::ImageError, Image);
+map_err!(minio_rsc::error::Error, Minio);
+map_err!(sea_orm::DbErr, SeaOrm);
+map_err!(std::num::ParseIntError, ParseInt);
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
@@ -78,107 +106,5 @@ impl IntoResponse for Error {
 
         res.extensions_mut().insert(Arc::new(self));
         res
-    }
-}
-
-impl From<redis::RedisError> for Error {
-    fn from(_: redis::RedisError) -> Self {
-        Self::RedisError
-    }
-}
-
-impl From<axum::http::StatusCode> for Error {
-    fn from(value: axum::http::StatusCode) -> Self {
-        match value {
-            axum::http::StatusCode::UNAUTHORIZED => Self::Unauthorized,
-            axum::http::StatusCode::NOT_FOUND => Self::NotFound,
-            axum::http::StatusCode::BAD_REQUEST => Self::BadRequest,
-            axum::http::StatusCode::FORBIDDEN => Self::BadRequest,
-            _ => Self::UnhandledError,
-        }
-    }
-}
-
-impl From<sea_orm::DbErr> for Error {
-    fn from(value: sea_orm::DbErr) -> Self {
-        match value {
-            sea_orm::DbErr::Conn(_) => Self::DatabaseConnectionError,
-            sea_orm::DbErr::Exec(_) => Self::DatabaseOperationError,
-            sea_orm::DbErr::Query(_) => Self::DatabaseQueryError,
-            sea_orm::DbErr::Json(_) => Self::JsonParseError,
-            // DbErr::ConnectionAcquire(_) => {}
-            // DbErr::TryIntoErr { .. } => {}
-            // DbErr::ConvertFromU64(_) => {}
-            // DbErr::UnpackInsertId => {}
-            // DbErr::UpdateGetPrimaryKey => {}
-            // DbErr::RecordNotFound(_) => {}
-            // DbErr::AttrNotSet(_) => {}
-            // DbErr::Custom(_) => {}
-            // DbErr::Type(_) => {}
-            // DbErr::Migration(_) => {}
-            // DbErr::RecordNotInserted => {}
-            // DbErr::RecordNotUpdated => {}
-            _ => Self::UnhandledError,
-        }
-    }
-}
-
-impl From<neo4rs::Error> for Error {
-    fn from(value: neo4rs::Error) -> Self {
-        match value {
-            neo4rs::Error::IOError { .. } => Self::Neo4jIOError,
-            //     neo4rs::Error::UrlParseError(_) => {}
-            //     neo4rs::Error::UnsupportedScheme(_) => {}
-            //     neo4rs::Error::InvalidDnsName(_) => {}
-            //     neo4rs::Error::ConnectionError => {}
-            //     neo4rs::Error::StringTooLong => {}
-            //     neo4rs::Error::MapTooBig => {}
-            //     neo4rs::Error::BytesTooBig => {}
-            //     neo4rs::Error::ListTooLong => {}
-            //     neo4rs::Error::InvalidConfig => {}
-            //     neo4rs::Error::UnsupportedVersion(_) => {}
-            //     neo4rs::Error::UnexpectedMessage(_) => {}
-            //     neo4rs::Error::UnknownType(_) => {}
-            //     neo4rs::Error::UnknownMessage(_) => {}
-            //     neo4rs::Error::ConversionError => {}
-            //     neo4rs::Error::AuthenticationError(_) => {}
-            //     neo4rs::Error::InvalidTypeMarker(_) => {}
-            //     neo4rs::Error::DeserializationError(_) => {}
-            _ => Self::UnhandledError,
-        }
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(_value: std::io::Error) -> Self {
-        Self::IOError
-    }
-}
-
-impl From<image::ImageError> for Error {
-    fn from(value: ImageError) -> Self {
-        match value {
-            // ImageError::Decoding(_) => {}
-            // ImageError::Encoding(_) => {}
-            // ImageError::Parameter(_) => {}
-            // ImageError::Limits(_) => {}
-            // ImageError::Unsupported(_) => {}
-            // ImageError::IoError(_) => {}
-            _ => Self::UnhandlerImageProcessingError,
-        }
-    }
-}
-
-impl From<minio_rsc::error::Error> for Error {
-    fn from(value: minio_rsc::error::Error) -> Self {
-        match value {
-            // MinioError::ValueError(_) => {}
-            // MinioError::RequestError(_) => {}
-            // MinioError::XmlError(_) => {}
-            // MinioError::S3Error(_) => {}
-            // MinioError::HttpError => {}
-            // MinioError::IoError(_) => {}
-            _ => Self::UnhandledMinioError,
-        }
     }
 }

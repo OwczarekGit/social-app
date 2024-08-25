@@ -5,6 +5,6 @@ use tempfile::NamedTempFile;
 pub struct ImageUploadRequest {
     pub title: String,
     pub tags: Vec<String>,
-    #[form_data(limit = "5MB")]
+    #[form_data(limit = "8MB")]
     pub image: FieldData<NamedTempFile>,
 }

@@ -1,18 +1,18 @@
-import {AfterViewInit, Component, inject, signal} from '@angular/core';
-import {Tag} from "../../data/tag";
-import {ImageService} from "../../service/image.service";
-import {PopupService} from "../../service/popup.service";
-import {WindowContent} from "../../data/window-content";
-import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
-import {TagPickerComponent} from "../tag-picker/tag-picker.component";
-import {TagPickerParams} from "../tag-picker/tag-picker-params";
+import { AfterViewInit, Component, inject, signal } from '@angular/core';
+import { Tag } from "../../data/tag";
+import { ImageService } from "../../service/image.service";
+import { PopupService } from "../../service/popup.service";
+import { WindowContent } from "../../data/window-content";
+import { W2kWindowFrameComponent } from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
+import { TagPickerComponent } from "../tag-picker/tag-picker.component";
+import { TagPickerParams } from "../tag-picker/tag-picker-params";
 
 @Component({
   selector: 'app-share-image',
   templateUrl: './share-image.component.html',
   styleUrls: ['./share-image.component.css']
 })
-export class ShareImageComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit{
+export class ShareImageComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
   imageService = inject(ImageService)
   popupService = inject(PopupService)
 
@@ -32,7 +32,7 @@ export class ShareImageComponent extends WindowContent<null, W2kWindowFrameCompo
       error: _ => {
         this.popupService.error(
           "Error sharing image",
-          "There was an error sharing image, is the image valid and less than 5MB?")
+          "There was an error sharing image, is the image valid and less than 8MB?")
       }
     })
   }

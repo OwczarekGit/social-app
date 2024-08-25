@@ -3,7 +3,6 @@ use std::sync::Arc;
 
 use crate::active_user::{ActiveUser, ActiveUserRole};
 use crate::{Error, SysRes};
-use axum::http::StatusCode;
 use axum_macros::FromRef;
 use neo4rs::query;
 use redis::cmd;
@@ -49,13 +48,12 @@ impl AccountService {
             .query_async::<String>(redis)
             .await?;
 
-        let id: i64 = id.parse().map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        let id: i64 = id.parse()?;
 
         let user = Account::find_by_id(id)
             .one(&self.postgres)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-            .ok_or(StatusCode::UNAUTHORIZED)?;
+            .await?
+            .ok_or(Error::Unauthorized)?;
 
         Ok(ActiveUser::from(user))
     }

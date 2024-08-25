@@ -5,22 +5,22 @@ use redis::aio::ConnectionManager;
 use sea_orm::{Database, DatabaseConnection};
 use std::{any::type_name, env};
 
-pub async fn redis_connection() -> Result<ConnectionManager, ()> {
+use crate::SysRes;
+
+pub async fn redis_connection() -> SysRes<ConnectionManager> {
     let redis_connection_string = get_arg::<String>("REDIS_URL");
-    let client = redis::Client::open(redis_connection_string).map_err(|_| ())?;
-    let manager = ConnectionManager::new(client).await.map_err(|_| ())?;
+    let client = redis::Client::open(redis_connection_string)?;
+    let manager = ConnectionManager::new(client).await?;
     Ok(manager)
 }
 
-pub async fn postgres_connection() -> Result<DatabaseConnection, ()> {
+pub async fn postgres_connection() -> SysRes<DatabaseConnection> {
     let postgres_connection_string = get_arg::<String>("DATABASE_URL");
-    let db = Database::connect(postgres_connection_string)
-        .await
-        .map_err(|_| ())?;
+    let db = Database::connect(postgres_connection_string).await?;
     Ok(db)
 }
 
-pub async fn neo4j_connection() -> Result<Graph, ()> {
+pub async fn neo4j_connection() -> SysRes<Graph> {
     let neo4j_connection_uri = get_arg::<String>("NEO4J_URI");
     let neo4j_connection_user = get_arg::<String>("NEO4J_USER");
     let neo4j_connection_password = get_arg::<String>("NEO4J_PASS");
@@ -33,10 +33,10 @@ pub async fn neo4j_connection() -> Result<Graph, ()> {
         .build()
         .expect("To create config.");
 
-    Graph::connect(graph).await.map_err(|_| ())
+    Ok(Graph::connect(graph).await?)
 }
 
-pub async fn minio_connection() -> Result<Minio, ()> {
+pub async fn minio_connection() -> SysRes<Minio> {
     let minio_user = get_arg::<String>("MINIO_ROOT_USER");
     let minio_password = get_arg::<String>("MINIO_ROOT_PASSWORD");
     let minio_endpoint = get_arg::<String>("MINIO_ENDPOINT");

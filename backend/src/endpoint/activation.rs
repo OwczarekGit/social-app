@@ -1,3 +1,4 @@
+use crate::active_user::AdminUser;
 use crate::service::activation::ActivationService;
 use crate::AppState;
 use crate::SysRes;
@@ -15,6 +16,7 @@ pub fn admin_routes() -> Router<AppState> {
 }
 
 pub async fn get_current_activation_email_template(
+    _: AdminUser,
     State(activation_service): State<ActivationService>,
 ) -> SysRes<impl IntoResponse> {
     Ok(Json(
@@ -25,6 +27,7 @@ pub async fn get_current_activation_email_template(
 }
 
 pub async fn set_current_activation_email_template(
+    _: AdminUser,
     State(activation_service): State<ActivationService>,
     Json(request): Json<SetActivationEmailTemplateRequest>,
 ) -> SysRes<impl IntoResponse> {

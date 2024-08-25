@@ -1,4 +1,4 @@
-use axum::http::StatusCode;
+use crate::{Error, SysRes};
 use axum_macros::FromRef;
 use image::imageops::FilterType;
 use image::{DynamicImage, ImageFormat};
@@ -24,21 +24,17 @@ impl ProfileService {
 }
 
 impl ProfileService {
-    pub async fn change_username(&self, user_id: i64, username: &str) -> Result<(), StatusCode> {
-        self.neo4j
+    pub async fn change_username(&self, user_id: i64, username: &str) -> SysRes<()> {
+        Ok(self
+            .neo4j
             .run(
                 query("match (p:Profile{id: $id}) set p.username=$username")
                     .param("id", user_id)
                     .param("username", username),
             )
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+            .await?)
     }
-    pub async fn change_profile_picture(
-        &self,
-        user_id: i64,
-        picture: DynamicImage,
-    ) -> crate::SysRes<()> {
+    pub async fn change_profile_picture(&self, user_id: i64, picture: DynamicImage) -> SysRes<()> {
         let object_name = format!("{}.png", user_id);
         let scaled = picture.resize_to_fill(
             PROFILE_PICTURE_SIZE,
@@ -64,16 +60,14 @@ impl ProfileService {
         Ok(())
     }
 
-    pub async fn get_profile(&self, user_id: i64) -> Result<Profile, StatusCode> {
+    pub async fn get_profile(&self, user_id: i64) -> SysRes<Profile> {
         let profile = self
             .neo4j
             .execute(query("match (p:Profile{id: $id}) return p").param("id", user_id))
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+            .await?
             .next()
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
-            .ok_or(StatusCode::NOT_FOUND)?
+            .await?
+            .ok_or(Error::ProfileFetchError(user_id))?
             .try_into()?;
 
         Ok(profile)
@@ -88,18 +82,20 @@ pub struct Profile {
 }
 
 impl TryFrom<Row> for Profile {
-    type Error = StatusCode;
+    type Error = Error;
 
     fn try_from(value: Row) -> Result<Self, Self::Error> {
         let p: Node = value
             .get("p")
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+            .map_err(|_| Error::Neo4rsMissingParam("p".to_owned()))?;
 
         Ok(Self {
-            user_id: p.get("id").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?,
+            user_id: p
+                .get("id")
+                .map_err(|_| Error::Neo4rsMissingParam("id".to_owned()))?,
             username: p
                 .get("username")
-                .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?,
+                .map_err(|_| Error::Neo4rsMissingParam("username".to_owned()))?,
             picture_url: p.get("picture_url").unwrap_or("".to_string()),
         })
     }

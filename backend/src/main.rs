@@ -2,18 +2,16 @@ use std::sync::Arc;
 
 pub use self::error::{Error, SysRes};
 use crate::app_state::AppState;
+use arguments::Arguments;
 use axum::response::Response;
 use clap::Parser;
 use config::get_arg;
-use tower_http::cors::{Any, CorsLayer};
-use tower_http::services::ServeFile;
 use tracing::{debug, warn};
 use tracing_subscriber::EnvFilter;
 
 mod active_user;
 mod app_state;
 mod arguments;
-mod authorization_filter;
 mod config;
 mod endpoint;
 mod entities;
@@ -23,26 +21,12 @@ mod service;
 
 #[tokio::main]
 async fn main() -> SysRes<()> {
-    dotenvy::dotenv().ok();
-    let args = arguments::Arguments::parse();
+    let args = init().await;
 
-    tracing_subscriber::fmt()
-        .without_time()
-        .with_target(false)
-        .with_env_filter(EnvFilter::from_default_env())
-        .init();
-
-    let static_files = tower_http::services::ServeDir::new("./static")
-        .fallback(ServeFile::new("./static/index.html"));
-
-    let cors = CorsLayer::new().allow_origin(Any).allow_methods(Any);
-
-    let redis_connection = config::redis_connection().await.expect("To connect pg.");
-    let postgres_connection = config::postgres_connection()
-        .await
-        .expect("To connect redis.");
-    let neo4j_connection = Arc::new(config::neo4j_connection().await.expect("To connect n4j."));
-    let minio_connection = config::minio_connection().await.expect("To connect minio.");
+    let redis_connection = config::redis_connection().await?;
+    let postgres_connection = config::postgres_connection().await?;
+    let neo4j_connection = Arc::new(config::neo4j_connection().await?);
+    let minio_connection = config::minio_connection().await?;
 
     let state = AppState::new(
         redis_connection,
@@ -71,45 +55,6 @@ async fn main() -> SysRes<()> {
         }
     }
 
-    // let app = Router::<AppState>::new()
-    //     .nest(
-    //         "/api",
-    //         Router::<AppState>::new()
-    //             .nest("/admin/activation", endpoint::activation::admin_routes())
-    //             .nest("/admin/domain", endpoint::domain::admin_routes())
-    //             .nest("/admin/tag", endpoint::tag::admin_routes())
-    //             // All routes above can only be accessed by admin.
-    //             .layer(middleware::from_fn_with_state(
-    //                 state.clone(),
-    //                 authorization_filter::authorize_admin,
-    //             ))
-    //             .nest("/tag", endpoint::tag::public_routes())
-    //             .nest("/post", endpoint::post::routes())
-    //             .nest("/notification", endpoint::notification::routes())
-    //             .nest("/friend", endpoint::friend::routes())
-    //             .nest("/profile", endpoint::profile::routes())
-    //             .nest("/image", endpoint::image::routes())
-    //             .nest("/chat", endpoint::chat::routes())
-    //             .nest("/wallpaper", endpoint::wallpaper::routes())
-    //             .nest("/account", endpoint::account::logged_in_routes())
-    //             // All routes that require authentication go above this route_layer.
-    //             .layer(middleware::from_fn_with_state(
-    //                 state.account_service.clone(),
-    //                 authorization_filter::authorize_by_cookie,
-    //             ))
-    //             .layer(middleware::from_fn_with_state(
-    //                 state.domain_service.clone(),
-    //                 service::domain::extract_image_domain,
-    //             ))
-    //             .nest("/account", endpoint::account::routes()),
-    //     )
-    //     .layer(middleware::map_response(main_response_mapper))
-    //     .layer(CookieManagerLayer::new())
-    //     .layer(cors)
-    //     .layer(DefaultBodyLimit::max(1024 * 1024 * 1024))
-    //     .with_state(state)
-    //     .fallback_service(static_files);
-
     debug!("Starting server");
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", get_arg::<u16>("PORT")))
         .await
@@ -128,4 +73,15 @@ pub async fn main_response_mapper(res: Response) -> Response {
         debug!("Error: {:?}", err);
     }
     res
+}
+
+async fn init() -> Arguments {
+    dotenvy::dotenv().ok();
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_target(false)
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+
+    arguments::Arguments::parse()
 }
