@@ -57,7 +57,7 @@ fn cors() -> CorsLayer {
     CorsLayer::new().allow_origin(Any).allow_methods(Any)
 }
 
-pub async fn main_response_mapper(res: Response) -> Response {
+async fn main_response_mapper(res: Response) -> Response {
     if let Some(err) = res.extensions().get::<Arc<Error>>() {
         //TODO: Some of these are probably worth saving.
         debug!("Error: {:?}", err);

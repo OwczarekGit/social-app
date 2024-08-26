@@ -2,14 +2,15 @@ use std::sync::Arc;
 
 pub use self::error::{Error, SysRes};
 use crate::app_state::AppState;
+use app::App;
 use arguments::Arguments;
-use axum::response::Response;
 use clap::Parser;
 use config::get_arg;
-use tracing::{debug, warn};
+use tracing::warn;
 use tracing_subscriber::EnvFilter;
 
 mod active_user;
+mod app;
 mod app_state;
 mod arguments;
 mod config;
@@ -54,24 +55,10 @@ async fn main() -> SysRes<()> {
         }
     }
 
-    debug!("Starting server");
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", get_arg::<u16>("PORT")))
+    App::new(get_arg::<u16>("PORT")?.parse()?)
+        .await?
+        .run(endpoint::routes(state))
         .await
-        .expect("Failed to bind socket.");
-
-    axum::serve(listener, endpoint::routes(state))
-        .await
-        .unwrap();
-
-    Ok(())
-}
-
-pub async fn main_response_mapper(res: Response) -> Response {
-    if let Some(err) = res.extensions().get::<Arc<Error>>() {
-        //TODO: Some of these are probably worth saving.
-        debug!("Error: {:?}", err);
-    }
-    res
 }
 
 async fn init() -> Arguments {

@@ -48,6 +48,7 @@ pub enum Error {
     Neo4rsDe(neo4rs::DeError),
 
     // Generic errors
+    RequiredEnvMissing(String, String),
     InternalServerError,
     BadRequest,
     NotFound,
