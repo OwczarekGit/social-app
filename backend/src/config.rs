@@ -52,6 +52,6 @@ pub async fn minio_connection() -> SysRes<Minio> {
 }
 
 pub fn get_arg<T>(name: &str) -> SysRes<String> {
-    Ok(env::var(name)
-        .map_err(|_| Error::RequiredEnvMissing(type_name::<T>().to_owned(), name.to_owned()))?)
+    env::var(name)
+        .map_err(|_| Error::RequiredEnvMissing(type_name::<T>().to_owned(), name.to_owned()))
 }

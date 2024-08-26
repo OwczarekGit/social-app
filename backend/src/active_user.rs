@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{fmt::Display, ops::Deref};
 
 use crate::{app_state::AppState, endpoint::account::SESSION_COOKIE_NAME, Error};
 use axum::{
@@ -51,13 +51,15 @@ pub enum ActiveUserRole {
     Admin,
 }
 
-impl ToString for ActiveUserRole {
-    fn to_string(&self) -> String {
-        match self {
-            ActiveUserRole::User => "User".to_string(),
-            ActiveUserRole::Moderator => "Moderator".to_string(),
-            ActiveUserRole::Admin => "Admin".to_string(),
-        }
+impl Display for ActiveUserRole {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ActiveUserRole::User => "User",
+            ActiveUserRole::Moderator => "Moderator",
+            ActiveUserRole::Admin => "Admin",
+        };
+
+        write!(f, "{s}")
     }
 }
 
