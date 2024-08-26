@@ -5,9 +5,6 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[profile.dev.package."*"]
-opt-level = 3
-
 [dependencies]
 axum = { version = "0.7.5", features = ["multipart"] }
 axum-macros = "0.4.1"
