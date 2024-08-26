@@ -5,7 +5,7 @@ use sea_orm::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::entities::{prelude::*, *};
+use entity::{prelude::*, *};
 
 #[derive(Clone, FromRef)]
 pub struct ActivationService {

@@ -1,20 +1,15 @@
 use std::ops::Deref;
 
+use crate::{app_state::AppState, endpoint::account::SESSION_COOKIE_NAME, Error};
 use axum::{
     async_trait,
     extract::{FromRef, FromRequestParts},
     http::request::Parts,
     RequestPartsExt,
 };
+use entity::{self, sea_orm_active_enums::AccountType};
 use serde::{Deserialize, Serialize};
 use tower_cookies::Cookies;
-
-use crate::{
-    app_state::AppState,
-    endpoint::account::SESSION_COOKIE_NAME,
-    entities::{self, sea_orm_active_enums::AccountType},
-    Error,
-};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ActiveUser {
@@ -132,8 +127,8 @@ impl Deref for ModeratorUser {
     }
 }
 
-impl From<entities::account::Model> for ActiveUser {
-    fn from(value: entities::account::Model) -> Self {
+impl From<entity::account::Model> for ActiveUser {
+    fn from(value: entity::account::Model) -> Self {
         Self {
             id: value.id,
             role: match value.r#type {

@@ -1,4 +1,4 @@
-use sea_orm_migration::prelude::*;
+use sea_orm_migration::{prelude::*, schema::*};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -12,14 +12,13 @@ impl MigrationTrait for Migration {
                     .table(Variables::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Variables::Id)
+                        pk_auto(Variables::Id)
                             .big_integer()
-                            .not_null()
                             .auto_increment()
-                            .primary_key(),
+                            .not_null(),
                     )
-                    .col(ColumnDef::new(Variables::Key).unique_key().string().not_null())
-                    .col(ColumnDef::new(Variables::Value).string().not_null())
+                    .col(string(Variables::Key).unique_key().not_null())
+                    .col(string(Variables::Value).not_null())
                     .to_owned(),
             )
             .await
@@ -33,7 +32,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Variables {
+pub enum Variables {
     Table,
     Id,
     Key,

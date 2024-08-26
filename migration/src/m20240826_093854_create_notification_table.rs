@@ -1,5 +1,6 @@
-use sea_orm_migration::prelude::*;
-use crate::m20220101_000001_create_account_table::Account;
+use sea_orm_migration::{prelude::*, schema::*};
+
+use crate::m20240826_090118_create_account_table::Account;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -13,19 +14,23 @@ impl MigrationTrait for Migration {
                     .table(Notification::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Notification::Id)
+                        pk_auto(Notification::Id)
                             .big_integer()
-                            .not_null()
                             .auto_increment()
-                            .primary_key(),
+                            .not_null(),
                     )
-                    .col(ColumnDef::new(Notification::Date).timestamp().not_null())
-                    .col(ColumnDef::new(Notification::Content).json().not_null())
-                    .col(ColumnDef::new(Notification::AccountId).big_integer().not_null())
+                    .col(string(Notification::Content).json().not_null())
+                    .col(
+                        string(Notification::Date)
+                            .timestamp()
+                            .default(Expr::current_timestamp())
+                            .not_null(),
+                    )
+                    .col(big_integer(Notification::AccountId).not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .from(Notification::Table, Notification::AccountId)
-                            .to(Account::Table, Account::Id)
+                            .to(Account::Table, Account::Id),
                     )
                     .to_owned(),
             )

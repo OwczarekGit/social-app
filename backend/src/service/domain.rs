@@ -1,6 +1,6 @@
-use crate::entities::{prelude::*, *};
 use crate::SysRes;
 use axum_macros::FromRef;
+use entity::{prelude::*, *};
 use sea_orm::{
     ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
 };

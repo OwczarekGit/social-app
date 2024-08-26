@@ -11,8 +11,8 @@ use sea_orm::{
 };
 use tracing::log::debug;
 
-use crate::entities::sea_orm_active_enums::AccountType;
-use crate::entities::{prelude::*, *};
+use entity::sea_orm_active_enums::AccountType;
+use entity::{prelude::*, *};
 
 static ACCOUNT_PREFIX: &str = "account";
 static SESSION_PREFIX: &str = "session";
@@ -147,7 +147,6 @@ impl AccountService {
         let model = account::ActiveModel {
             email: ActiveValue::Set(email.to_string()),
             password: ActiveValue::Set(password.to_string()),
-            joined: ActiveValue::Set(chrono::Utc::now().naive_utc()),
             r#type: ActiveValue::Set(AccountType::User),
             ..Default::default()
         };
@@ -239,7 +238,6 @@ impl AccountService {
         let model = account::ActiveModel {
             email: ActiveValue::Set(email.to_string()),
             password: ActiveValue::Set(hash_password(password)),
-            joined: ActiveValue::Set(chrono::Utc::now().naive_utc()),
             r#type: ActiveValue::Set(AccountType::Admin),
             ..Default::default()
         };

@@ -12,7 +12,7 @@ use std::convert::Infallible;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-use crate::entities::{prelude::*, *};
+use entity::{prelude::*, *};
 use sea_orm::prelude::Json;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ColumnTrait, EntityTrait, ModelTrait, QueryFilter, QueryOrder};

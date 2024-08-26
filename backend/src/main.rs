@@ -14,7 +14,6 @@ mod app_state;
 mod arguments;
 mod config;
 mod endpoint;
-mod entities;
 mod error;
 mod image_domain;
 mod service;
