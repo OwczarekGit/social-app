@@ -1,11 +1,10 @@
 use std::{fmt::Display, ops::Deref};
 
-use crate::{app_state::AppState, endpoint::account::SESSION_COOKIE_NAME, Error};
+use crate::{Error, app_state::AppState, endpoint::account::SESSION_COOKIE_NAME};
 use axum::{
-    async_trait,
+    RequestPartsExt,
     extract::{FromRef, FromRequestParts},
     http::request::Parts,
-    RequestPartsExt,
 };
 use entity::{self, sea_orm_active_enums::AccountType};
 use serde::{Deserialize, Serialize};
@@ -17,7 +16,6 @@ pub struct ActiveUser {
     pub role: ActiveUserRole,
 }
 
-#[async_trait]
 impl<S> FromRequestParts<S> for ActiveUser
 where
     AppState: FromRef<S>,
@@ -66,7 +64,6 @@ impl Display for ActiveUserRole {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdminUser(pub ActiveUser);
 
-#[async_trait]
 impl<S> FromRequestParts<S> for AdminUser
 where
     AppState: FromRef<S>,
@@ -99,7 +96,6 @@ impl Deref for AdminUser {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ModeratorUser(pub ActiveUser);
 
-#[async_trait]
 impl<S> FromRequestParts<S> for ModeratorUser
 where
     AppState: FromRef<S>,

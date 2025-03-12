@@ -12,7 +12,7 @@ use crate::SysRes;
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/", get(get_all_wallpapers))
-        .route("/:id", post(set_wallpaper))
+        .route("/{id}", post(set_wallpaper))
         .route("/current", get(get_current_wallpaper))
         .route("/", delete(unset_wallpaper))
 }

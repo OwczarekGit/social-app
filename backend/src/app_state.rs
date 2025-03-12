@@ -10,9 +10,9 @@ use crate::service::post::PostService;
 use crate::service::profile::ProfileService;
 use crate::service::tag::TagService;
 use crate::service::wallpaper::WallpaperService;
+use axum::extract::FromRef;
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
-use axum::{async_trait, extract::FromRef};
 use axum_macros::FromRef;
 use minio_rsc::Minio;
 use neo4rs::Graph;
@@ -70,7 +70,6 @@ impl AppState {
     }
 }
 
-#[async_trait]
 impl<S> FromRequestParts<S> for AppState
 where
     Self: FromRef<S>,

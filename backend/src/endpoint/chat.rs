@@ -14,7 +14,7 @@ use crate::SysRes;
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/friend", post(send_message_to_friend))
-        .route("/friend/:friend_id", get(get_friend_conversation_messages))
+        .route("/friend/{friend_id}", get(get_friend_conversation_messages))
 }
 
 pub async fn send_message_to_friend(

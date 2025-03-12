@@ -13,7 +13,7 @@ docker:
 
 frontend:
     cd ./frontend && npm install
-    cd ./frontend && ng build
+    cd ./frontend && npx ng build
 
 backend:
     cargo build

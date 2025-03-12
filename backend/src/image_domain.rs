@@ -36,18 +36,16 @@ impl<S> FromRequestParts<S> for ImageDomain {
 */
 
 use axum::{
-    async_trait,
+    RequestPartsExt,
     extract::{FromRef, FromRequestParts},
     http::request::Parts,
-    RequestPartsExt,
 };
 
-use crate::{app_state::AppState, Error};
+use crate::{Error, app_state::AppState};
 
 #[derive(Debug, Clone)]
 pub struct ImageDomain(pub String);
 
-#[async_trait]
 impl<S> FromRequestParts<S> for ImageDomain
 where
     AppState: FromRef<S>,

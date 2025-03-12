@@ -6,38 +6,38 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "0.7.5", features = ["multipart"] }
-axum-macros = "0.4.1"
-axum_typed_multipart = "0.12.1"
-bcrypt = "0.15.1"
-chrono = { version = "0.4.38", features = ["serde"] }
-clap = { version = "4.5.16", features = ["derive"] }
+axum = { version = "0.8.1", features = ["multipart"] }
+axum-macros = "0.5.0"
+axum_typed_multipart = "0.15.1"
+bcrypt = "0.17.0"
+chrono = { version = "0.4.40", features = ["serde"] }
+clap = { version = "4.5.32", features = ["derive"] }
 dotenvy = "0.15.7"
-futures = "0.3.30"
-image = "0.25.2"
+futures = "0.3.31"
+image = "0.25.5"
 minio-rsc = { version = "0.2.3", features = ["tokio", "fs-tokio"] }
 neo4rs = "0.8.0"
-redis = { version = "0.26.1", features = [
+redis = { version = "0.29.1", features = [
     "tokio-comp",
     "tokio-rustls-comp",
     "aio",
     "connection-manager",
 ] }
-sea-orm = { version = "1.0.0", features = [
+sea-orm = { version = "1.1.7", features = [
     "sqlx-postgres",
     "runtime-tokio-rustls",
 ] }
-serde = { version = "1.0.208", features = ["derive"] }
-serde_json = "1.0.125"
-tempfile = "3.12.0"
-tokio = { version = "1.39.3", features = ["full"] }
-tokio-stream = { version = "0.1.15", features = ["full"] }
-tower = "0.5.0"
-tower-cookies = "0.10.0"
-tower-http = { version = "0.5.2", features = ["full"] }
-tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-uuid = { version = "1.10.0", features = ["v4", "v7"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+tempfile = "3.18.0"
+tokio = { version = "1.44.0", features = ["full"] }
+tokio-stream = { version = "0.1.17", features = ["full"] }
+tower = "0.5.2"
+tower-cookies = "0.11.0"
+tower-http = { version = "0.6.2", features = ["full"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+uuid = { version = "1.15.1", features = ["v4", "v7"] }
 
 dto = { path = "../dto" }
 entity = { path = "../entity" }

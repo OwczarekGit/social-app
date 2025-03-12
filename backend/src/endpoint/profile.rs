@@ -15,7 +15,7 @@ use std::io::{Cursor, Read};
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/", get(get_my_profile))
-        .route("/:id", get(get_profile))
+        .route("/{id}", get(get_profile))
         .route("/username", put(change_username))
         .route("/picture", put(set_profile_picture))
 }

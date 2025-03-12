@@ -21,7 +21,7 @@ pub async fn get_all_tags_with_usage(
 pub fn admin_routes() -> Router<AppState> {
     Router::new()
         .route("/", post(create_tag))
-        .route("/:id", put(update_tag).delete(delete_tag))
+        .route("/{id}", put(update_tag).delete(delete_tag))
 }
 
 pub async fn update_tag(

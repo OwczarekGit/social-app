@@ -16,7 +16,7 @@ pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/subscribe", get(subscribe_to_notifications))
         .route("/", get(get_remaining_notifications))
-        .route("/:id", delete(dismiss_notification))
+        .route("/{id}", delete(dismiss_notification))
 }
 
 pub async fn subscribe_to_notifications(

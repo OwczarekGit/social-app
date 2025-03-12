@@ -15,11 +15,14 @@ use crate::{Error, SysRes};
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/request/pending", get(get_pending_friend_requests))
-        .route("/request/accept/:requester_id", post(accept_friend_request))
-        .route("/invite/:target_id", post(send_friend_request))
+        .route(
+            "/request/accept/{requester_id}",
+            post(accept_friend_request),
+        )
+        .route("/invite/{target_id}", post(send_friend_request))
         .route("/list", get(get_friend_list))
         .route("/", get(search_users))
-        .route("/:id", delete(remove_friend))
+        .route("/{id}", delete(remove_friend))
 }
 
 pub async fn search_users(

@@ -13,10 +13,10 @@ use crate::SysRes;
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/", get(get_my_posts))
-        .route("/:id", get(get_user_posts))
+        .route("/{id}", get(get_user_posts))
         .route("/create", post(create_post))
-        .route("/edit/:id", put(edit_post))
-        .route("/delete/:id", delete(delete_post))
+        .route("/edit/{id}", put(edit_post))
+        .route("/delete/{id}", delete(delete_post))
 }
 
 pub async fn create_post(
