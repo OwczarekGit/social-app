@@ -4,7 +4,7 @@ import {WindowService} from "../../../service/window.service";
 import {UserProfileComponent} from "../user-profile.component";
 import {W2kWindowFrameComponent} from "../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 import {PostWriterComponent} from "../../post-writer/post-writer.component";
-import {Some} from "option-value";
+import {Maybe} from "option-value";
 import {Profile} from "../../../data/profile";
 import {PostService} from "../../../service/post.service";
 import {EventService} from "../../../service/event.service";
@@ -33,7 +33,7 @@ export class UserProfilePostComponent {
   }
 
   editPost() {
-    this.windowService.openApplication(PostWriterComponent, Some(this.post), W2kWindowFrameComponent)
+    this.windowService.openApplication(PostWriterComponent, Maybe(this.post), W2kWindowFrameComponent)
   }
 
   deletePost() {
