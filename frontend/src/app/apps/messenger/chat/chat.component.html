@@ -1,33 +1,35 @@
 <div class="bar">
   <div class="details">
-    <img
-      loading="lazy"
-      *ngIf="_profile() != null &&_profile()?.picture_url != ''"
-      [src]="_profile()?.picture_url" alt="">
+    @if (_profile() != null &&_profile()?.picture_url != '') {
+      <img
+        loading="lazy"
+        [src]="_profile()?.picture_url" alt="">
+    }
     <p class="font-tahoma-bold">{{_profile()?.username}}</p>
   </div>
   <div class="open-profile">
     <app-button
       [disabled]="_profile() == null"
       (click)="openProfile()"
-      caption="Profile"></app-button>
+    caption="Profile"></app-button>
   </div>
 </div>
 <div class="messages">
   <div class="messages-inner">
-    <app-chat-friend-message
-      *ngFor="let m of messages()"
-      [isMine]="_myProfile()?.user_id == m.user_id"
+    @for (m of messages(); track m) {
+      <app-chat-friend-message
+        [isMine]="_myProfile()?.user_id == m.user_id"
       [message]="m"></app-chat-friend-message>
+    }
   </div>
 </div>
 <div class="controls">
   <app-textarea
     (keyup.shift.enter)="$event.preventDefault()"
     (keyup.enter)="sendMessage()"
-    [(text)]="messageText"></app-textarea>
+  [(text)]="messageText"></app-textarea>
   <app-button
     (click)="sendMessage()"
     [disabled]="messageText == ''"
-    caption="Send"></app-button>
+  caption="Send"></app-button>
 </div>

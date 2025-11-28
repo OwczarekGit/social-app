@@ -1,21 +1,24 @@
 <div class="list-box">
-  <div *ngIf="label != ''" class="labels">
-    <div class="label-wrapper">
-      <div class="label-inner font-tahoma">
-        {{label}}
+  @if (label != '') {
+    <div class="labels">
+      <div class="label-wrapper">
+        <div class="label-inner font-tahoma">
+          {{label}}
+        </div>
       </div>
     </div>
-  </div>
+  }
   <ul>
-    <li
-      class="font-tahoma"
-      *ngFor="let n of items; index as i"
-      (mousedown)="selectionSwitched(n,i)"
-      [ngClass]="{'selected': selected == i}">
-      <img [src]="n.iconUrl()" alt="list-item-icon">
-      <button>
-        {{n.display()}}
-      </button>
-    </li>
+    @for (n of items; track n; let i = $index) {
+      <li
+        class="font-tahoma"
+        (mousedown)="selectionSwitched(n,i)"
+        [ngClass]="{'selected': selected == i}">
+        <img [src]="n.iconUrl()" alt="list-item-icon">
+        <button>
+          {{n.display()}}
+        </button>
+      </li>
+    }
   </ul>
 </div>

@@ -3,19 +3,20 @@
   <app-launchers>
     <app-launcher-app
       (click)="openShareImage()"
-      icon="/assets/share-image-s.png"></app-launcher-app>
+    icon="/assets/share-image-s.png"></app-launcher-app>
     <app-launcher-app
       (click)="openWritePost()"
-      icon="/assets/write-post-s.png"></app-launcher-app>
+    icon="/assets/write-post-s.png"></app-launcher-app>
     <app-launcher-app
       (click)="openMessenger()"
-      icon="/assets/messenger-s.png"></app-launcher-app>
+    icon="/assets/messenger-s.png"></app-launcher-app>
   </app-launchers>
   <app-active-windows></app-active-windows>
   <app-system-tray>
-    <app-notification-indicator
-      *ngIf="notificationService.notifications.length > 0"
-      [notificationCount]="notificationService.notifications.length">
-    </app-notification-indicator>
+    @if (notificationService.notifications.length > 0) {
+      <app-notification-indicator
+        [notificationCount]="notificationService.notifications.length">
+      </app-notification-indicator>
+    }
   </app-system-tray>
 </div>

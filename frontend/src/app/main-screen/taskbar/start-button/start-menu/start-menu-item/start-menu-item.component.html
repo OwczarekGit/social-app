@@ -2,8 +2,10 @@
   <img [src]="imageUrl" alt="menu-image" draggable="false" />
   <p>{{caption}}</p>
 </div>
-<div *ngIf="hasChildren" class="children">
-  <div class="children-wrapper">
-    <ng-content></ng-content>
+@if (hasChildren) {
+  <div class="children">
+    <div class="children-wrapper">
+      <ng-content></ng-content>
+    </div>
   </div>
-</div>
+}

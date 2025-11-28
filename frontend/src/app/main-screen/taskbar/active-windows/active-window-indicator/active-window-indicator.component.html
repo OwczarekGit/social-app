@@ -1,4 +1,6 @@
 <button [ngClass]="{'focused': _focused}">
-  <img *ngIf="icon != ''" [src]="icon" alt="app-icon"/>
+  @if (icon != '') {
+    <img [src]="icon" alt="app-icon"/>
+  }
   <p class="font-tahoma">{{text}}</p>
 </button>

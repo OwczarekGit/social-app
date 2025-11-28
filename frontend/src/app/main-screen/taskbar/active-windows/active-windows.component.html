@@ -1,7 +1,8 @@
-<app-active-window-indicator
-  *ngFor="let w of windowService.openedApplications | keyvalue"
-  [focused]="w.key == windowService.focusStack[0]"
-  (click)="indicatorClicked(w.key)"
-  [icon]="w.value.window.instance.iconUrl()"
-  [text]="w.value.window.instance.title()"
-></app-active-window-indicator>
+@for (w of windowService.openedApplications | keyvalue; track w) {
+  <app-active-window-indicator
+    [focused]="w.key == windowService.focusStack[0]"
+    (click)="indicatorClicked(w.key)"
+    [icon]="w.value.window.instance.iconUrl()"
+    [text]="w.value.window.instance.title()"
+  ></app-active-window-indicator>
+}

@@ -1,2 +1,4 @@
 <img src="/assets/notification-icon.png" alt="notification-icon" />
-<div *ngIf="notificationCount > 0" class="font-tahoma-bold">{{notificationCount}}</div>
+@if (notificationCount > 0) {
+  <div class="font-tahoma-bold">{{notificationCount}}</div>
+}

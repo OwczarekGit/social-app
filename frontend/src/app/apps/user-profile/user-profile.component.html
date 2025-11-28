@@ -6,5 +6,7 @@
   <app-button [disabled]="true" caption="Images"></app-button>
 </div>
 <div class="posts">
-  <app-user-profile-post *ngFor="let p of posts()" [post]="p" [profile]="currentUserProfile()"></app-user-profile-post>
+  @for (p of posts(); track p) {
+    <app-user-profile-post [post]="p" [profile]="currentUserProfile()"></app-user-profile-post>
+  }
 </div>

@@ -1,7 +1,8 @@
 <div>
-  <img
-    *ngIf="profile?.picture_url != ''"
-    [src]="profile?.picture_url"
-    alt="profile-picture" />
+  @if (profile?.picture_url != '') {
+    <img
+      [src]="profile?.picture_url"
+      alt="profile-picture" />
+  }
   <p class="font-tahoma">{{profile?.username}}</p>
 </div>

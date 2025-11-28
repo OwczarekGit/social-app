@@ -1,13 +1,21 @@
 <div class="w2k-window-inner">
   <div class="title-bar wm_draggable">
     <div class="info">
-      <img *ngIf="iconUrl() !== ''" [src]="iconUrl()" alt="title-bar-icon" />
+      @if (iconUrl() !== '') {
+        <img [src]="iconUrl()" alt="title-bar-icon" />
+      }
       <div class="font-tahoma-bold">{{title()}}</div>
     </div>
     <div class="buttons">
-      <app-title-button (click)="minimizeClicked()" *ngIf="minimize" type="minimize"></app-title-button>
-      <app-title-button (click)="maximizeClicked()" *ngIf="maximize" type="maximize"></app-title-button>
-      <app-title-button (click)="closeClicked()" *ngIf="close" type="close"></app-title-button>
+      @if (minimize) {
+        <app-title-button (click)="minimizeClicked()" type="minimize"></app-title-button>
+      }
+      @if (maximize) {
+        <app-title-button (click)="maximizeClicked()" type="maximize"></app-title-button>
+      }
+      @if (close) {
+        <app-title-button (click)="closeClicked()" type="close"></app-title-button>
+      }
     </div>
   </div>
   <div #content class="window-content">

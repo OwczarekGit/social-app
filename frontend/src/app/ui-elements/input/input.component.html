@@ -1,11 +1,13 @@
 <label [ngClass]="{'row': row}">
-  <p class="font-tahoma" *ngIf="caption != null">{{caption}}</p>
+  @if (caption != null) {
+    <p class="font-tahoma">{{caption}}</p>
+  }
   <div>
     <input
       [type]="type"
       [(ngModel)]="text"
       (ngModelChange)="onChange($event)"
       class="font-tahoma"
-    />
+      />
   </div>
 </label>

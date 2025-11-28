@@ -4,7 +4,11 @@
     <app-textarea formControlName="content"></app-textarea>
   </div>
   <div class="controls">
-    <app-button *ngIf="editedPost.isSome()"  [disabled]="!form.valid" caption="Update" (click)="updatePost()"></app-button>
-    <app-button *ngIf="editedPost.isNone()" [disabled]="!form.valid" caption="Publish" (click)="publishPost()"></app-button>
+    @if (editedPost.isSome()) {
+      <app-button  [disabled]="!form.valid" caption="Update" (click)="updatePost()"></app-button>
+    }
+    @if (editedPost.isNone()) {
+      <app-button [disabled]="!form.valid" caption="Publish" (click)="publishPost()"></app-button>
+    }
   </div>
 </form>

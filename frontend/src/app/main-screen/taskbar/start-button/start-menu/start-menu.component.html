@@ -4,27 +4,28 @@
   </button>
   <div class="items">
 
-    <app-start-menu-item
-      [hasChildren]="true"
-      *ngIf="authService.isAdmin()"
-      caption="Administrative tools"
-      imageUrl="/assets/admin-tools.png">
+    @if (authService.isAdmin()) {
       <app-start-menu-item
-        caption="Manage tags"
-        imageUrl="/assets/tag-s.png"
-        (click)="openAdminManageTags()"
-      ></app-start-menu-item>
-      <app-start-menu-item
-        caption="Change activation email"
-        imageUrl="/assets/activation-email-s.png"
-        (click)="openChangeActivationEmail()"
-      ></app-start-menu-item>
-      <app-start-menu-item
-        caption="Manage domains"
-        imageUrl="/assets/manage-domain-s.png"
-        (click)="openManageDomains()"
-      ></app-start-menu-item>
-    </app-start-menu-item>
+        [hasChildren]="true"
+        caption="Administrative tools"
+        imageUrl="/assets/admin-tools.png">
+        <app-start-menu-item
+          caption="Manage tags"
+          imageUrl="/assets/tag-s.png"
+          (click)="openAdminManageTags()"
+        ></app-start-menu-item>
+        <app-start-menu-item
+          caption="Change activation email"
+          imageUrl="/assets/activation-email-s.png"
+          (click)="openChangeActivationEmail()"
+        ></app-start-menu-item>
+        <app-start-menu-item
+          caption="Manage domains"
+          imageUrl="/assets/manage-domain-s.png"
+          (click)="openManageDomains()"
+        ></app-start-menu-item>
+      </app-start-menu-item>
+    }
 
     <app-start-menu-item
       [hasChildren]="true"
@@ -34,7 +35,7 @@
         (click)="openWallpaperSettings()"
         caption="Wallpaper settings"
         imageUrl="/assets/wallpaper-settings-s.png">
-        ></app-start-menu-item>
+      ></app-start-menu-item>
     </app-start-menu-item>
 
     <app-start-menu-item
@@ -50,12 +51,12 @@
         (click)="openChangeProfilePicture()"
         caption="Change profile picture"
         imageUrl="/assets/profile-picture-s.png">
-        ></app-start-menu-item>
+      ></app-start-menu-item>
       <app-start-menu-item
         (click)="openChangePassword()"
         caption="Change password"
         imageUrl="/assets/change-password-s.png">
-        ></app-start-menu-item>
+      ></app-start-menu-item>
     </app-start-menu-item>
 
     <app-start-menu-item (click)="openSearchFriends()" caption="Search for friends" imageUrl="/assets/search-friends.png"></app-start-menu-item>

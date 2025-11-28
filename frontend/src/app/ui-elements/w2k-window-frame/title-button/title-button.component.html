@@ -1,5 +1,11 @@
 <button class="box">
-  <div *ngIf="type == 'minimize'" class="minimize"></div>
-  <div *ngIf="type == 'maximize'" class="maximize"><div></div></div>
-  <div *ngIf="type == 'close'"    class="close"></div>
+  @if (type == 'minimize') {
+    <div class="minimize"></div>
+  }
+  @if (type == 'maximize') {
+    <div class="maximize"><div></div></div>
+  }
+  @if (type == 'close') {
+    <div    class="close"></div>
+  }
 </button>

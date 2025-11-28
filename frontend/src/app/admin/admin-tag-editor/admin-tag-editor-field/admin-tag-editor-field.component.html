@@ -1,6 +1,10 @@
-<app-input *ngIf="tag != null" type="text" caption="Edit tag" [(text)]="tag.name"></app-input>
+@if (tag != null) {
+  <app-input type="text" caption="Edit tag" [(text)]="tag.name"></app-input>
+}
 <p class="font-tahoma">There is {{tag?.usage}} images tagged as {{tag?.name}}.</p>
-<div *ngIf="tag != null">
-  <app-button (click)="delete()" caption="Delete tag"></app-button>
-  <app-button [disabled]="tag.name == ''" (click)="update()" caption="Update tag"></app-button>
-</div>
+@if (tag != null) {
+  <div>
+    <app-button (click)="delete()" caption="Delete tag"></app-button>
+    <app-button [disabled]="tag.name == ''" (click)="update()" caption="Update tag"></app-button>
+  </div>
+}
