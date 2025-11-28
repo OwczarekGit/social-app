@@ -24,9 +24,10 @@ import {UserProfileComponent} from "../../../../apps/user-profile/user-profile.c
 import {None} from "option-value";
 
 @Component({
-  selector: 'app-start-menu',
-  templateUrl: './start-menu.component.html',
-  styleUrls: ['./start-menu.component.css'],
+    selector: 'app-start-menu',
+    templateUrl: './start-menu.component.html',
+    styleUrls: ['./start-menu.component.css'],
+    standalone: false
 })
 export class StartMenuComponent {
   public loginService = inject(LoginService)

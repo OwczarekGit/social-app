@@ -2,9 +2,10 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {DetailedTag} from "../../../data/detailed-tag";
 
 @Component({
-  selector: 'admin-tag-editor-field',
-  templateUrl: './admin-tag-editor-field.component.html',
-  styleUrls: ['./admin-tag-editor-field.component.css']
+    selector: 'admin-tag-editor-field',
+    templateUrl: './admin-tag-editor-field.component.html',
+    styleUrls: ['./admin-tag-editor-field.component.css'],
+    standalone: false
 })
 export class AdminTagEditorFieldComponent {
 

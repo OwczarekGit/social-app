@@ -2,7 +2,8 @@ import {AfterViewInit, Directive, ElementRef} from '@angular/core';
 import {fromEvent, Subscription, takeUntil} from "rxjs";
 
 @Directive({
-  selector: '[wm_draggable]'
+    selector: '[wm_draggable]',
+    standalone: false
 })
 export class DraggableDirective implements AfterViewInit {
 

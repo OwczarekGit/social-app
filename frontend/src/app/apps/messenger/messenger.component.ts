@@ -7,9 +7,10 @@ import {ListDisplay} from "../../data/list-display";
 import {ProfileService} from "../../service/profile.service";
 
 @Component({
-  selector: 'app-messenger',
-  templateUrl: './messenger.component.html',
-  styleUrls: ['./messenger.component.css']
+    selector: 'app-messenger',
+    templateUrl: './messenger.component.html',
+    styleUrls: ['./messenger.component.css'],
+    standalone: false
 })
 export class MessengerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
   public friendService = inject(FriendService)

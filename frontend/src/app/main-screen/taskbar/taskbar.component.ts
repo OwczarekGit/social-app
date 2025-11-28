@@ -8,9 +8,10 @@ import {MessengerComponent} from "../../apps/messenger/messenger.component";
 import {None} from "option-value";
 
 @Component({
-  selector: 'app-taskbar',
-  templateUrl: './taskbar.component.html',
-  styleUrls: ['./taskbar.component.css']
+    selector: 'app-taskbar',
+    templateUrl: './taskbar.component.html',
+    styleUrls: ['./taskbar.component.css'],
+    standalone: false
 })
 export class TaskbarComponent {
   public notificationService = inject(NotificationService)

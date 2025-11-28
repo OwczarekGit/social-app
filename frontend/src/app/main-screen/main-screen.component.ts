@@ -4,9 +4,10 @@ import {WindowService} from "../service/window.service";
 import {WallpaperService} from "../service/wallpaper.service";
 
 @Component({
-  selector: 'app-main-screen',
-  templateUrl: './main-screen.component.html',
-  styleUrls: ['./main-screen.component.css']
+    selector: 'app-main-screen',
+    templateUrl: './main-screen.component.html',
+    styleUrls: ['./main-screen.component.css'],
+    standalone: false
 })
 export class MainScreenComponent implements AfterViewInit {
 

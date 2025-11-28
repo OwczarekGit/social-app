@@ -1,9 +1,10 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-  selector: 'app-start-menu-item',
-  templateUrl: './start-menu-item.component.html',
-  styleUrls: ['./start-menu-item.component.css']
+    selector: 'app-start-menu-item',
+    templateUrl: './start-menu-item.component.html',
+    styleUrls: ['./start-menu-item.component.css'],
+    standalone: false
 })
 export class StartMenuItemComponent {
   @Input()

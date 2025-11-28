@@ -10,9 +10,10 @@ import {WindowService} from "../../service/window.service";
 import {UserProfileComponent} from "../user-profile/user-profile.component";
 
 @Component({
-  selector: 'app-friend-manager',
-  templateUrl: './friend-manager.component.html',
-  styleUrls: ['./friend-manager.component.css']
+    selector: 'app-friend-manager',
+    templateUrl: './friend-manager.component.html',
+    styleUrls: ['./friend-manager.component.css'],
+    standalone: false
 })
 export class FriendManagerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

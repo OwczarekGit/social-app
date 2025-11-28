@@ -10,9 +10,10 @@ import {WindowService} from "../../service/window.service";
 import {SoundService} from "../../service/sound.service";
 
 @Component({
-  selector: 'app-login-form',
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.css']
+    selector: 'app-login-form',
+    templateUrl: './login-form.component.html',
+    styleUrls: ['./login-form.component.css'],
+    standalone: false
 })
 export class LoginFormComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

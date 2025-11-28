@@ -6,9 +6,10 @@ import {WindowService} from "../service/window.service";
 import {W2kWindowFrameComponent} from "../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'app-login-screen',
-  templateUrl: './login-screen.component.html',
-  styleUrls: ['./login-screen.component.css']
+    selector: 'app-login-screen',
+    templateUrl: './login-screen.component.html',
+    styleUrls: ['./login-screen.component.css'],
+    standalone: false
 })
 export class LoginScreenComponent implements AfterViewInit {
 

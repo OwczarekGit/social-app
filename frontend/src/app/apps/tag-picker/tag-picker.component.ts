@@ -7,9 +7,10 @@ import {WindowContent} from "../../data/window-content";
 import {TagPickerParams} from "./tag-picker-params";
 
 @Component({
-  selector: 'app-tag-picker',
-  templateUrl: './tag-picker.component.html',
-  styleUrls: ['./tag-picker.component.css']
+    selector: 'app-tag-picker',
+    templateUrl: './tag-picker.component.html',
+    styleUrls: ['./tag-picker.component.css'],
+    standalone: false
 })
 export class TagPickerComponent extends WindowContent<TagPickerParams, W2kWindowFrameComponent> implements AfterViewInit {
 

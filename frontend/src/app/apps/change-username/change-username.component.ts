@@ -6,9 +6,10 @@ import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'app-change-username',
-  templateUrl: './change-username.component.html',
-  styleUrls: ['./change-username.component.css']
+    selector: 'app-change-username',
+    templateUrl: './change-username.component.html',
+    styleUrls: ['./change-username.component.css'],
+    standalone: false
 })
 export class ChangeUsernameComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
   public form = new FormGroup({

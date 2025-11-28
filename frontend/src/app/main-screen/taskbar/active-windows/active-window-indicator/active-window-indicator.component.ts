@@ -1,9 +1,10 @@
 import {Component, HostBinding, Input} from '@angular/core';
 
 @Component({
-  selector: 'app-active-window-indicator',
-  templateUrl: './active-window-indicator.component.html',
-  styleUrls: ['./active-window-indicator.component.css']
+    selector: 'app-active-window-indicator',
+    templateUrl: './active-window-indicator.component.html',
+    styleUrls: ['./active-window-indicator.component.css'],
+    standalone: false
 })
 export class ActiveWindowIndicatorComponent {
 

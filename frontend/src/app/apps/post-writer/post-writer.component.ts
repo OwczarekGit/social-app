@@ -9,9 +9,10 @@ import {EventService} from "../../service/event.service";
 import {Post} from "../../data/post";
 
 @Component({
-  selector: 'app-post-writer',
-  templateUrl: './post-writer.component.html',
-  styleUrls: ['./post-writer.component.css']
+    selector: 'app-post-writer',
+    templateUrl: './post-writer.component.html',
+    styleUrls: ['./post-writer.component.css'],
+    standalone: false
 })
 export class PostWriterComponent extends WindowContent<Option<Post>, W2kWindowFrameComponent> implements AfterViewInit {
 

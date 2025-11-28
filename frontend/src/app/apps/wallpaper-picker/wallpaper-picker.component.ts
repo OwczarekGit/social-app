@@ -6,9 +6,10 @@ import {ListDisplay} from "../../data/list-display";
 import {WallpaperService} from "../../service/wallpaper.service";
 
 @Component({
-  selector: 'app-wallpaper-picker',
-  templateUrl: './wallpaper-picker.component.html',
-  styleUrls: ['./wallpaper-picker.component.css']
+    selector: 'app-wallpaper-picker',
+    templateUrl: './wallpaper-picker.component.html',
+    styleUrls: ['./wallpaper-picker.component.css'],
+    standalone: false
 })
 export class WallpaperPickerComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

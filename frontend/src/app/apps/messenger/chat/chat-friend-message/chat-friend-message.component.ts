@@ -2,9 +2,10 @@ import {AfterViewInit, Component, HostBinding, Input, OnInit} from '@angular/cor
 import {FriendMessage} from "../../../../data/friend-message";
 
 @Component({
-  selector: 'app-chat-friend-message',
-  templateUrl: './chat-friend-message.component.html',
-  styleUrls: ['./chat-friend-message.component.css']
+    selector: 'app-chat-friend-message',
+    templateUrl: './chat-friend-message.component.html',
+    styleUrls: ['./chat-friend-message.component.css'],
+    standalone: false
 })
 export class ChatFriendMessageComponent {
   @Input()

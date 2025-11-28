@@ -10,9 +10,10 @@ import {WindowService} from "../../service/window.service";
 import {UserProfileComponent} from "../user-profile/user-profile.component";
 
 @Component({
-  selector: 'app-people-searcher',
-  templateUrl: './people-searcher.component.html',
-  styleUrls: ['./people-searcher.component.css']
+    selector: 'app-people-searcher',
+    templateUrl: './people-searcher.component.html',
+    styleUrls: ['./people-searcher.component.css'],
+    standalone: false
 })
 export class PeopleSearcherComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

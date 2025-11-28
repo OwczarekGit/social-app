@@ -2,9 +2,10 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '
 import {ListDisplay} from "../../data/list-display";
 
 @Component({
-  selector: 'app-list-small',
-  templateUrl: './list-small.component.html',
-  styleUrls: ['./list-small.component.css']
+    selector: 'app-list-small',
+    templateUrl: './list-small.component.html',
+    styleUrls: ['./list-small.component.css'],
+    standalone: false
 })
 export class ListSmallComponent {
 

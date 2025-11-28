@@ -10,9 +10,10 @@ import {UserProfileComponent} from "../../user-profile/user-profile.component";
 import {W2kWindowFrameComponent} from "../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+    selector: 'app-chat',
+    templateUrl: './chat.component.html',
+    styleUrls: ['./chat.component.css'],
+    standalone: false
 })
 export class ChatComponent {
   public chatService = inject(ChatService)

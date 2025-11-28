@@ -4,10 +4,11 @@ import {WindowService} from "../../../../service/window.service";
 import {W2kWindowFrameComponent} from "../../../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'app-notification-indicator',
-  templateUrl: './notification-indicator.component.html',
-  styleUrls: ['./notification-indicator.component.css'],
-  host: {'(click)': 'openNotificationCenter()'}
+    selector: 'app-notification-indicator',
+    templateUrl: './notification-indicator.component.html',
+    styleUrls: ['./notification-indicator.component.css'],
+    host: { '(click)': 'openNotificationCenter()' },
+    standalone: false
 })
 export class NotificationIndicatorComponent {
   @Input()

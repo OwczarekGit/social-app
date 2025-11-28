@@ -10,9 +10,10 @@ import {PopupService} from "../../service/popup.service";
 import {Subject} from "rxjs";
 
 @Component({
-  selector: 'app-admin-activation-email-editor',
-  templateUrl: './admin-activation-email-editor.component.html',
-  styleUrls: ['./admin-activation-email-editor.component.css']
+    selector: 'app-admin-activation-email-editor',
+    templateUrl: './admin-activation-email-editor.component.html',
+    styleUrls: ['./admin-activation-email-editor.component.css'],
+    standalone: false
 })
 export class AdminActivationEmailEditorComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

@@ -4,9 +4,10 @@ import {PopupParams, PopupType} from "./popup-params";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'app-popup',
-  templateUrl: './popup.component.html',
-  styleUrls: ['./popup.component.css']
+    selector: 'app-popup',
+    templateUrl: './popup.component.html',
+    styleUrls: ['./popup.component.css'],
+    standalone: false
 })
 export class PopupComponent extends WindowContent<PopupParams, W2kWindowFrameComponent> implements AfterViewInit {
 

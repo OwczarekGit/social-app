@@ -11,9 +11,10 @@ import {EventService} from "../../../service/event.service";
 import {PopupService} from "../../../service/popup.service";
 
 @Component({
-  selector: 'app-user-profile-post',
-  templateUrl: './user-profile-post.component.html',
-  styleUrls: ['./user-profile-post.component.css']
+    selector: 'app-user-profile-post',
+    templateUrl: './user-profile-post.component.html',
+    styleUrls: ['./user-profile-post.component.css'],
+    standalone: false
 })
 export class UserProfilePostComponent {
   private windowService = inject(WindowService)

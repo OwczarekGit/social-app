@@ -3,9 +3,10 @@ import {Notification} from "../../../data/notification";
 import {NotificationType} from "../../../const/notification-type";
 
 @Component({
-  selector: 'app-notification-entry',
-  templateUrl: './notification-entry.component.html',
-  styleUrls: ['./notification-entry.component.css']
+    selector: 'app-notification-entry',
+    templateUrl: './notification-entry.component.html',
+    styleUrls: ['./notification-entry.component.css'],
+    standalone: false
 })
 export class NotificationEntryComponent {
   @Input()

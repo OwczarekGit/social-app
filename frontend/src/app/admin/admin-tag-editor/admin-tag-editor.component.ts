@@ -7,9 +7,10 @@ import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'admin-tag-editor',
-  templateUrl: './admin-tag-editor.component.html',
-  styleUrls: ['./admin-tag-editor.component.css']
+    selector: 'admin-tag-editor',
+    templateUrl: './admin-tag-editor.component.html',
+    styleUrls: ['./admin-tag-editor.component.css'],
+    standalone: false
 })
 export class AdminTagEditorComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

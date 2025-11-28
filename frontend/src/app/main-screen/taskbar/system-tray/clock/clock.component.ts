@@ -1,9 +1,10 @@
 import {AfterViewInit, Component} from '@angular/core';
 
 @Component({
-  selector: 'app-clock',
-  templateUrl: './clock.component.html',
-  styleUrls: ['./clock.component.css']
+    selector: 'app-clock',
+    templateUrl: './clock.component.html',
+    styleUrls: ['./clock.component.css'],
+    standalone: false
 })
 export class ClockComponent implements AfterViewInit {
   time: Date = new Date()

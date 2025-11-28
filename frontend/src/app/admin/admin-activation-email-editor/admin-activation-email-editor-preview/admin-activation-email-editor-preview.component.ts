@@ -4,9 +4,10 @@ import {W2kWindowFrameComponent} from "../../../ui-elements/w2k-window-frame/w2k
 import {Subject} from "rxjs";
 
 @Component({
-  selector: 'app-admin-activation-email-editor-preview',
-  templateUrl: './admin-activation-email-editor-preview.component.html',
-  styleUrls: ['./admin-activation-email-editor-preview.component.css']
+    selector: 'app-admin-activation-email-editor-preview',
+    templateUrl: './admin-activation-email-editor-preview.component.html',
+    styleUrls: ['./admin-activation-email-editor-preview.component.css'],
+    standalone: false
 })
 export class AdminActivationEmailEditorPreviewComponent extends WindowContent<Subject<string>, W2kWindowFrameComponent> implements AfterViewInit {
 

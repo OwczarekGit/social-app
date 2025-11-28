@@ -7,9 +7,10 @@ import {DomainService} from "../../service/domain.service";
 import {PopupService} from "../../service/popup.service";
 
 @Component({
-  selector: 'app-admin-manage-domains',
-  templateUrl: './admin-manage-domains.component.html',
-  styleUrls: ['./admin-manage-domains.component.css']
+    selector: 'app-admin-manage-domains',
+    templateUrl: './admin-manage-domains.component.html',
+    styleUrls: ['./admin-manage-domains.component.css'],
+    standalone: false
 })
 export class AdminManageDomainsComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit, OnInit {
 

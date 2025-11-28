@@ -1,9 +1,10 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-  selector: 'app-launchers',
-  templateUrl: './launchers.component.html',
-  styleUrls: ['./launchers.component.css']
+    selector: 'app-launchers',
+    templateUrl: './launchers.component.html',
+    styleUrls: ['./launchers.component.css'],
+    standalone: false
 })
 export class LaunchersComponent {
 }

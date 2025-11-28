@@ -2,10 +2,11 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {WindowFrame} from "../../data/window-frame";
 
 @Component({
-  selector: 'app-w2k-window-frame',
-  templateUrl: './w2k-window-frame.component.html',
-  styleUrls: ['./w2k-window-frame.component.css'],
-  host: {'(mousedown)': 'onFocus()'}
+    selector: 'app-w2k-window-frame',
+    templateUrl: './w2k-window-frame.component.html',
+    styleUrls: ['./w2k-window-frame.component.css'],
+    host: { '(mousedown)': 'onFocus()' },
+    standalone: false
 })
 export class W2kWindowFrameComponent extends WindowFrame {
 

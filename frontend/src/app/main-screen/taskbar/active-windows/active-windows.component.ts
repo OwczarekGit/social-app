@@ -2,9 +2,10 @@ import {Component, inject} from '@angular/core';
 import {WindowService} from "../../../service/window.service";
 
 @Component({
-  selector: 'app-active-windows',
-  templateUrl: './active-windows.component.html',
-  styleUrls: ['./active-windows.component.css']
+    selector: 'app-active-windows',
+    templateUrl: './active-windows.component.html',
+    styleUrls: ['./active-windows.component.css'],
+    standalone: false
 })
 export class ActiveWindowsComponent {
   public windowService = inject(WindowService)

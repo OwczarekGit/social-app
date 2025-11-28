@@ -5,9 +5,10 @@ import {WindowContent} from "../../data/window-content";
 import {W2kWindowFrameComponent} from "../../ui-elements/w2k-window-frame/w2k-window-frame.component";
 
 @Component({
-  selector: 'app-notification-center',
-  templateUrl: './notification-center.component.html',
-  styleUrls: ['./notification-center.component.css']
+    selector: 'app-notification-center',
+    templateUrl: './notification-center.component.html',
+    styleUrls: ['./notification-center.component.css'],
+    standalone: false
 })
 export class NotificationCenterComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
 

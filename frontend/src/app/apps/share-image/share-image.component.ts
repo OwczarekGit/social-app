@@ -8,9 +8,10 @@ import { TagPickerComponent } from "../tag-picker/tag-picker.component";
 import { TagPickerParams } from "../tag-picker/tag-picker-params";
 
 @Component({
-  selector: 'app-share-image',
-  templateUrl: './share-image.component.html',
-  styleUrls: ['./share-image.component.css']
+    selector: 'app-share-image',
+    templateUrl: './share-image.component.html',
+    styleUrls: ['./share-image.component.css'],
+    standalone: false
 })
 export class ShareImageComponent extends WindowContent<null, W2kWindowFrameComponent> implements AfterViewInit {
   imageService = inject(ImageService)

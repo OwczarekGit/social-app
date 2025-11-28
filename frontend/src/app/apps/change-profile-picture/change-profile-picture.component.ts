@@ -6,9 +6,10 @@ import {PopupService} from "../../service/popup.service";
 import {Profile} from "../../data/profile";
 
 @Component({
-  selector: 'app-change-profile-picture',
-  templateUrl: './change-profile-picture.component.html',
-  styleUrls: ['./change-profile-picture.component.css']
+    selector: 'app-change-profile-picture',
+    templateUrl: './change-profile-picture.component.html',
+    styleUrls: ['./change-profile-picture.component.css'],
+    standalone: false
 })
 export class ChangeProfilePictureComponent extends WindowContent<null, W2kWindowFrameComponent>{
 
