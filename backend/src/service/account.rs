@@ -78,7 +78,7 @@ impl AccountService {
             .arg(build_prefix(SESSION_PREFIX, &session_key))
             .arg("user_id")
             .arg(account.id)
-            .query_async(redis)
+            .exec_async(redis)
             .await?;
 
         let role = match account.r#type {
@@ -155,7 +155,7 @@ impl AccountService {
 
         cmd("del")
             .arg(build_prefix(ACCOUNT_PREFIX, email))
-            .query_async(redis)
+            .exec_async(redis)
             .await?;
 
         self.neo4j
@@ -206,13 +206,13 @@ impl AccountService {
             .arg(hash_password(password))
             .arg("username")
             .arg(username)
-            .query_async(redis)
+            .exec_async(redis)
             .await?;
 
         cmd("expire")
             .arg(build_prefix(ACCOUNT_PREFIX, email))
             .arg(self.expire_time_secs)
-            .query_async(redis)
+            .exec_async(redis)
             .await?;
 
         #[cfg(debug_assertions)]
