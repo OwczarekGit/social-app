@@ -4,9 +4,8 @@ pub use self::error::{Error, SysRes};
 use crate::app_state::AppState;
 use app::App;
 use arguments::Arguments;
-use clap::Parser;
-use config::get_arg;
-use tracing::warn;
+use config::{minio_connection, neo4j_connection, postgres_connection, valkey_connection};
+use tracing::{debug, warn};
 use tracing_subscriber::EnvFilter;
 
 mod active_user;
@@ -23,10 +22,10 @@ mod service;
 async fn main() -> SysRes<()> {
     let args = init().await;
 
-    let redis_connection = config::redis_connection().await?;
-    let postgres_connection = config::postgres_connection().await?;
-    let neo4j_connection = Arc::new(config::neo4j_connection().await?);
-    let minio_connection = config::minio_connection().await?;
+    let redis_connection = valkey_connection(args.valkey_config).await?;
+    let postgres_connection = postgres_connection(args.postgres_config).await?;
+    let neo4j_connection = Arc::new(neo4j_connection(args.neo4j_config).await?);
+    let minio_connection = minio_connection(args.s3_config).await?;
 
     let state = AppState::new(
         redis_connection,
@@ -55,7 +54,7 @@ async fn main() -> SysRes<()> {
         }
     }
 
-    App::new(get_arg::<u16>("PORT")?.parse()?)
+    App::new(args.port)
         .await?
         .run(endpoint::routes(state))
         .await
@@ -69,5 +68,5 @@ async fn init() -> Arguments {
         .with_env_filter(EnvFilter::from_default_env())
         .init();
 
-    arguments::Arguments::parse()
+    arguments::Arguments::get()
 }

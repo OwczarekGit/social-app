@@ -1,57 +1,45 @@
-use minio_rsc::provider::StaticProvider;
 use minio_rsc::Minio;
+use minio_rsc::provider::StaticProvider;
 use neo4rs::{ConfigBuilder, Graph};
 use redis::aio::ConnectionManager;
 use sea_orm::{Database, DatabaseConnection};
-use std::{any::type_name, env};
 
-use crate::{Error, SysRes};
+use crate::{
+    SysRes,
+    arguments::{Neo4jConfig, PostgresConfig, S3Config, ValkeyConfig},
+};
 
-pub async fn redis_connection() -> SysRes<ConnectionManager> {
-    let redis_connection_string = get_arg::<String>("REDIS_URL")?;
-    let client = redis::Client::open(redis_connection_string)?;
+pub async fn valkey_connection(config: ValkeyConfig) -> SysRes<ConnectionManager> {
+    let client = redis::Client::open(config.valkey_url)?;
     let manager = ConnectionManager::new(client).await?;
     Ok(manager)
 }
 
-pub async fn postgres_connection() -> SysRes<DatabaseConnection> {
-    let postgres_connection_string = get_arg::<String>("DATABASE_URL")?;
-    let db = Database::connect(postgres_connection_string).await?;
+pub async fn postgres_connection(config: PostgresConfig) -> SysRes<DatabaseConnection> {
+    let db = Database::connect(config.database_url).await?;
     Ok(db)
 }
 
-pub async fn neo4j_connection() -> SysRes<Graph> {
-    let neo4j_connection_uri = get_arg::<String>("NEO4J_URI")?;
-    let neo4j_connection_user = get_arg::<String>("NEO4J_USER")?;
-    let neo4j_connection_password = get_arg::<String>("NEO4J_PASS")?;
-    let neo4j_connection_db = get_arg::<String>("NEO4J_DB")?;
+pub async fn neo4j_connection(config: Neo4jConfig) -> SysRes<Graph> {
     let graph = ConfigBuilder::new()
-        .uri(neo4j_connection_uri)
-        .user(neo4j_connection_user)
-        .password(neo4j_connection_password)
-        .db(neo4j_connection_db)
+        .uri(config.neo4j_url)
+        .user(config.neo4j_user)
+        .password(config.neo4j_password)
+        .db(config.neo4j_db)
         .build()
         .expect("To create config.");
 
     Ok(Graph::connect(graph).await?)
 }
 
-pub async fn minio_connection() -> SysRes<Minio> {
-    let minio_user = get_arg::<String>("MINIO_ROOT_USER")?;
-    let minio_password = get_arg::<String>("MINIO_ROOT_PASSWORD")?;
-    let minio_endpoint = get_arg::<String>("MINIO_ENDPOINT")?;
-    let provider = StaticProvider::new(minio_user, minio_password, None);
+pub async fn minio_connection(config: S3Config) -> SysRes<Minio> {
+    let provider = StaticProvider::new(config.s3_user, config.s3_password, None);
     let minio = Minio::builder()
-        .endpoint(minio_endpoint)
+        .endpoint(config.s3_url)
         .provider(provider)
         .secure(false)
         .build()
         .unwrap();
 
     Ok(minio)
-}
-
-pub fn get_arg<T>(name: &str) -> SysRes<String> {
-    env::var(name)
-        .map_err(|_| Error::RequiredEnvMissing(type_name::<T>().to_owned(), name.to_owned()))
 }
