@@ -5,7 +5,7 @@ use crate::app_state::AppState;
 use app::App;
 use arguments::Arguments;
 use config::{minio_connection, neo4j_connection, postgres_connection, valkey_connection};
-use tracing::{debug, warn};
+use tracing::warn;
 use tracing_subscriber::EnvFilter;
 
 mod active_user;
@@ -37,7 +37,7 @@ async fn main() -> SysRes<()> {
 
     if let Some(action) = args.create_admin_args {
         match action {
-            arguments::ExecuteActionOnStart::CreateAdminAccount(admin) => {
+            arguments::StartSubcommand::CreateAdminAccount(admin) => {
                 if state
                     .account_service
                     .create_admin_account(&admin.username, &admin.email, &admin.password)
