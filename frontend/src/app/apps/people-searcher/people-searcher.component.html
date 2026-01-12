@@ -1,26 +1,22 @@
 <div class="box">
-  <form [formGroup]="form" class="search-row">
-    <app-input formControlName="phrase" (keyup)="performSearch()"></app-input>
-    <app-button
-      [disabled]="!form.valid"
-      caption="Search"
-      (click)="performSearch()"></app-button>
-  </form>
+  <app-input [formControl]="phrase" />
   <div class="results">
     <app-list-small
       (itemClicked)="changeSelected($event)"
       label="Search results"
-      [items]="searchResults">
-    </app-list-small>
+      [items]="searchResults"
+    />
   </div>
   <div class="controls">
     <app-button
       (click)="showProfile()"
       [disabled]="selected == null"
-      caption="Show profile"></app-button>
+      caption="Show profile"
+    />
     <app-button
       [disabled]="selected == null"
       caption="Invite"
-      (click)="invite()"></app-button>
+      (click)="invite()"
+    />
   </div>
 </div>
